@@ -24,6 +24,8 @@ The production output is a static site. Deploy `dist/` to a static host. For a s
 
 ## Study flow
 
+Use the theme switch in the top bar to choose light or dark mode. The app follows your system preference until you make a choice, then remembers that choice in this browser. Changing themes preserves the current quiz and its timer.
+
 1. Choose any discovered topic.
 2. Choose **Practice** (feedback after each submitted answer) or **Exam** (feedback only after completion).
 3. Choose a question count: available presets, all questions, or a custom count.

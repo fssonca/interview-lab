@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react'
-import { ArrowUpRight, BookOpen, ChevronRight, Code2, FileJson, LibraryBig } from 'lucide-react'
+import {
+  ArrowUpRight,
+  BookOpen,
+  ChevronRight,
+  Code2,
+  FileJson,
+  LibraryBig,
+  Moon,
+  Sun,
+} from 'lucide-react'
 import { Configuration } from './components/Configuration'
 import { Library } from './components/Library'
 import { Quiz } from './components/Quiz'
@@ -7,11 +16,13 @@ import { Results } from './components/Results'
 import { advanceSession, createQuizSession, selectAnswer, submitAnswer } from './domain/quiz'
 import type { QuestionBank } from './domain/types'
 import { useQuizSession } from './hooks/useQuizSession'
+import { useTheme } from './hooks/useTheme'
 
 type View =
   { page: 'library' } | { page: 'configuration'; bank: QuestionBank } | { page: 'session' }
 
 export default function App({ banks }: { banks: QuestionBank[] }) {
+  const { theme, toggleTheme } = useTheme()
   const { session, updateSession, warning, now } = useQuizSession()
   const [view, setView] = useState<View>(() => ({ page: session ? 'session' : 'library' }))
   const goHome = () => setView({ page: 'library' })
@@ -93,10 +104,23 @@ export default function App({ banks }: { banks: QuestionBank[] }) {
                     : 'Session results'}
             </strong>
           </span>
-          <span className="workspace-label">
-            <span className="local-dot" />
-            Your personal study space
-          </span>
+          <div className="topbar-actions">
+            <span className="workspace-label">
+              <span className="local-dot" />
+              Your personal study space
+            </span>
+            <button
+              className="theme-toggle"
+              role="switch"
+              aria-label="Dark theme"
+              aria-checked={theme === 'dark'}
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+              onClick={toggleTheme}
+            >
+              {theme === 'dark' ? <Moon size={17} /> : <Sun size={17} />}
+              <span>{theme === 'dark' ? 'Dark' : 'Light'}</span>
+            </button>
+          </div>
         </header>
         <main id="main" tabIndex={-1}>
           {warning && (

@@ -4,6 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f7f8fa" />
+    <script>
+      // Apply the saved/system theme before styles paint to avoid a light flash.
+      let savedTheme
+      try {
+        savedTheme = localStorage.getItem('interview-lab.theme')
+      } catch {}
+      const hasSavedTheme = savedTheme === 'dark' || savedTheme === 'light'
+      document.documentElement.dataset.theme = hasSavedTheme
+        ? savedTheme
+        : matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+      document.documentElement.dataset.themePreference = hasSavedTheme ? 'saved' : 'system'
+    </script>
     <meta
       name="description"
       content="A focused space to prepare for technical interviews. Practice fundamentals, test your knowledge, and understand every answer."
