@@ -1,13 +1,8 @@
 import { ArrowLeft, ArrowRight, CheckCircle2, Clock3, MinusCircle, XCircle } from 'lucide-react'
-import {
-  correctAnswer,
-  evaluateAnswer,
-  formatAnswer,
-  formatDuration,
-  hasAnswer,
-} from '../domain/quiz'
+import { correctAnswer, evaluateAnswer, formatDuration, hasAnswer } from '../domain/quiz'
 import type { Answer, QuizSession } from '../domain/types'
-import { Eyebrow, Topics } from './shared'
+import { AnswerText, Eyebrow, Topics } from './shared'
+import { InlineMarkdown, Markdown } from './Markdown'
 
 export function Quiz({
   session,
@@ -84,7 +79,9 @@ export function Quiz({
               ? 'TRUE OR FALSE'
               : 'SINGLE CHOICE'}
         </div>
-        <h2 id="question-text">{question.question}</h2>
+        <Markdown id="question-text" className="question-text" leadHeading={2}>
+          {question.question}
+        </Markdown>
         <p className="question-hint">
           {question.type === 'multiple'
             ? 'Select all correct answers. Every correct option is required.'
@@ -129,7 +126,9 @@ export function Quiz({
                 <span className="option-letter" aria-hidden="true">
                   {String.fromCharCode(65 + index)}
                 </span>
-                <span>{typeof option === 'boolean' ? (option ? 'True' : 'False') : option}</span>
+                <InlineMarkdown>
+                  {typeof option === 'boolean' ? (option ? 'True' : 'False') : option}
+                </InlineMarkdown>
                 {feedback && isCorrectOption && (
                   <CheckCircle2 size={19} className="option-status" aria-label="Correct option" />
                 )}
@@ -160,9 +159,9 @@ export function Quiz({
                   : 'Question skipped. Here’s the answer.'}
             </h3>
             <p>
-              <strong>Correct answer:</strong> {formatAnswer(correctAnswer(question))}
+              <strong>Correct answer:</strong> <AnswerText answer={correctAnswer(question)} />
             </p>
-            {question.explanation && <p>{question.explanation}</p>}
+            {question.explanation && <Markdown>{question.explanation}</Markdown>}
             <Topics question={question} />
           </div>
         )}

@@ -1,0 +1,104 @@
+.markdown {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  line-height: 1.65;
+}
+.markdown > * + * {
+  margin-top: 0.85em;
+}
+.markdown > :first-child {
+  margin-top: 0;
+}
+.markdown > :last-child {
+  margin-bottom: 0;
+}
+.markdown code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  font-weight: 500;
+  background: var(--surface-soft);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.08em 0.3em;
+  white-space: break-spaces;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.markdown pre {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  border-radius: 8px;
+  padding: 16px;
+  font-size: var(--text-small);
+  line-height: 1.7;
+  white-space: pre;
+}
+.markdown pre code {
+  padding: 0;
+  border: 0;
+  background: none;
+  white-space: pre;
+  font-size: inherit;
+}
+.markdown ul,
+.markdown ol {
+  padding-left: 1.5em;
+}
+.markdown li + li {
+  margin-top: 0.3em;
+}
+.markdown blockquote {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 16px;
+  border-left: 3px solid var(--accent-border);
+  color: var(--text-secondary);
+}
+.markdown a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.markdown-table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.markdown table {
+  border-collapse: collapse;
+  font-size: var(--text-small);
+  width: 100%;
+}
+.markdown th,
+.markdown td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  text-align: left;
+}
+.markdown th {
+  background: var(--surface-soft);
+}
+.markdown hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+.markdown-inline {
+  display: inline;
+}
+.question-text > h2,
+.review-question > h3 {
+  white-space: normal;
+}
+.answer-option > .markdown,
+.review-answers .markdown {
+  white-space: normal;
+}
+.research-topics > .markdown {
+  font-weight: 400;
+}
+.feedback .markdown,
+.review-explanation {
+  color: var(--text-secondary);
+}

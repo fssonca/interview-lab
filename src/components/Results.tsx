@@ -12,12 +12,12 @@ import {
   calculateScore,
   correctAnswer,
   evaluateAnswer,
-  formatAnswer,
   formatDuration,
   hasAnswer,
 } from '../domain/quiz'
 import type { QuizSession } from '../domain/types'
-import { Eyebrow, Topics } from './shared'
+import { AnswerText, Eyebrow, Topics } from './shared'
+import { Markdown } from './Markdown'
 
 export function Results({
   session,
@@ -136,18 +136,26 @@ export function Results({
                       : 'Unanswered'}
                 </span>
               </div>
-              <h3>{question.question}</h3>
+              <Markdown className="review-question" leadHeading={3}>
+                {question.question}
+              </Markdown>
               <div className="review-answers">
                 <div>
                   <span>Your answer</span>
-                  <p>{formatAnswer(answer)}</p>
+                  <p>
+                    <AnswerText answer={answer} />
+                  </p>
                 </div>
                 <div>
                   <span>Correct answer</span>
-                  <p>{formatAnswer(correctAnswer(question))}</p>
+                  <p>
+                    <AnswerText answer={correctAnswer(question)} />
+                  </p>
                 </div>
               </div>
-              {question.explanation && <p className="review-explanation">{question.explanation}</p>}
+              {question.explanation && (
+                <Markdown className="review-explanation">{question.explanation}</Markdown>
+              )}
               <Topics question={question} />
             </article>
           )

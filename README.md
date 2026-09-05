@@ -112,7 +112,7 @@ The authoritative structural schema is [`schemas/question-bank.schema.json`](sch
 | Bank `questions`    | Required, nonempty array.                                                                              |
 | Question `id`       | Required; same ID syntax; unique within the bank.                                                      |
 | Question `type`     | `single`, `multiple`, or `boolean`.                                                                    |
-| Question `question` | Required, nonblank string. Plain text; line breaks are preserved.                                      |
+| Question `question` | Required, nonblank string. Supports Markdown, including inline and fenced code.                        |
 | `options`           | Required for single/multiple; at least two unique, nonblank strings. Forbidden on boolean questions.   |
 | `answer`            | Required for single (one exact option string) or boolean (JSON `true`/`false`). Forbidden on multiple. |
 | `answers`           | Required for multiple; nonempty, unique array of exact option strings. Forbidden on other types.       |
@@ -123,7 +123,24 @@ Unknown fields fail validation, helping catch misspellings. Strings match exactl
 
 Validation runs at development server startup, during production builds, in the browser loader, and through `npm run validate:banks`. The browser reads banks as raw text so JSON parsing errors can name the offending file.
 
-**Authoring tip:** options must be safe to reorder. Avoid references such as “A and C,” “the previous option,” or “all of the above.” Use self-contained option text. Markdown/code rendering and additional metadata are intentionally left for future extensions; extend the schema and TypeScript types before adding new fields.
+**Authoring tip:** options must be safe to reorder. Avoid references such as “A and C,” “the previous option,” or “all of the above.” Use self-contained option text. Additional metadata requires extending the schema and TypeScript types before adding new fields.
+
+### Markdown in study content
+
+Questions and explanations support Markdown: inline `code`, **bold**, _italic_, strikethrough, paragraphs, lists, fenced code blocks, links, and tables. Use `\n` in JSON strings for line breaks and `\n\n` between paragraphs. For example:
+
+````json
+{
+  "question": "Given `a = [1, 2]`, `b = a`, and then `b.append(3)`, what is the value of `a`?",
+  "options": ["`[1, 2, 3]`", "`[1, 2]`"],
+  "answer": "`[1, 2, 3]`",
+  "explanation": "**Both names** refer to the same list.\n\n```python\na = [1, 2]\nb = a\nb.append(3)\n```"
+}
+````
+
+Options, displayed answers, topic descriptions, and research keywords support inline formatting. Links in options and topic cards display as text so they do not interfere with selecting an answer or topic. Explanatory links open in a new tab. Topic names and IDs remain plain text. Raw HTML and embedded images are not rendered.
+
+Formatting changes only presentation. The `answer`/`answers` must still match the **original option strings exactly**, including Markdown delimiters. Existing plain-text banks and saved sessions continue to work. Formatting is shown consistently during practice and in the final review; exam feedback remains hidden until completion.
 
 ## Architecture
 

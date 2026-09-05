@@ -1,6 +1,7 @@
 import { ArrowRight, BookOpen, Check, Clock3, FileJson, ListChecks, Sparkles } from 'lucide-react'
 import type { QuestionBank, QuizSession } from '../domain/types'
 import { Eyebrow, TopicIcon } from './shared'
+import { InlineMarkdown } from './Markdown'
 
 export function Library({
   banks,
@@ -97,7 +98,9 @@ export function Library({
               <TopicIcon id={bank.id} />
               <h3>{bank.name}</h3>
               <p>
-                {bank.description || 'Explore this question bank and build your understanding.'}
+                <InlineMarkdown>
+                  {bank.description || 'Explore this question bank and build your understanding.'}
+                </InlineMarkdown>
               </p>
               <div className="topic-card-footer">
                 <span>

@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, BookOpen, Check, Clock3, ShieldCheck, Shuffle } 
 import type { QuestionBank, QuizConfig } from '../domain/types'
 import { validateConfig } from '../domain/quiz'
 import { Eyebrow, TopicIcon } from './shared'
+import { InlineMarkdown } from './Markdown'
 
 export function Configuration({
   bank,
@@ -42,7 +43,11 @@ export function Configuration({
         <div>
           <Eyebrow>SET YOURSELF UP</Eyebrow>
           <h1 tabIndex={-1}>{bank.name}</h1>
-          <p>{bank.description}</p>
+          {bank.description && (
+            <p>
+              <InlineMarkdown>{bank.description}</InlineMarkdown>
+            </p>
+          )}
         </div>
       </div>
       <form onSubmit={start} className="config-layout">
