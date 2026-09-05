@@ -35,7 +35,7 @@ Use the theme switch in the top bar to choose light or dark mode. The app follow
 
 Questions and string options are shuffled when the quiz starts. True/false choices retain their natural order. Multiple-choice questions use checkboxes and require an exact matching set: order doesn't matter, and extra or missing selections receive no credit. Single-choice and boolean questions require exact equality. Every question is worth one point. Percentage is rounded to the nearest whole number over **all** selected questions, including unanswered ones. Incorrect and unanswered are separate counts.
 
-Practice answers lock after submission, so feedback cannot be used to change the recorded score. Exam answers advance on submission and stay hidden until completion. The initial version uses forward-only navigation.
+Practice answers lock after submission, so feedback cannot be used to change the recorded score. Exam answers advance on submission and stay hidden until completion. The initial version uses forward-only navigation. During a quiz, a compact topic/progress header and a wider desktop question panel keep the question closer to the top of the screen. On mobile, the workspace navigation collapses during the quiz; Save & return to topics remains available.
 
 ## Refresh, timing, and persistence
 

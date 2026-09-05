@@ -146,7 +146,7 @@ test('corrupted storage is visible and can be replaced with a new session', asyn
   await expect(page.getByRole('alert')).toContainText('Could not restore')
   await page.getByRole('button', { name: 'Configure PostgreSQL quiz' }).click()
   await page.getByRole('button', { name: 'Start practice' }).click()
-  await expect(page.getByRole('heading', { name: 'One question closer.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'PostgreSQL', exact: true })).toBeVisible()
   await expect(page.getByRole('alert')).toHaveCount(0)
 })
 

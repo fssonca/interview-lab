@@ -27,6 +27,7 @@ export default function App({ banks }: { banks: QuestionBank[] }) {
   const [view, setView] = useState<View>(() => ({ page: session ? 'session' : 'library' }))
   const goHome = () => setView({ page: 'library' })
   const completed = session?.finishedAt !== null
+  const isQuizzing = view.page === 'session' && !!session && !completed
 
   useEffect(() => {
     document.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true })
@@ -34,7 +35,7 @@ export default function App({ banks }: { banks: QuestionBank[] }) {
   }, [view, session?.currentIndex, completed])
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${isQuizzing ? ' is-quizzing' : ''}`}>
       <a href="#main" className="skip-link">
         Skip to content
       </a>
@@ -122,7 +123,7 @@ export default function App({ banks }: { banks: QuestionBank[] }) {
             </button>
           </div>
         </header>
-        <main id="main" tabIndex={-1}>
+        <main id="main" tabIndex={-1} className={isQuizzing ? 'active-quiz' : undefined}>
           {warning && (
             <div className="storage-warning" role="alert">
               {warning}

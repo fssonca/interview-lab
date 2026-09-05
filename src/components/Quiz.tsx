@@ -1,7 +1,7 @@
 import { ArrowLeft, ArrowRight, CheckCircle2, Clock3, MinusCircle, XCircle } from 'lucide-react'
 import { correctAnswer, evaluateAnswer, formatDuration, hasAnswer } from '../domain/quiz'
 import type { Answer, QuizSession } from '../domain/types'
-import { AnswerText, Eyebrow, Topics } from './shared'
+import { AnswerText, Topics } from './shared'
 import { InlineMarkdown, Markdown } from './Markdown'
 
 export function Quiz({
@@ -39,9 +39,14 @@ export function Quiz({
         </span>
       </div>
       <div className="quiz-heading">
-        <div>
-          <Eyebrow>{session.topic.name}</Eyebrow>
-          <h1 tabIndex={-1}>One question closer.</h1>
+        <div className="quiz-title">
+          <h1 tabIndex={-1}>{session.topic.name}</h1>
+          <div className="progress-meta">
+            <span>
+              Question <strong>{session.currentIndex + 1}</strong> of {session.questions.length}
+            </span>
+            <span>{session.submitted.length} submitted</span>
+          </div>
         </div>
         {remaining !== null ? (
           <div
@@ -59,12 +64,6 @@ export function Quiz({
             No time limit
           </span>
         )}
-      </div>
-      <div className="progress-meta">
-        <span>
-          Question <strong>{session.currentIndex + 1}</strong> of {session.questions.length}
-        </span>
-        <span>{session.submitted.length} submitted</span>
       </div>
       <progress
         value={session.submitted.length}
