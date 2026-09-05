@@ -1,0 +1,127 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "postgresql",
+  "name": "PostgreSQL",
+  "description": "Get comfortable with relational foundations, constraints, and transaction isolation.",
+  "questions": [
+    {
+      "type": "single",
+      "question": "What is PostgreSQL’s default transaction isolation level?",
+      "options": ["Read Uncommitted", "Read Committed", "Repeatable Read", "Serializable"],
+      "answer": "Read Committed",
+      "explanation": "Unless configured otherwise, transactions use Read Committed. A normal SELECT sees data committed before that statement began.",
+      "topics": ["Transaction isolation", "Read Committed"],
+      "id": "postgresql-001"
+    },
+    {
+      "type": "multiple",
+      "question": "What does a primary key enforce on its columns?",
+      "options": [
+        "Uniqueness of the key",
+        "Non-null values",
+        "Alphabetical row order",
+        "Automatic foreign keys"
+      ],
+      "answers": ["Uniqueness of the key", "Non-null values"],
+      "explanation": "A primary key combines uniqueness and NOT NULL constraints.",
+      "topics": ["Primary keys", "Constraints"],
+      "id": "postgresql-002"
+    },
+    {
+      "type": "boolean",
+      "question": "A foreign key column is automatically NOT NULL.",
+      "answer": false,
+      "explanation": "A foreign key may contain nulls unless a NOT NULL constraint also applies.",
+      "topics": ["Foreign keys", "NULL"],
+      "id": "postgresql-003"
+    },
+    {
+      "type": "single",
+      "question": "Which expression correctly tests for a null value?",
+      "options": ["value = NULL", "value IS NULL", "value == NULL", "value IN NULL"],
+      "answer": "value IS NULL",
+      "explanation": "Use IS NULL. Ordinary equality with NULL produces an unknown result rather than true.",
+      "topics": ["SQL NULL", "Three-valued logic"],
+      "id": "postgresql-004"
+    },
+    {
+      "type": "boolean",
+      "question": "PostgreSQL treats Read Uncommitted as Read Committed.",
+      "answer": true,
+      "explanation": "Requesting Read Uncommitted gives Read Committed behavior in PostgreSQL.",
+      "topics": ["Isolation levels", "MVCC"],
+      "id": "postgresql-005"
+    },
+    {
+      "type": "multiple",
+      "question": "Which constraints can directly reject an inserted row?",
+      "options": ["NOT NULL", "CHECK", "FOREIGN KEY", "ORDER BY"],
+      "answers": ["NOT NULL", "CHECK", "FOREIGN KEY"],
+      "explanation": "Constraints enforce data rules. ORDER BY is a query clause, not a constraint.",
+      "topics": ["Data integrity", "SQL constraints"],
+      "id": "postgresql-006"
+    },
+    {
+      "type": "single",
+      "question": "Which constraint enforces that a price must be greater than zero when it is non-null?",
+      "options": ["CHECK (price > 0)", "UNIQUE (price)", "DEFAULT 1", "PRIMARY KEY (price)"],
+      "answer": "CHECK (price > 0)",
+      "explanation": "CHECK rejects false results, but permits null results. Add NOT NULL if null prices must also be rejected.",
+      "topics": ["CHECK constraints", "NULL semantics"],
+      "id": "postgresql-007"
+    },
+    {
+      "type": "boolean",
+      "question": "A UNIQUE constraint treats null values as distinct by default.",
+      "answer": true,
+      "explanation": "By default multiple null values are allowed. NULLS NOT DISTINCT can change this behavior.",
+      "topics": ["Unique constraints", "NULLS NOT DISTINCT"],
+      "id": "postgresql-008"
+    },
+    {
+      "type": "single",
+      "question": "What can an application need to do after a serialization failure?",
+      "options": [
+        "Retry the entire transaction",
+        "Disable all constraints",
+        "Drop every index",
+        "Commit the failed transaction anyway"
+      ],
+      "answer": "Retry the entire transaction",
+      "explanation": "Serializable transactions can be aborted to prevent anomalies. The application must be prepared to retry the complete transaction.",
+      "topics": ["Serializable", "Transaction retries"],
+      "id": "postgresql-009"
+    },
+    {
+      "type": "multiple",
+      "question": "Which isolation levels in PostgreSQL prevent dirty reads?",
+      "options": ["Read Committed", "Repeatable Read", "Serializable"],
+      "answers": ["Read Committed", "Repeatable Read", "Serializable"],
+      "explanation": "None of these levels allows reading another transaction’s uncommitted changes.",
+      "topics": ["Dirty reads", "Transaction isolation"],
+      "id": "postgresql-010"
+    },
+    {
+      "type": "boolean",
+      "question": "A primary key can consist of multiple columns.",
+      "answer": true,
+      "explanation": "A composite primary key requires the combination to be unique and all key columns to be non-null.",
+      "topics": ["Composite keys", "Relational modeling"],
+      "id": "postgresql-011"
+    },
+    {
+      "type": "single",
+      "question": "In Read Committed, can two SELECT statements in one transaction see different committed data?",
+      "options": [
+        "Yes, if another transaction commits between them",
+        "No, they always share one snapshot",
+        "Only after a ROLLBACK",
+        "Only on temporary tables"
+      ],
+      "answer": "Yes, if another transaction commits between them",
+      "explanation": "Each statement takes a new snapshot, so a later SELECT may observe intervening commits.",
+      "topics": ["Statement snapshots", "Read Committed"],
+      "id": "postgresql-012"
+    }
+  ]
+}

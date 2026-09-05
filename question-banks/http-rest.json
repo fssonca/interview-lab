@@ -1,0 +1,112 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "http-rest",
+  "name": "HTTP / REST APIs",
+  "description": "Understand the web’s contract: methods, status codes, and request semantics.",
+  "questions": [
+    {
+      "type": "single",
+      "question": "Which method is defined as idempotent by HTTP semantics?",
+      "options": ["POST", "PUT", "CONNECT", "None of these"],
+      "answer": "PUT",
+      "explanation": "Repeating the same PUT should have the same intended server effect as sending it once.",
+      "topics": ["HTTP idempotency", "PUT vs POST"],
+      "id": "http-rest-001"
+    },
+    {
+      "type": "multiple",
+      "question": "Which of these HTTP methods are idempotent by specification?",
+      "options": ["GET", "PUT", "POST", "DELETE"],
+      "answers": ["GET", "PUT", "DELETE"],
+      "explanation": "GET, PUT, and DELETE are idempotent. POST has no general idempotency guarantee.",
+      "topics": ["Idempotent methods", "Retries"],
+      "id": "http-rest-002"
+    },
+    {
+      "type": "boolean",
+      "question": "An idempotent request must return an identical status code every time.",
+      "answer": false,
+      "explanation": "Idempotency concerns the intended server effect, not identical responses. Repeated DELETE requests may return different statuses.",
+      "topics": ["Idempotency", "DELETE"],
+      "id": "http-rest-003"
+    },
+    {
+      "type": "single",
+      "question": "Which status code indicates that a request created one or more resources?",
+      "options": ["200", "201", "204", "304"],
+      "answer": "201",
+      "explanation": "201 Created indicates successful creation of one or more resources.",
+      "topics": ["HTTP status codes", "Resource creation"],
+      "id": "http-rest-004"
+    },
+    {
+      "type": "multiple",
+      "question": "Which of these methods are defined as safe?",
+      "options": ["GET", "HEAD", "OPTIONS", "DELETE"],
+      "answers": ["GET", "HEAD", "OPTIONS"],
+      "explanation": "Safe methods have essentially read-only requested semantics. Incidental effects such as logging are still possible.",
+      "topics": ["Safe methods", "HTTP semantics"],
+      "id": "http-rest-005"
+    },
+    {
+      "type": "boolean",
+      "question": "A 204 response includes a response content body.",
+      "answer": false,
+      "explanation": "204 No Content ends after the header section and cannot contain content or trailers.",
+      "topics": ["204 No Content", "Response bodies"],
+      "id": "http-rest-006"
+    },
+    {
+      "type": "single",
+      "question": "Which header describes the media type of request or response content?",
+      "options": ["Content-Type", "Accept", "Authorization", "Location"],
+      "answer": "Content-Type",
+      "explanation": "Content-Type identifies the media type of the associated representation.",
+      "topics": ["HTTP headers", "Media types"],
+      "id": "http-rest-007"
+    },
+    {
+      "type": "single",
+      "question": "Which request header expresses acceptable response media types?",
+      "options": ["Accept", "Content-Length", "Host", "ETag"],
+      "answer": "Accept",
+      "explanation": "Accept lets a client describe which response media types it can accept.",
+      "topics": ["Content negotiation", "Accept header"],
+      "id": "http-rest-008"
+    },
+    {
+      "type": "boolean",
+      "question": "HEAD has GET semantics except that the server does not send response content.",
+      "answer": true,
+      "explanation": "HEAD requests representation metadata without transferring the response content.",
+      "topics": ["HEAD", "HTTP metadata"],
+      "id": "http-rest-009"
+    },
+    {
+      "type": "multiple",
+      "question": "Which status codes are in the client-error class?",
+      "options": ["400", "404", "500", "503"],
+      "answers": ["400", "404"],
+      "explanation": "The 4xx class indicates client errors; 5xx indicates server errors.",
+      "topics": ["HTTP status classes", "Error handling"],
+      "id": "http-rest-010"
+    },
+    {
+      "type": "single",
+      "question": "Which header commonly identifies the primary resource created in a 201 response?",
+      "options": ["Location", "Accept-Encoding", "If-Match", "Range"],
+      "answer": "Location",
+      "explanation": "A Location field in a 201 response identifies the primary resource created by the request.",
+      "topics": ["Location header", "201 Created"],
+      "id": "http-rest-011"
+    },
+    {
+      "type": "boolean",
+      "question": "A 202 Accepted response guarantees that processing will ultimately succeed.",
+      "answer": false,
+      "explanation": "202 means processing was accepted but has not completed; it does not guarantee the eventual outcome.",
+      "topics": ["202 Accepted", "Asynchronous APIs"],
+      "id": "http-rest-012"
+    }
+  ]
+}

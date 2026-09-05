@@ -1,0 +1,117 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "python",
+  "name": "Python",
+  "description": "Build fluency in the language: data structures, functions, and everyday Python behavior.",
+  "questions": [
+    {
+      "type": "single",
+      "question": "What does list.append() return?",
+      "options": ["The updated list", "The appended item", "None", "The new list length"],
+      "answer": "None",
+      "explanation": "append mutates the existing list and returns None.",
+      "topics": ["List mutation", "Return values"],
+      "id": "python-001"
+    },
+    {
+      "type": "multiple",
+      "question": "Which of these built-in types are mutable?",
+      "options": ["list", "dict", "str", "tuple"],
+      "answers": ["list", "dict"],
+      "explanation": "Lists and dictionaries can be changed in place. Strings and tuples are immutable.",
+      "topics": ["Mutability", "Python collections"],
+      "id": "python-002"
+    },
+    {
+      "type": "boolean",
+      "question": "A tuple can contain a mutable list.",
+      "answer": true,
+      "explanation": "Tuple immutability prevents replacing its elements; it does not make contained objects immutable.",
+      "topics": ["Tuples", "Object references"],
+      "id": "python-003"
+    },
+    {
+      "type": "single",
+      "question": "When are default argument expressions evaluated?",
+      "options": [
+        "On each function call",
+        "When the function definition executes",
+        "When the module is deleted",
+        "Only when an argument is omitted"
+      ],
+      "answer": "When the function definition executes",
+      "explanation": "Defaults are evaluated once per execution of the definition. A mutable default can therefore be shared across calls.",
+      "topics": ["Default arguments", "Mutable defaults"],
+      "id": "python-004"
+    },
+    {
+      "type": "single",
+      "question": "Which expression creates an empty set?",
+      "options": ["{}", "[]", "set()", "()"],
+      "answer": "set()",
+      "explanation": "{} creates an empty dictionary; use set() for an empty set.",
+      "topics": ["Sets", "Collection literals"],
+      "id": "python-005"
+    },
+    {
+      "type": "multiple",
+      "question": "Which expressions create dictionaries?",
+      "options": ["{}", "dict()", "set()", "[]"],
+      "answers": ["{}", "dict()"],
+      "explanation": "Both the empty brace literal and dict() create an empty dictionary.",
+      "topics": ["Dictionaries", "Constructors"],
+      "id": "python-006"
+    },
+    {
+      "type": "boolean",
+      "question": "list.sort() creates and returns a new sorted list.",
+      "answer": false,
+      "explanation": "list.sort() sorts in place and returns None. sorted() returns a new list.",
+      "topics": ["Sorting", "In-place operations"],
+      "id": "python-007"
+    },
+    {
+      "type": "single",
+      "question": "What does [x * 2 for x in range(3)] produce?",
+      "options": ["[0, 2, 4]", "[2, 4, 6]", "[0, 1, 2]", "[0, 2, 4, 6]"],
+      "answer": "[0, 2, 4]",
+      "explanation": "range(3) yields 0, 1, and 2. The comprehension doubles each value.",
+      "topics": ["List comprehensions", "range"],
+      "id": "python-008"
+    },
+    {
+      "type": "boolean",
+      "question": "Dictionary keys must be hashable.",
+      "answer": true,
+      "explanation": "Keys require a stable hash. Lists and dictionaries cannot serve as dictionary keys.",
+      "topics": ["Hashability", "Dictionary keys"],
+      "id": "python-009"
+    },
+    {
+      "type": "single",
+      "question": "Which list method removes and returns the last item by default?",
+      "options": ["remove()", "pop()", "clear()", "append()"],
+      "answer": "pop()",
+      "explanation": "pop() without an index removes and returns the last item. It raises IndexError on an empty list.",
+      "topics": ["Lists", "Stack operations"],
+      "id": "python-010"
+    },
+    {
+      "type": "multiple",
+      "question": "Which operations can change an existing list?",
+      "options": ["append()", "extend()", "sort()", "len()"],
+      "answers": ["append()", "extend()", "sort()"],
+      "explanation": "append, extend, and sort mutate a list. len reads its length.",
+      "topics": ["List methods", "Mutation"],
+      "id": "python-011"
+    },
+    {
+      "type": "boolean",
+      "question": "A function without an explicit return value returns None.",
+      "answer": true,
+      "explanation": "Reaching the end of a function, or executing a bare return, produces None.",
+      "topics": ["Functions", "None"],
+      "id": "python-012"
+    }
+  ]
+}
