@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://interview-lab.local/question-bank.schema.json",
+  "title": "Interview Lab question bank",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "questions"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": { "$ref": "#/definitions/id" },
+    "name": { "$ref": "#/definitions/text" },
+    "description": { "$ref": "#/definitions/text" },
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/question" }
+    }
+  },
+  "definitions": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "options": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/text" }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "question"],
+      "properties": {
+        "id": { "$ref": "#/definitions/id" },
+        "type": { "enum": ["single", "multiple", "boolean"] },
+        "question": { "$ref": "#/definitions/text" },
+        "options": { "$ref": "#/definitions/options" },
+        "answer": { "type": ["string", "boolean"] },
+        "answers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/text" }
+        },
+        "explanation": { "$ref": "#/definitions/text" },
+        "topics": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/text" }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "single" } } },
+          "then": {
+            "required": ["options", "answer"],
+            "properties": { "answer": { "type": "string" }, "answers": false }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "multiple" } } },
+          "then": { "required": ["options", "answers"], "properties": { "answer": false } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "boolean" } } },
+          "then": {
+            "required": ["answer"],
+            "properties": { "answer": { "type": "boolean" }, "answers": false, "options": false }
+          }
+        }
+      ]
+    }
+  }
+}
