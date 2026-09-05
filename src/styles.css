@@ -6,6 +6,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   font-weight: 400;
+  --text-caption: 0.75rem;
+  --text-meta: 0.8125rem;
+  --text-small: 0.875rem;
+  --text-body: 1rem;
   --green: #25644c;
   --green-dark: #1a4b38;
   --muted: #667367;
@@ -117,10 +121,10 @@ input:disabled {
 }
 .muted {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-body);
 }
 .eyebrow {
-  font-size: 10px;
+  font-size: var(--text-meta);
   letter-spacing: 1.8px;
   font-weight: 700;
   color: #606d64;
@@ -128,7 +132,7 @@ input:disabled {
   margin-bottom: 13px;
 }
 .lead {
-  font-size: 15px;
+  font-size: var(--text-body);
   color: #636c68;
   line-height: 1.85;
   margin-top: 18px;
@@ -161,7 +165,7 @@ input:disabled {
   min-height: 100vh;
 }
 .sidebar {
-  width: 236px;
+  width: 252px;
   background: #fff;
   border-right: 1px solid var(--border);
   display: flex;
@@ -195,8 +199,8 @@ input:disabled {
 }
 .brand small {
   display: block;
-  font-size: 7px;
-  letter-spacing: 1.4px;
+  font-size: 0.625rem;
+  letter-spacing: 0.5px;
   color: #646c68;
   font-weight: 600;
   margin-top: 5px;
@@ -207,7 +211,7 @@ input:disabled {
   flex: 1;
 }
 .nav-label {
-  font-size: 9px;
+  font-size: var(--text-caption);
   letter-spacing: 1.6px;
   color: #656a67;
   margin: 51px 14px 14px;
@@ -221,7 +225,7 @@ input:disabled {
   border-radius: 7px;
   width: 100%;
   text-align: left;
-  font-size: 12px;
+  font-size: var(--text-body);
   margin-bottom: 7px;
   color: #606c65;
   font-weight: 550;
@@ -261,12 +265,12 @@ input:disabled {
   margin-bottom: 12px;
 }
 .sidebar-tip strong {
-  font-size: 13px;
+  font-size: var(--text-body);
   line-height: 1.7;
   font-weight: 600;
 }
 .sidebar-tip p {
-  font-size: 11px;
+  font-size: var(--text-small);
   color: #666b64;
   line-height: 1.8;
   margin-top: 8px;
@@ -276,7 +280,7 @@ input:disabled {
   gap: 8px;
   align-items: center;
   color: #57705b;
-  font-size: 9px;
+  font-size: var(--text-caption);
   font-weight: 600;
   margin-top: 17px;
 }
@@ -284,7 +288,7 @@ input:disabled {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: var(--text-meta);
   color: #636b66;
   padding: 17px 9px 0;
   border-top: 1px solid var(--border);
@@ -294,7 +298,7 @@ input:disabled {
   color: #666a68;
 }
 .main-shell {
-  margin-left: 236px;
+  margin-left: 252px;
   min-width: 0;
   flex: 1;
   display: flex;
@@ -308,7 +312,7 @@ input:disabled {
   align-items: center;
   justify-content: space-between;
   padding: 0 47px;
-  font-size: 11px;
+  font-size: var(--text-small);
   color: #666b68;
   background: rgba(255, 255, 255, 0.45);
 }
@@ -322,7 +326,7 @@ input:disabled {
   font-weight: 500;
 }
 .workspace-label {
-  font-size: 10px;
+  font-size: var(--text-meta);
 }
 main {
   max-width: 1380px;
@@ -337,7 +341,7 @@ main {
   border-top: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: var(--text-meta);
   color: #646b66;
   gap: 20px;
 }
@@ -422,7 +426,7 @@ main {
   display: flex;
   align-items: center;
   gap: 28px;
-  font-size: 11px;
+  font-size: var(--text-small);
   color: #656b66;
   padding: 25px 0;
   margin-top: 17px;
@@ -451,12 +455,12 @@ main {
   margin-bottom: 23px;
 }
 .section-heading p {
-  font-size: 12px;
+  font-size: var(--text-body);
   color: #646a66;
   margin-top: 7px;
 }
 .count-badge {
-  font-size: 10px;
+  font-size: var(--text-meta);
   color: #626b65;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -513,7 +517,7 @@ main {
   font-size: 17px;
 }
 .topic-card > p {
-  font-size: 12px;
+  font-size: var(--text-body);
   line-height: 1.9;
   color: #646b65;
   margin-top: 10px;
@@ -528,7 +532,7 @@ main {
   align-items: center;
   margin-top: auto;
   color: #507058;
-  font-size: 10px;
+  font-size: var(--text-meta);
 }
 .topic-card-footer > span {
   display: flex;
@@ -546,7 +550,7 @@ main {
   border-bottom: 1px solid var(--border);
 }
 .how-intro .eyebrow {
-  font-size: 8px;
+  font-size: var(--text-caption);
   letter-spacing: 1.15px;
   margin-bottom: 9px;
 }
@@ -555,20 +559,20 @@ main {
   line-height: 1.55;
 }
 .step-number {
-  font-size: 10px;
+  font-size: var(--text-meta);
   color: #576f5c;
   display: block;
   margin-bottom: 13px;
   font-weight: 600;
 }
 .how-it-works h3 {
-  font-size: 12px;
+  font-size: var(--text-body);
   font-weight: 750;
   margin-bottom: 8px;
   letter-spacing: 0;
 }
 .how-it-works p {
-  font-size: 11px;
+  font-size: var(--text-small);
   color: #646a65;
   line-height: 1.85;
 }
@@ -580,7 +584,7 @@ main {
   color: #646b64;
 }
 .library-note p {
-  font-size: 10px;
+  font-size: var(--text-meta);
   color: #646a66;
 }
 .library-note strong {
@@ -599,10 +603,10 @@ main {
   margin-top: 25px;
 }
 .resume-banner strong {
-  font-size: 13px;
+  font-size: var(--text-body);
 }
 .resume-banner p {
-  font-size: 12px;
+  font-size: var(--text-body);
   color: #5d6e64;
   margin-top: 5px;
 }
@@ -613,7 +617,7 @@ main {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: var(--text-body);
   font-weight: 550;
   min-height: 44px;
   transition: background 0.15s;
@@ -643,7 +647,7 @@ main {
   justify-content: center;
   gap: 8px;
   color: var(--green);
-  font-size: 12px;
+  font-size: var(--text-body);
   min-height: 44px;
   padding: 8px 6px;
 }
@@ -656,7 +660,7 @@ main {
   gap: 8px;
   color: #626d66;
   padding: 4px 0;
-  font-size: 12px;
+  font-size: var(--text-body);
   min-height: 36px;
   margin-bottom: 24px;
 }
@@ -691,7 +695,7 @@ main {
   letter-spacing: -1px;
 }
 .config-heading p:not(.eyebrow) {
-  font-size: 12px;
+  font-size: var(--text-body);
   color: #626b65;
   margin-top: 9px;
 }
@@ -712,7 +716,7 @@ main {
 .config-fields legend {
   float: left;
   width: 100%;
-  font-size: 14px;
+  font-size: var(--text-body);
   font-weight: 650;
   margin-bottom: 20px;
   display: flex;
@@ -730,7 +734,7 @@ main {
   border-radius: 50%;
   background: #f0f4ee;
   color: #5e6c60;
-  font-size: 9px;
+  font-size: var(--text-caption);
 }
 .mode-grid {
   display: grid;
@@ -760,12 +764,12 @@ main {
   color: #54705a;
 }
 .mode-option-heading strong {
-  font-size: 13px;
+  font-size: var(--text-body);
   color: #354d3d;
 }
 .mode-option > span:last-child {
   display: block;
-  font-size: 11px;
+  font-size: var(--text-small);
   line-height: 1.7;
   color: #656c64;
   margin-top: 8px;
@@ -781,7 +785,7 @@ main {
   border: 1px solid #dde5de;
   padding: 10px 18px;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: var(--text-body);
   color: #5e6e63;
 }
 .count-options input {
@@ -803,17 +807,17 @@ main {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 11px;
+  font-size: var(--text-small);
   color: #616b64;
   margin-top: 16px;
 }
 .custom-count input {
   width: 73px;
-  font-size: 12px;
+  font-size: var(--text-body);
   padding: 7px 10px;
 }
 .field-help {
-  font-size: 11px;
+  font-size: var(--text-small);
   color: #646b65;
   margin-top: 13px;
 }
@@ -821,16 +825,16 @@ main {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: var(--text-body);
   cursor: pointer;
 }
 .timing-option > .muted {
   margin-left: auto;
-  font-size: 10px;
+  font-size: var(--text-meta);
 }
 .duration-label {
   display: block;
-  font-size: 12px;
+  font-size: var(--text-body);
   color: #616c64;
   margin-top: 20px;
 }
@@ -845,7 +849,7 @@ main {
 }
 .duration-label small {
   display: block;
-  font-size: 11px;
+  font-size: var(--text-small);
   line-height: 1.7;
   margin-top: 12px;
 }
@@ -862,7 +866,7 @@ main {
   display: flex;
   justify-content: space-between;
   gap: 14px;
-  font-size: 11px;
+  font-size: var(--text-small);
   padding: 12px 0;
   border-bottom: 1px solid #eef1ec;
 }
@@ -878,7 +882,7 @@ main {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: var(--text-meta);
   color: #626c62;
   margin-top: 10px;
 }
@@ -886,7 +890,7 @@ main {
   margin-top: 26px;
 }
 .preview-footer {
-  font-size: 9px;
+  font-size: var(--text-caption);
   color: #656c64;
   text-align: center;
   margin-top: 13px;
@@ -897,7 +901,7 @@ main {
   border: 1px solid #e8d9b2;
   color: #80601c;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: var(--text-body);
   padding: 12px;
   line-height: 1.6;
   margin-top: 20px;
@@ -920,7 +924,7 @@ main {
   border: 1px solid #dce8dc;
   border-radius: 20px;
   padding: 6px 12px;
-  font-size: 10px;
+  font-size: var(--text-meta);
 }
 .quiz-heading {
   display: flex;
@@ -952,7 +956,7 @@ main {
   font-weight: 650;
 }
 .timer small {
-  font-size: 10px;
+  font-size: var(--text-meta);
   color: #636c62;
 }
 .timer.urgent {
@@ -964,13 +968,13 @@ main {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 11px;
+  font-size: var(--text-small);
   color: #626c61;
 }
 .progress-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: var(--text-small);
   color: #646c66;
   margin-bottom: 10px;
 }
@@ -1001,7 +1005,7 @@ progress::-moz-progress-bar {
   padding: 33px;
 }
 .question-type {
-  font-size: 9px;
+  font-size: var(--text-caption);
   letter-spacing: 1.4px;
   font-weight: 650;
   color: #5d6d60;
@@ -1015,7 +1019,7 @@ progress::-moz-progress-bar {
   overflow-wrap: anywhere;
 }
 .question-hint {
-  font-size: 11px;
+  font-size: var(--text-small);
   color: #646c62;
   margin-top: 10px;
 }
@@ -1032,7 +1036,7 @@ progress::-moz-progress-bar {
   border-radius: 8px;
   min-height: 58px;
   padding: 13px 17px;
-  font-size: 13px;
+  font-size: var(--text-body);
   cursor: pointer;
   transition:
     background 0.15s,
@@ -1047,7 +1051,7 @@ progress::-moz-progress-bar {
   white-space: pre-wrap;
 }
 .option-letter {
-  font-size: 10px;
+  font-size: var(--text-meta);
   color: #626c62;
   background: #f3f5ef;
   border-radius: 4px;
@@ -1094,11 +1098,11 @@ progress::-moz-progress-bar {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 15px;
+  font-size: var(--text-body);
   margin-bottom: 12px;
 }
 .feedback p {
-  font-size: 12px;
+  font-size: var(--text-body);
   color: #616d5e;
   margin-top: 8px;
 }
@@ -1112,7 +1116,7 @@ progress::-moz-progress-bar {
   border-top: 1px solid #e3e9df;
   padding-top: 13px;
   margin-top: 17px;
-  font-size: 11px;
+  font-size: var(--text-small);
   color: #59705c;
   line-height: 1.85;
   user-select: text;
@@ -1131,11 +1135,11 @@ progress::-moz-progress-bar {
   margin-top: 28px;
 }
 .question-actions > .muted {
-  font-size: 11px;
+  font-size: var(--text-small);
 }
 .quiz-bottom-note {
   text-align: center;
-  font-size: 10px;
+  font-size: var(--text-meta);
   color: #656c60;
   line-height: 1.8;
   margin-top: 20px;
@@ -1152,7 +1156,7 @@ progress::-moz-progress-bar {
 }
 .results-page > .lead {
   margin-top: 10px;
-  font-size: 13px;
+  font-size: var(--text-body);
 }
 .results-summary {
   display: flex;
@@ -1184,7 +1188,7 @@ progress::-moz-progress-bar {
   letter-spacing: -1px;
 }
 .score-ring span {
-  font-size: 9px;
+  font-size: var(--text-caption);
   color: #646c5f;
   margin-top: 5px;
 }
@@ -1209,7 +1213,7 @@ progress::-moz-progress-bar {
   font-variant-numeric: tabular-nums;
 }
 .result-stats span {
-  font-size: 10px;
+  font-size: var(--text-meta);
   white-space: nowrap;
 }
 .success-text {
@@ -1229,7 +1233,7 @@ progress::-moz-progress-bar {
   white-space: nowrap;
 }
 .results-cta .text-button {
-  font-size: 10px;
+  font-size: var(--text-meta);
 }
 .review-heading {
   margin-top: 39px;
@@ -1243,7 +1247,7 @@ progress::-moz-progress-bar {
   padding: 4px;
 }
 .review-filter button {
-  font-size: 10px;
+  font-size: var(--text-meta);
   color: #646d5f;
   padding: 8px 10px;
   border-radius: 4px;
@@ -1276,13 +1280,13 @@ progress::-moz-progress-bar {
 }
 .review-card-top .eyebrow {
   margin: 0;
-  font-size: 9px;
+  font-size: var(--text-caption);
 }
 .review-status {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: var(--text-meta);
   color: #537250;
 }
 .review-status.incorrect {
@@ -1308,13 +1312,13 @@ progress::-moz-progress-bar {
   padding: 16px 19px;
 }
 .review-answers > div > span {
-  font-size: 9px;
+  font-size: var(--text-caption);
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: #626c58;
 }
 .review-answers p {
-  font-size: 12px;
+  font-size: var(--text-body);
   color: #5e6f52;
   margin-top: 7px;
   overflow-wrap: anywhere;
@@ -1324,7 +1328,7 @@ progress::-moz-progress-bar {
   color: #915e48;
 }
 .review-explanation {
-  font-size: 12px;
+  font-size: var(--text-body);
   color: #646c5d;
   line-height: 1.9;
   margin-top: 16px;
@@ -1338,7 +1342,7 @@ progress::-moz-progress-bar {
   margin-top: 15px;
 }
 .empty-review p {
-  font-size: 13px;
+  font-size: var(--text-body);
   margin-top: 7px;
 }
 .load-error {
@@ -1380,12 +1384,12 @@ progress::-moz-progress-bar {
 }
 @media (max-width: 1180px) {
   .sidebar {
-    width: 210px;
+    width: 232px;
     padding-left: 14px;
     padding-right: 14px;
   }
   .main-shell {
-    margin-left: 210px;
+    margin-left: 232px;
   }
   .topbar {
     padding: 0 30px;
@@ -1424,10 +1428,10 @@ progress::-moz-progress-bar {
     padding: 20px 17px 0;
   }
   .topic-card h3 {
-    font-size: 15px;
+    font-size: var(--text-body);
   }
   .topic-card > p {
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .how-it-works {
     gap: 18px;
@@ -1469,7 +1473,7 @@ progress::-moz-progress-bar {
 }
 @media (max-width: 900px) {
   .sidebar {
-    width: 185px;
+    width: 214px;
   }
   .brand {
     font-size: 18px;
@@ -1481,16 +1485,16 @@ progress::-moz-progress-bar {
     height: 35px;
   }
   .brand small {
-    font-size: 6px;
-    letter-spacing: 1.1px;
+    font-size: 0.625rem;
+    letter-spacing: 0.3px;
   }
   .main-shell {
-    margin-left: 185px;
+    margin-left: 214px;
   }
   .nav-item {
     padding: 12px 9px;
     gap: 8px;
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .sidebar-tip {
     padding: 16px 12px;
@@ -1513,7 +1517,7 @@ progress::-moz-progress-bar {
     flex-wrap: wrap;
   }
   .library-stats > span {
-    font-size: 10px;
+    font-size: var(--text-meta);
   }
   .topic-grid {
     grid-template-columns: 1fr;
@@ -1534,7 +1538,7 @@ progress::-moz-progress-bar {
   }
   .topic-card > p {
     margin: 8px 0 18px;
-    font-size: 12px;
+    font-size: var(--text-body);
   }
   .topic-card-footer {
     padding: 12px 0 0;
@@ -1605,7 +1609,7 @@ progress::-moz-progress-bar {
     height: 37px;
   }
   .brand small {
-    font-size: 6px;
+    font-size: 0.625rem;
   }
   .sidebar-content {
     display: block;
@@ -1621,7 +1625,7 @@ progress::-moz-progress-bar {
     width: auto;
     margin: 0 6px 11px 0;
     padding: 10px 12px;
-    font-size: 11px;
+    font-size: var(--text-small);
     border-radius: 6px;
     gap: 9px;
   }
@@ -1637,7 +1641,7 @@ progress::-moz-progress-bar {
   .topbar {
     height: 48px;
     padding: 0 22px;
-    font-size: 10px;
+    font-size: var(--text-meta);
   }
   main {
     padding: 30px 22px;
@@ -1647,11 +1651,11 @@ progress::-moz-progress-bar {
     letter-spacing: -1.3px;
   }
   .page-heading .eyebrow {
-    font-size: 8px;
+    font-size: var(--text-caption);
     letter-spacing: 1.2px;
   }
   .lead {
-    font-size: 13px;
+    font-size: var(--text-body);
     margin-top: 16px;
   }
   .desktop-break {
@@ -1675,7 +1679,7 @@ progress::-moz-progress-bar {
     font-size: 20px;
   }
   .section-heading p {
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .topic-grid {
     gap: 14px;
@@ -1690,7 +1694,7 @@ progress::-moz-progress-bar {
     height: 46px;
   }
   .topic-card > p {
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .how-it-works {
     margin-top: 30px;
@@ -1698,26 +1702,26 @@ progress::-moz-progress-bar {
     padding: 25px 0;
   }
   .how-it-works h3 {
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .how-intro h2 {
     font-size: 17px;
   }
   .how-it-works p {
-    font-size: 10px;
+    font-size: var(--text-meta);
   }
   .how-intro .eyebrow {
-    font-size: 7px;
+    font-size: var(--text-caption);
   }
   .library-note {
     align-items: flex-start;
   }
   .library-note p {
-    font-size: 10px;
+    font-size: var(--text-meta);
   }
   .app-footer {
     margin: 0 22px;
-    font-size: 9px;
+    font-size: var(--text-caption);
   }
   .resume-banner {
     padding: 18px;
@@ -1726,11 +1730,11 @@ progress::-moz-progress-bar {
     gap: 13px;
   }
   .resume-banner .button {
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .back-link {
     margin-bottom: 18px;
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .config-heading {
     gap: 14px;
@@ -1745,16 +1749,16 @@ progress::-moz-progress-bar {
     font-size: 26px;
   }
   .config-heading p:not(.eyebrow) {
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .config-heading .eyebrow {
-    font-size: 8px;
+    font-size: var(--text-caption);
   }
   .config-fields {
     padding: 23px 19px;
   }
   .config-fields legend {
-    font-size: 12px;
+    font-size: var(--text-body);
     gap: 8px;
   }
   .mode-option {
@@ -1765,29 +1769,31 @@ progress::-moz-progress-bar {
     top: 16px;
   }
   .mode-option > span:last-child {
-    font-size: 10px;
+    font-size: var(--text-meta);
   }
   .count-options label {
     padding: 10px 14px;
   }
   .quiz-topline {
+    flex-wrap: wrap;
     gap: 10px;
   }
   .mode-pill {
-    font-size: 9px;
+    font-size: var(--text-caption);
     white-space: nowrap;
   }
   .quiz-topline .back-link {
-    font-size: 10px;
+    font-size: var(--text-meta);
   }
   .quiz-heading {
+    flex-wrap: wrap;
     margin: 8px 0 25px;
   }
   .quiz-heading h1 {
     font-size: 23px;
   }
   .quiz-heading .eyebrow {
-    font-size: 8px;
+    font-size: var(--text-caption);
   }
   .timer {
     padding: 9px 10px;
@@ -1800,7 +1806,7 @@ progress::-moz-progress-bar {
     width: 16px;
   }
   .untimed {
-    font-size: 9px;
+    font-size: var(--text-caption);
     gap: 5px;
   }
   .question-panel {
@@ -1811,11 +1817,11 @@ progress::-moz-progress-bar {
     line-height: 1.65;
   }
   .question-type {
-    font-size: 8px;
+    font-size: var(--text-caption);
     margin-bottom: 13px;
   }
   .question-hint {
-    font-size: 10px;
+    font-size: var(--text-meta);
   }
   .answer-options {
     margin-top: 21px;
@@ -1824,21 +1830,22 @@ progress::-moz-progress-bar {
   .answer-option {
     padding: 13px 12px;
     gap: 10px;
-    font-size: 12px;
+    font-size: var(--text-body);
   }
   .option-letter {
     display: none;
   }
   .question-actions {
+    flex-wrap: wrap;
     margin-top: 23px;
     gap: 10px;
   }
   .question-actions .button {
-    font-size: 11px;
+    font-size: var(--text-small);
     padding: 11px 13px;
   }
   .question-actions .text-button {
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .question-actions > .muted {
     display: none;
@@ -1850,20 +1857,20 @@ progress::-moz-progress-bar {
     padding: 17px;
   }
   .feedback h3 {
-    font-size: 13px;
+    font-size: var(--text-body);
     line-height: 1.6;
   }
   .feedback p {
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .quiz-bottom-note {
-    font-size: 9px;
+    font-size: var(--text-caption);
   }
   .results-page > h1 {
     font-size: 28px;
   }
   .results-page > .lead {
-    font-size: 12px;
+    font-size: var(--text-body);
   }
   .results-summary {
     padding: 23px 18px;
@@ -1878,7 +1885,7 @@ progress::-moz-progress-bar {
     font-size: 29px;
   }
   .score-ring span {
-    font-size: 8px;
+    font-size: var(--text-caption);
   }
   .result-stats {
     gap: 15px 10px;
@@ -1894,14 +1901,14 @@ progress::-moz-progress-bar {
     font-size: 19px;
   }
   .result-stats span {
-    font-size: 8px;
+    font-size: var(--text-caption);
   }
   .results-cta {
     justify-content: center;
     gap: 14px;
   }
   .results-cta .button {
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .review-heading {
     gap: 15px;
@@ -1911,7 +1918,7 @@ progress::-moz-progress-bar {
     padding: 21px 18px;
   }
   .review-card h3 {
-    font-size: 15px;
+    font-size: var(--text-body);
   }
   .review-answers {
     grid-template-columns: 1fr;
@@ -1919,13 +1926,13 @@ progress::-moz-progress-bar {
     padding: 15px;
   }
   .review-answers p {
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .review-explanation {
-    font-size: 11px;
+    font-size: var(--text-small);
   }
   .research-topics {
-    font-size: 10px;
+    font-size: var(--text-meta);
   }
   .load-error {
     padding: 25px;
