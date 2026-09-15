@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   ArrowUpRight,
   BookOpen,
@@ -14,6 +14,7 @@ import { Library } from './components/Library'
 import { Quiz } from './components/Quiz'
 import { Results } from './components/Results'
 import { advanceSession, createQuizSession, selectAnswer, submitAnswer } from './domain/quiz'
+import { withCurrentCodeFormatting } from './domain/presentation'
 import type { QuestionBank } from './domain/types'
 import { useQuizSession } from './hooks/useQuizSession'
 import { useTheme } from './hooks/useTheme'
@@ -24,6 +25,7 @@ type View =
 export default function App({ banks }: { banks: QuestionBank[] }) {
   const { theme, toggleTheme } = useTheme()
   const { session, updateSession, warning, now } = useQuizSession()
+  const displaySession = useMemo(() => withCurrentCodeFormatting(session, banks), [session, banks])
   const [view, setView] = useState<View>(() => ({ page: session ? 'session' : 'library' }))
   const goHome = () => setView({ page: 'library' })
   const completed = session?.finishedAt !== null
@@ -150,20 +152,20 @@ export default function App({ banks }: { banks: QuestionBank[] }) {
             />
           )}
           {view.page === 'session' &&
-            session &&
-            (session.finishedAt !== null ? (
+            displaySession &&
+            (displaySession.finishedAt !== null ? (
               <Results
-                key={session.id}
-                session={session}
+                key={displaySession.id}
+                session={displaySession}
                 onHome={goHome}
                 onRetry={() => {
-                  const bank = banks.find((bank) => bank.id === session.topic.id)
+                  const bank = banks.find((bank) => bank.id === displaySession.topic.id)
                   setView(bank ? { page: 'configuration', bank } : { page: 'library' })
                 }}
               />
             ) : (
               <Quiz
-                session={session}
+                session={displaySession}
                 now={now}
                 onHome={goHome}
                 onSelect={(answer) =>

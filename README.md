@@ -172,7 +172,7 @@ tests/quiz.spec.ts              Browser integration tests
 docs/architecture.md            Initial architecture and implementation plan
 ```
 
-The flow is library → configuration → active quiz → results. Practice adds a feedback state within the active quiz. A session contains a copy of its questions, so a bank edit does not change an in-progress quiz.
+The flow is library → configuration → active quiz → results. Practice adds a feedback state within the active quiz. A session contains a copy of its questions, so bank edits do not replace its wording, answer keys, or option order. For older questions without code fences, the display can reuse fences from the current bank when the enclosed code matches a complete saved block exactly, including indentation. This also applies to saved results and does not rewrite the stored session or reset progress. Reload the app to pick up updated bank files; published builds need rebuilding to include them.
 
 To add a question type, extend the schema and discriminated union, add its answer controls and matching rules, and test it. Filtering/difficulty can be introduced before `createQuizSession`; history and statistics can build on finished session snapshots. A future storage adapter can replace localStorage without changing scoring. Mixed-topic sessions would need broader topic metadata but can reuse the question/scoring model.
 
