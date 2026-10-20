@@ -1,0 +1,560 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "api-architecture-system-design",
+  "name": "API Architecture and System Design",
+  "description": "40 mid-to-senior scenario questions on API contracts, protocol trade-offs, authorization, idempotency, rate limiting, caching, and resilience. Topic selection includes anecdotal [Amazon](https://leetcode.com/discuss/interview-experience/7311674/) and [Microsoft](https://leetcode.com/discuss/interview-experience/6114211/) candidate reports; these do not establish statistical frequency. Answers use primary standards and engineering documentation. No SQL, database optimization, or Django patterns.",
+  "questions": [
+    {
+      "id": "api-architecture-system-design-001",
+      "type": "single",
+      "question": "Internal services in several languages need typed contracts and bidirectional streaming. Which choice most directly fits, assuming the infrastructure supports it?",
+      "options": [
+        "REST with polling because all HTTP APIs support bidirectional RPC streams automatically",
+        "GraphQL because every GraphQL query is a bidirectional stream",
+        "gRPC, with generated clients and supported streaming RPCs",
+        "REST because gRPC requires every service to use the same language"
+      ],
+      "answer": "gRPC, with generated clients and supported streaming RPCs",
+      "explanation": "gRPC supports generated service contracts and streaming. Browser access and intermediary compatibility still need deliberate evaluation. [Source](https://grpc.io/docs/what-is-grpc/core-concepts/).",
+      "topics": ["REST vs gRPC", "Contracts", "Streaming"]
+    },
+    {
+      "id": "api-architecture-system-design-002",
+      "type": "multiple",
+      "question": "GraphQL lets clients request different nested response shapes. Which controls help keep that flexibility manageable?",
+      "options": [
+        "Bound query complexity, depth, or total cost",
+        "Enforce authorization for accessed objects and fields",
+        "Assume one endpoint means all queries cost roughly the same",
+        "Limit batching and expensive repeated field selections"
+      ],
+      "answers": [
+        "Bound query complexity, depth, or total cost",
+        "Enforce authorization for accessed objects and fields",
+        "Limit batching and expensive repeated field selections"
+      ],
+      "explanation": "Client-controlled selection can create expensive work or expose fields. GraphQL still requires demand controls and authorization. [Source](https://graphql.org/learn/security/).",
+      "topics": ["GraphQL", "Query cost", "Authorization"]
+    },
+    {
+      "id": "api-architecture-system-design-003",
+      "type": "single",
+      "question": "A gRPC client receives `DEADLINE_EXCEEDED` for a mutation. Which conclusion is justified?",
+      "options": [
+        "The server definitely rolled back the mutation",
+        "The client’s deadline expired; the mutation’s outcome may still need reconciliation",
+        "The server never received the request",
+        "The RPC can safely be retried with a new operation identifier"
+      ],
+      "answer": "The client’s deadline expired; the mutation’s outcome may still need reconciliation",
+      "explanation": "Client and server can observe different outcomes. A deadline bounds how long the client waits; it does not roll back side effects that have already occurred. [Source](https://grpc.io/docs/what-is-grpc/core-concepts/#rpc-termination).",
+      "topics": ["gRPC", "Deadlines", "Ambiguous outcomes"]
+    },
+    {
+      "id": "api-architecture-system-design-004",
+      "type": "boolean",
+      "question": "REST statelessness prohibits a service from storing any resource data or consulting an authorization store.",
+      "answer": false,
+      "explanation": "Statelessness concerns request interaction context, not the absence of stored resources. Each request must provide the context needed to interpret it. [REST constraints](https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm).",
+      "topics": ["REST", "Statelessness"]
+    },
+    {
+      "id": "api-architecture-system-design-005",
+      "type": "multiple",
+      "question": "Under HTTP method semantics, which statements are correct?",
+      "options": [
+        "`GET` is intended to be safe",
+        "`PUT` is idempotent by defined semantics",
+        "`POST` is universally idempotent by defined semantics",
+        "A safe request may still produce incidental logging"
+      ],
+      "answers": [
+        "`GET` is intended to be safe",
+        "`PUT` is idempotent by defined semantics",
+        "A safe request may still produce incidental logging"
+      ],
+      "explanation": "Safety concerns requested changes; idempotency concerns repeated intended effects. Incidental logs do not violate safety. [Source](https://www.rfc-editor.org/rfc/rfc9110.html).",
+      "topics": ["HTTP methods", "Safety", "Idempotency"]
+    },
+    {
+      "id": "api-architecture-system-design-006",
+      "type": "single",
+      "question": "An API defines `PATCH /counter` with this JSON request body. What happens if a client retries it without deduplication?\n\n```json\n{\n  \"increment\": 1\n}\n```",
+      "options": [
+        "`PATCH` guarantees the second request is ignored",
+        "`PATCH` guarantees complete resource replacement",
+        "The second request must return `304`",
+        "The counter may be incremented twice"
+      ],
+      "answer": "The counter may be incremented twice",
+      "explanation": "Idempotency depends on operation semantics. Repeating an increment repeats its effect unless an additional deduplication mechanism intervenes. [PATCH semantics](https://www.rfc-editor.org/rfc/rfc5789.html).",
+      "topics": ["PATCH", "Operation semantics"]
+    },
+    {
+      "id": "api-architecture-system-design-007",
+      "type": "boolean",
+      "question": "`DELETE` can remain idempotent when the first request returns `204` and a repeated request returns `404`.",
+      "answer": true,
+      "explanation": "Idempotency does not require identical responses. Repeating deletion can preserve the same intended resource state. [Source](https://www.rfc-editor.org/rfc/rfc9110.html).",
+      "topics": ["DELETE", "HTTP idempotency"]
+    },
+    {
+      "id": "api-architecture-system-design-008",
+      "type": "single",
+      "question": "A report needs minutes to generate. Which HTTP interaction best supports asynchronous processing?",
+      "options": [
+        "Return `202` with an operation identifier and a status URL",
+        "Return `200` claiming completion before generation begins",
+        "Return `204` and require clients to infer completion from elapsed time",
+        "Keep retrying the original request internally without any deadline"
+      ],
+      "answer": "Return `202` with an operation identifier and a status URL",
+      "explanation": "`202` means accepted, not completed. A status resource can expose progress and the eventual result or failure. [Source](https://www.rfc-editor.org/rfc/rfc9110.html).",
+      "topics": ["Asynchronous APIs", "202 Accepted"]
+    },
+    {
+      "id": "api-architecture-system-design-009",
+      "type": "single",
+      "question": "Two clients edit the same resource version. Which API mechanism can reject a write based on an outdated representation?",
+      "options": [
+        "`If-None-Match` only on an unrelated `GET`",
+        "`Cache-Control: public` on the write",
+        "`If-Match` with the strong ETag of the version being edited",
+        "A unique tracing identifier with no precondition check"
+      ],
+      "answer": "`If-Match` with the strong ETag of the version being edited",
+      "explanation": "Evaluate the version precondition atomically with the update. A failed `If-Match` normally produces `412 Precondition Failed`. [Source](https://www.rfc-editor.org/rfc/rfc9110.html).",
+      "topics": ["Conditional requests", "ETag", "Lost updates"]
+    },
+    {
+      "id": "api-architecture-system-design-010",
+      "type": "single",
+      "question": "An API response enum gains a new possible value. Which compatibility concern should a senior engineer raise?",
+      "options": [
+        "Response additions can never affect existing clients",
+        "Clients with exhaustive enum handling may fail on the new value",
+        "Only request changes require compatibility review",
+        "HTTP automatically maps unknown enum values to `null`"
+      ],
+      "answer": "Clients with exhaustive enum handling may fail on the new value",
+      "explanation": "Additive changes can still break strict clients. Define unknown-value handling and evolution expectations as part of the contract. [Source](https://google.aip.dev/180).",
+      "topics": ["API evolution", "Backward compatibility"]
+    },
+    {
+      "id": "api-architecture-system-design-011",
+      "type": "multiple",
+      "question": "For an API with opaque pagination tokens, which statements are sound?",
+      "options": [
+        "Clients should treat tokens as continuation data rather than parse their internals",
+        "Possessing a token replaces authorization on subsequent page requests",
+        "The service should define token expiry and filter consistency behavior",
+        "A token alone guarantees snapshot consistency despite concurrent changes"
+      ],
+      "answers": [
+        "Clients should treat tokens as continuation data rather than parse their internals",
+        "The service should define token expiry and filter consistency behavior"
+      ],
+      "explanation": "Continuation does not grant access or inherently freeze a dataset. Reauthorize requests and document consistency and token validity. [Source](https://google.aip.dev/158).",
+      "topics": ["Pagination", "API contracts"]
+    },
+    {
+      "id": "api-architecture-system-design-012",
+      "type": "single",
+      "question": "A web application needs user sign-in and delegated API access. Which distinction is correct?",
+      "options": [
+        "OAuth access tokens always prove a user’s identity to any client",
+        "OpenID Connect replaces all resource authorization checks",
+        "An ID token is automatically an access token for every API",
+        "OpenID Connect adds authentication to OAuth; access tokens authorize access to their intended resources"
+      ],
+      "answer": "OpenID Connect adds authentication to OAuth; access tokens authorize access to their intended resources",
+      "explanation": "ID tokens convey authentication to a client. APIs should require tokens intended for those APIs and enforce their authorization policies. [Source](https://openid.net/specs/openid-connect-core-1_0.html).",
+      "topics": ["OAuth", "OpenID Connect", "Token purpose"]
+    },
+    {
+      "id": "api-architecture-system-design-013",
+      "type": "single",
+      "question": "A public native client uses the authorization-code flow. What does PKCE primarily protect against?",
+      "options": [
+        "An intercepted authorization code being redeemed without the matching verifier",
+        "Every form of cross-site scripting",
+        "An access token being readable by its bearer",
+        "An authenticated user accessing unauthorized application records"
+      ],
+      "answer": "An intercepted authorization code being redeemed without the matching verifier",
+      "explanation": "PKCE binds code redemption to a verifier established by the initiating client. It does not replace other authentication or authorization defenses. [Source](https://www.rfc-editor.org/rfc/rfc9700.html).",
+      "topics": ["OAuth", "PKCE"]
+    },
+    {
+      "id": "api-architecture-system-design-014",
+      "type": "multiple",
+      "question": "Which checks belong in validation of a JWT access token at its intended API?",
+      "options": [
+        "Verify its signature using trusted keys and an allowed algorithm",
+        "Accept any algorithm named in the untrusted token header",
+        "Validate issuer, audience, and applicable time claims",
+        "Check that its token type and claims fit the expected access-token profile"
+      ],
+      "answers": [
+        "Verify its signature using trusted keys and an allowed algorithm",
+        "Validate issuer, audience, and applicable time claims",
+        "Check that its token type and claims fit the expected access-token profile"
+      ],
+      "explanation": "Decoding is not validation. A valid signature alone does not establish that the token is suitable for this API or purpose. [Source](https://www.rfc-editor.org/rfc/rfc8725.html).",
+      "topics": ["JWT", "Token validation"]
+    },
+    {
+      "id": "api-architecture-system-design-015",
+      "type": "single",
+      "question": "A self-contained access token remains cryptographically valid for 30 minutes, but access must be revoked immediately. What additional design is needed?",
+      "options": [
+        "Deleting the browser’s token guarantees all copies stop working",
+        "Online revocation or session-state checks, accepting their availability and caching trade-offs",
+        "Base64-encoding the token again",
+        "Adding a longer expiration time to reduce replay"
+      ],
+      "answer": "Online revocation or session-state checks, accepting their availability and caching trade-offs",
+      "explanation": "Offline signature checks cannot discover new revocation state. Immediate revocation requires current state at enforcement time; cached positive checks can leave a window of revoked access unless reliably invalidated before reuse. [Source](https://www.rfc-editor.org/rfc/rfc7662.html#section-4).",
+      "topics": ["Revocation", "Stateless tokens", "Trade-offs"]
+    },
+    {
+      "id": "api-architecture-system-design-016",
+      "type": "single",
+      "question": "A token has `invoices.read`. The caller requests an invoice owned by another tenant. What should determine access?",
+      "options": [
+        "The scope alone, because scopes identify each allowed record",
+        "Whether the caller knows the invoice identifier",
+        "Server-side tenant and resource authorization in addition to the scope",
+        "Whether the identifier is a UUID"
+      ],
+      "answer": "Server-side tenant and resource authorization in addition to the scope",
+      "explanation": "A coarse permission does not authorize every matching object. Enforce tenant, ownership, and field rules at the resource boundary. [Source](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html).",
+      "topics": ["Scopes", "Object authorization", "Tenant isolation"]
+    },
+    {
+      "id": "api-architecture-system-design-017",
+      "type": "single",
+      "question": "A background service uses its own client-credentials token. What identity should downstream authorization normally evaluate?",
+      "options": [
+        "The last human who logged into the service",
+        "Any user identifier placed in the request body",
+        "An administrator because no human is present",
+        "The service principal and its explicitly granted permissions"
+      ],
+      "answer": "The service principal and its explicitly granted permissions",
+      "explanation": "Application identity does not imply delegated user authority. Acting for a user requires a separately trusted delegation mechanism. [Client credentials](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.4).",
+      "topics": ["Service accounts", "Delegation", "Least privilege"]
+    },
+    {
+      "id": "api-architecture-system-design-018",
+      "type": "boolean",
+      "question": "CORS restrictions are enforced by browsers and do not prevent a non-browser HTTP client from calling an API.",
+      "answer": true,
+      "explanation": "CORS governs browser cross-origin access. Non-browser clients are not restricted by it, and some browser requests can still be sent. [Source](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS).",
+      "topics": ["CORS", "Browser security"]
+    },
+    {
+      "id": "api-architecture-system-design-019",
+      "type": "multiple",
+      "question": "A browser application authenticates with automatically attached cookies. Which measures help protect state-changing endpoints against CSRF?",
+      "options": [
+        "Validate an appropriate anti-CSRF token",
+        "Use `SameSite` cookie settings as part of a layered defense",
+        "Assume `HttpOnly` cookies alone prevent CSRF",
+        "Validate `Origin` or suitable fallback request-origin information"
+      ],
+      "answers": [
+        "Validate an appropriate anti-CSRF token",
+        "Use `SameSite` cookie settings as part of a layered defense",
+        "Validate `Origin` or suitable fallback request-origin information"
+      ],
+      "explanation": "Browsers can attach cookies to attacker-triggered requests. `HttpOnly` restricts script access to cookies, not their automatic transmission. [Source](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).",
+      "topics": ["CSRF", "Cookies", "Request validation"]
+    },
+    {
+      "id": "api-architecture-system-design-020",
+      "type": "single",
+      "question": "A payment creation request times out after it may have succeeded. The API supports idempotency keys. What is the safest retry approach within its documented retention window?",
+      "options": [
+        "Retry the same logical request with the same key and unchanged payload",
+        "Generate a fresh key to avoid a cached result",
+        "Assume timeout proves failure and issue another payment",
+        "Retry without a key because the first response was lost"
+      ],
+      "answer": "Retry the same logical request with the same key and unchanged payload",
+      "explanation": "A stable key identifies one intent across attempts. A new key can represent a new operation and duplicate the payment. [Source](https://docs.stripe.com/api/idempotent_requests).",
+      "topics": ["Idempotency keys", "Retries"]
+    },
+    {
+      "id": "api-architecture-system-design-021",
+      "type": "multiple",
+      "question": "Which properties should a robust idempotency-key implementation include?",
+      "options": [
+        "Appropriate key scoping to the caller or tenant",
+        "Rejection of key reuse with a different request intent",
+        "Atomic coordination of concurrent requests using the same key",
+        "An unlimited guarantee even after all deduplication records expire"
+      ],
+      "answers": [
+        "Appropriate key scoping to the caller or tenant",
+        "Rejection of key reuse with a different request intent",
+        "Atomic coordination of concurrent requests using the same key"
+      ],
+      "explanation": "Concurrent attempts must agree on one operation. Define payload matching, in-progress behavior, and retention limits explicitly. [Source](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/).",
+      "topics": ["Idempotency", "Concurrency", "Request identity"]
+    },
+    {
+      "id": "api-architecture-system-design-022",
+      "type": "single",
+      "question": "A webhook receiver must acknowledge quickly and survive crashes without losing accepted work. Which sequence best meets that contract?",
+      "options": [
+        "Return success, then keep the event only in memory",
+        "Validate authenticity, durably accept or identify the duplicate, acknowledge, then process asynchronously",
+        "Finish all slow downstream calls before recording the event",
+        "Acknowledge any event with a familiar-looking identifier without validation"
+      ],
+      "answer": "Validate authenticity, durably accept or identify the duplicate, acknowledge, then process asynchronously",
+      "explanation": "Durable acceptance closes the crash gap between acknowledgment and processing. Retries still require duplicate handling; signatures establish event authenticity. [Source](https://docs.stripe.com/webhooks).",
+      "topics": ["Webhooks", "Durability", "Deduplication"]
+    },
+    {
+      "id": "api-architecture-system-design-023",
+      "type": "single",
+      "question": "A token bucket has capacity 20, currently contains 20 tokens, and refills at 5 tokens/second. Each request costs one token. For an instantaneous burst with no refill during evaluation, how many requests can it admit?",
+      "options": ["5", "25", "20", "100"],
+      "answer": "20",
+      "explanation": "Current tokens determine immediate admission; refill controls later capacity. Bucket size allows bounded bursts above the sustained rate. [Source](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/local_rate_limit_filter).",
+      "topics": ["Token bucket", "Burst capacity"]
+    },
+    {
+      "id": "api-architecture-system-design-024",
+      "type": "single",
+      "question": "A fixed-window limiter allows 100 requests per calendar minute. With no other restrictions, how many can pass in a two-second interval straddling a minute boundary?",
+      "options": ["At most 100", "At most 102", "At most 50", "Up to 200"],
+      "answer": "Up to 200",
+      "explanation": "A client can consume one window’s allowance just before reset and the next immediately afterward. This is a boundary-burst weakness.",
+      "topics": ["Fixed windows", "Rate limiting"]
+    },
+    {
+      "id": "api-architecture-system-design-025",
+      "type": "single",
+      "question": "Ten replicas each independently permit the same customer 100 requests/minute. What is the problem if the advertised limit is globally 100?",
+      "options": [
+        "The customer can consume separate allowances across replicas unless enforcement is coordinated",
+        "Local counters automatically synchronize through the load balancer",
+        "The customer is necessarily limited to 10 requests/minute",
+        "TLS makes the counters globally consistent"
+      ],
+      "answer": "The customer can consume separate allowances across replicas unless enforcement is coordinated",
+      "explanation": "Replica-local limits are not global quotas. Use coordinated accounting or allocated budgets with defined consistency and failure behavior. [Source](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/other_features/global_rate_limiting).",
+      "topics": ["Distributed rate limiting", "Global quotas"]
+    },
+    {
+      "id": "api-architecture-system-design-026",
+      "type": "boolean",
+      "question": "A semaphore limiting an API client to 20 in-flight requests guarantees it sends no more than 20 requests per second.",
+      "answer": false,
+      "explanation": "Concurrency measures simultaneous work; rate measures admissions over time. Fast completions can produce high throughput under a small concurrency limit. [Source](https://learn.microsoft.com/en-us/azure/architecture/patterns/rate-limiting-pattern).",
+      "topics": ["Concurrency limits", "Rate limits"]
+    },
+    {
+      "id": "api-architecture-system-design-027",
+      "type": "single",
+      "question": "The shared rate-limit service is unavailable. Which policy decision should be made explicitly?",
+      "options": [
+        "Always allow traffic because correctness is unaffected",
+        "Choose fail-open, fail-closed, or bounded local fallback based on abuse risk and availability requirements",
+        "Always retry every admission check without a deadline",
+        "Assume the advertised quota remains exact without any accounting"
+      ],
+      "answer": "Choose fail-open, fail-closed, or bounded local fallback based on abuse risk and availability requirements",
+      "explanation": "There is a trade-off between enforcement and availability during failures. A fallback must document the protection it can actually preserve.",
+      "topics": ["Rate limiter failure", "Availability", "Trade-offs"]
+    },
+    {
+      "id": "api-architecture-system-design-028",
+      "type": "single",
+      "question": "For HTTP responses, which distinction between `Cache-Control: no-cache` (without a field-name argument) and `Cache-Control: no-store` is correct?",
+      "options": [
+        "Both prohibit storing any response",
+        "`no-cache` permits unrestricted reuse while `no-store` requires validation",
+        "`no-cache` allows storage but requires validation before reuse; `no-store` forbids storage under the directive’s rules",
+        "`no-store` means store only for the current browser session"
+      ],
+      "answer": "`no-cache` allows storage but requires validation before reuse; `no-store` forbids storage under the directive’s rules",
+      "explanation": "The unqualified `no-cache` response directive permits storage but requires successful validation before reuse. `no-store` forbids storage under the directive’s rules. The field-qualified form of `no-cache` has different rules and is outside this question’s scope. [Source](https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.4).",
+      "topics": ["HTTP caching", "Cache-Control"]
+    },
+    {
+      "id": "api-architecture-system-design-029",
+      "type": "multiple",
+      "question": "An application cache holds personalized responses. Which safeguards are appropriate?",
+      "options": [
+        "Include relevant tenant, identity, and representation dimensions in the cache design",
+        "Authorize access to cached content as well as uncached content",
+        "Use only the URL as the key regardless of user identity",
+        "Use `private` or `no-store` HTTP policies where shared caching is inappropriate"
+      ],
+      "answers": [
+        "Include relevant tenant, identity, and representation dimensions in the cache design",
+        "Authorize access to cached content as well as uncached content",
+        "Use `private` or `no-store` HTTP policies where shared caching is inappropriate"
+      ],
+      "explanation": "Caching must preserve access boundaries. Application cache keys and HTTP shared-cache policies solve related but distinct problems. [Source](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html).",
+      "topics": ["Cache isolation", "Personalization", "Authorization"]
+    },
+    {
+      "id": "api-architecture-system-design-030",
+      "type": "single",
+      "question": "A popular public cache entry expires and thousands of requests start the same expensive refresh. Which combination most directly reduces the stampede?",
+      "options": [
+        "Retries without delays from every caller",
+        "Identical expiry times across every entry",
+        "Disabling all concurrency limits",
+        "Coalesce refreshes per key and vary expiry times; serve bounded stale data only if permitted"
+      ],
+      "answer": "Coalesce refreshes per key and vary expiry times; serve bounded stale data only if permitted",
+      "explanation": "Coalescing refreshes for the same key prevents duplicate work for that entry. Expiry jitter spreads misses across different entries; it does not by itself solve simultaneous requests for one expired key. Serving stale data is appropriate only when the freshness contract permits it. [Source](https://aws.amazon.com/builders-library/caching-challenges-and-strategies/).",
+      "topics": ["Cache stampede", "Request coalescing", "TTL jitter"]
+    },
+    {
+      "id": "api-architecture-system-design-031",
+      "type": "single",
+      "question": "A cache-aside reader loads an old value, a writer updates the source and invalidates the key, then the reader caches its old value. What does this show?",
+      "options": [
+        "Invalidation alone can race with readers; version-aware fills or coordination may be needed",
+        "Cache-aside guarantees linearizable reads",
+        "The writer must have failed because invalidation prevents all stale fills",
+        "A longer TTL eliminates this race"
+      ],
+      "answer": "Invalidation alone can race with readers; version-aware fills or coordination may be needed",
+      "explanation": "An in-flight stale read can repopulate an invalidated key. TTL bounds persistence but does not eliminate the consistency gap. [Source](https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside).",
+      "topics": ["Cache-aside", "Invalidation races"]
+    },
+    {
+      "id": "api-architecture-system-design-032",
+      "type": "single",
+      "question": "A cached authorization decision says allow, but permission was just revoked and revocation must take effect immediately. What should the design avoid?",
+      "options": [
+        "Checking current policy at the enforcement boundary",
+        "Serving stale allow decisions as an availability fallback",
+        "Invalidating permission cache entries on policy changes",
+        "Separating public content caching from authorization decisions"
+      ],
+      "answer": "Serving stale allow decisions as an availability fallback",
+      "explanation": "Freshness is part of the security requirement. Availability fallbacks must not silently extend revoked access. [Source](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html).",
+      "topics": ["Authorization caching", "Revocation", "Freshness"]
+    },
+    {
+      "id": "api-architecture-system-design-033",
+      "type": "multiple",
+      "question": "Which conditions belong in a safe retry policy for an external API?",
+      "options": [
+        "Retry only eligible failures and operations that can be repeated safely",
+        "Use bounded attempts, backoff, and jitter",
+        "Retry permanent validation errors until a success appears",
+        "Respect applicable `Retry-After` guidance and the overall deadline"
+      ],
+      "answers": [
+        "Retry only eligible failures and operations that can be repeated safely",
+        "Use bounded attempts, backoff, and jitter",
+        "Respect applicable `Retry-After` guidance and the overall deadline"
+      ],
+      "explanation": "Retries consume time and capacity. Bound them, distinguish transient failures, and preserve operation identity when side effects are possible. [Source](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/retry-backoff.html). [Jitter](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/).",
+      "topics": ["Retries", "Backoff", "Jitter"]
+    },
+    {
+      "id": "api-architecture-system-design-034",
+      "type": "single",
+      "question": "Three nested service layers each make at most three total attempts per incoming attempt. Every attempt reaches the next layer and all fail. How many attempts can reach the deepest dependency for one top-level request?",
+      "options": ["3", "9", "27", "81"],
+      "answer": "27",
+      "explanation": "The counts multiply: 3 × 3 × 3. Choose a deliberate retry owner or shared budget to prevent amplification.",
+      "topics": ["Retry amplification", "Retry budgets"]
+    },
+    {
+      "id": "api-architecture-system-design-035",
+      "type": "single",
+      "question": "A request has a one-second end-to-end deadline. Its first dependency consumes 800 ms. How should the remaining dependency calls be budgeted?",
+      "options": [
+        "Each receives a fresh one-second timeout",
+        "Each receives an unlimited timeout if it is idempotent",
+        "The deadline resets after every successful call",
+        "Propagate the remaining budget, reserving time for local work and response delivery"
+      ],
+      "answer": "Propagate the remaining budget, reserving time for local work and response delivery",
+      "explanation": "Per-hop timeouts should fit the remaining request deadline. Resetting the full budget at every hop can exceed the caller’s bound. [Source](https://grpc.io/docs/guides/deadlines/).",
+      "topics": ["Deadlines", "Timeout budgets"]
+    },
+    {
+      "id": "api-architecture-system-design-036",
+      "type": "single",
+      "question": "A dependency is repeatedly failing. What distinguishes a circuit breaker from a retry loop?",
+      "options": [
+        "The breaker can temporarily reject calls without attempting the dependency",
+        "The breaker guarantees every rejected call will later succeed",
+        "The breaker removes the need for timeouts",
+        "The breaker duplicates every request to increase success probability"
+      ],
+      "answer": "The breaker can temporarily reject calls without attempting the dependency",
+      "explanation": "A breaker stops repeated calls during sustained failure. Retries attempt recovery from selected failures; the patterns have different jobs. [Source](https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker).",
+      "topics": ["Circuit breakers", "Resilience"]
+    },
+    {
+      "id": "api-architecture-system-design-037",
+      "type": "single",
+      "question": "Why does a circuit breaker typically allow only limited traffic in its half-open state?",
+      "options": [
+        "To permanently reduce the dependency’s capacity",
+        "To test recovery without immediately restoring the full load",
+        "To bypass authentication while diagnosing failures",
+        "To guarantee that all prior failures are rolled back"
+      ],
+      "answer": "To test recovery without immediately restoring the full load",
+      "explanation": "Controlled probes provide evidence of recovery. Their outcomes guide reopening or closing the circuit without a sudden traffic surge. [Source](https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker).",
+      "topics": ["Circuit breaker states", "Recovery probes"]
+    },
+    {
+      "id": "api-architecture-system-design-038",
+      "type": "single",
+      "question": "Slow optional analytics calls exhaust a shared connection pool and block critical checkout calls. Which pattern most directly limits this failure’s spread?",
+      "options": [
+        "A larger unbounded shared queue",
+        "Identical retry policies for both dependencies",
+        "Separate bounded resource pools for critical and optional dependencies",
+        "A single global lock around both call types"
+      ],
+      "answer": "Separate bounded resource pools for critical and optional dependencies",
+      "explanation": "Bulkheads partition resources so one dependency cannot consume every connection or worker needed by unrelated operations. [Source](https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead).",
+      "topics": ["Bulkheads", "Resource isolation"]
+    },
+    {
+      "id": "api-architecture-system-design-039",
+      "type": "single",
+      "question": "An asynchronous API accepts jobs faster than workers can process them for hours. Which design best prevents unbounded resource growth?",
+      "options": [
+        "Return success for every request and store the backlog only in RAM",
+        "Add retries to every queued item regardless of failure",
+        "Increase the queue limit indefinitely",
+        "Bound admitted work, monitor queue age, and reject or defer excess load according to the contract"
+      ],
+      "answer": "Bound admitted work, monitor queue age, and reject or defer excess load according to the contract",
+      "explanation": "Queues absorb bursts, not unlimited sustained overload. Admission control and capacity planning must account for backlog size and processing delay. [Source](https://learn.microsoft.com/en-us/azure/architecture/patterns/queue-based-load-leveling).",
+      "topics": ["Backpressure", "Queues", "Admission control"]
+    },
+    {
+      "id": "api-architecture-system-design-040",
+      "type": "single",
+      "question": "A dashboard aggregates required account data and optional recommendations. Recommendations time out. If the product permits degraded responses, what is the best API behavior?",
+      "options": [
+        "Return the account data with an explicit indication that recommendations are unavailable",
+        "Fabricate recommendations and report a fully successful result",
+        "Always wait indefinitely because the account call succeeded",
+        "Retry the entire aggregate operation without a budget"
+      ],
+      "answer": "Return the account data with an explicit indication that recommendations are unavailable",
+      "explanation": "Define partial-result semantics so clients can distinguish unavailable data from an empty result. Bound optional work and expose degradation. [Source](https://learn.microsoft.com/en-us/azure/architecture/patterns/gateway-aggregation).",
+      "topics": ["Partial failure", "Aggregation", "Graceful degradation"]
+    }
+  ]
+}

@@ -1,0 +1,789 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "nextjs",
+  "name": "Next.js",
+  "description": "Senior interview preparation for modern Next.js App Router applications, aligned with Next.js 16.x behavior: rendering, Server and Client Components, Cache Components, data fetching, revalidation, Route Handlers, Server Actions, navigation, performance, and production/self-hosting concerns.",
+  "questions": [
+    {
+      "type": "single",
+      "question": "What is the App Router in modern Next.js?",
+      "options": [
+        "A file-system router built around React features such as Server Components, Suspense, and Server Functions",
+        "A client-only router that requires React Router",
+        "A replacement for React",
+        "A router available only for static exports"
+      ],
+      "answer": "A file-system router built around React features such as Server Components, Suspense, and Server Functions",
+      "explanation": "The App Router is file-system based and integrates modern React server rendering, streaming, and mutation primitives.",
+      "topics": ["App Router", "Routing"],
+      "id": "nextjs-001"
+    },
+    {
+      "type": "single",
+      "question": "In the App Router, what are page.tsx and layout.tsx components by default?",
+      "options": [
+        "Server Components",
+        "Client Components",
+        "Route Handlers",
+        "Edge-only components"
+      ],
+      "answer": "Server Components",
+      "explanation": "Pages and layouts are Server Components by default; client behavior is introduced explicitly where needed.",
+      "topics": ["Server Components", "App Router"],
+      "id": "nextjs-002"
+    },
+    {
+      "type": "multiple",
+      "question": "Which requirements normally indicate that a component should be a Client Component?",
+      "options": [
+        "It uses useState or event handlers",
+        "It uses useEffect",
+        "It accesses window or localStorage",
+        "It performs a server-side SQL query"
+      ],
+      "answers": [
+        "It uses useState or event handlers",
+        "It uses useEffect",
+        "It accesses window or localStorage"
+      ],
+      "explanation": "Client Components are appropriate for state, effects, event handlers, and browser-only APIs.",
+      "topics": ["Client Components", "React", "Browser APIs"],
+      "id": "nextjs-003"
+    },
+    {
+      "type": "single",
+      "question": "What does adding 'use client' at the top of a module do?",
+      "options": [
+        "Creates a boundary where that module and its imports become part of the client module graph",
+        "Makes only the first function run in the browser",
+        "Forces the whole application into CSR",
+        "Disables SSR for every route"
+      ],
+      "answer": "Creates a boundary where that module and its imports become part of the client module graph",
+      "explanation": "The directive defines the server/client module boundary; it does not need to be repeated in every descendant.",
+      "topics": ["Client Components", "Bundling", "use client"],
+      "id": "nextjs-004"
+    },
+    {
+      "type": "boolean",
+      "question": "Adding 'use client' to a high-level component can increase the amount of JavaScript shipped to the browser.",
+      "answer": true,
+      "explanation": "Its imported dependency tree can enter the client bundle, so narrow client boundaries generally reduce shipped JavaScript.",
+      "topics": ["Client Components", "Performance", "Bundling"],
+      "id": "nextjs-005"
+    },
+    {
+      "type": "single",
+      "question": "Props passed from a Server Component to a Client Component generally need to be what?",
+      "options": [
+        "Serializable by React",
+        "Database client instances",
+        "Node.js streams only",
+        "Arbitrary callback functions"
+      ],
+      "answer": "Serializable by React",
+      "explanation": "Values crossing the server/client boundary must be serializable by React.",
+      "topics": ["Server Components", "Client Components", "Serialization"],
+      "id": "nextjs-006"
+    },
+    {
+      "type": "single",
+      "question": "What is a major benefit of querying a database directly from a Server Component?",
+      "options": [
+        "Credentials and query logic can remain on the server without an extra browser-facing API hop",
+        "Every query becomes globally cached",
+        "Authorization becomes unnecessary",
+        "SQL executes in the browser"
+      ],
+      "answer": "Credentials and query logic can remain on the server without an extra browser-facing API hop",
+      "explanation": "Server Components can access server resources directly, but authentication and authorization are still required.",
+      "topics": ["Server Components", "Data fetching", "Security"],
+      "id": "nextjs-007"
+    },
+    {
+      "type": "boolean",
+      "question": "Because a Server Component runs on the server, authorization checks can be skipped for its database queries.",
+      "answer": false,
+      "explanation": "Server-side execution protects implementation details and credentials, not access control.",
+      "topics": ["Server Components", "Authorization", "Security"],
+      "id": "nextjs-008"
+    },
+    {
+      "type": "single",
+      "question": "What is the React Server Component Payload used for?",
+      "options": [
+        "Representing rendered Server Components plus references/placeholders for Client Components",
+        "Storing browser cookies",
+        "Replacing HTML on the initial request",
+        "Compiling CSS modules"
+      ],
+      "answer": "Representing rendered Server Components plus references/placeholders for Client Components",
+      "explanation": "The RSC payload lets React reconcile the Server and Client Component trees during initial load and navigation.",
+      "topics": ["Server Components", "RSC Payload", "Rendering"],
+      "id": "nextjs-009"
+    },
+    {
+      "type": "single",
+      "question": "On the initial load of a route containing Client Components, which description is most accurate?",
+      "options": [
+        "HTML shows an immediate preview, the RSC payload reconciles the trees, and JavaScript hydrates Client Components",
+        "Only JavaScript is sent",
+        "Only the RSC payload is sent",
+        "Server Components are hydrated with useEffect"
+      ],
+      "answer": "HTML shows an immediate preview, the RSC payload reconciles the trees, and JavaScript hydrates Client Components",
+      "explanation": "Initial rendering combines server-generated HTML, the RSC payload, and Client Component JavaScript.",
+      "topics": ["Hydration", "Rendering", "Server Components"],
+      "id": "nextjs-010"
+    },
+    {
+      "type": "single",
+      "question": "In App Router terminology, what best corresponds to traditional SSG?",
+      "options": [
+        "Prerendering at build time or during revalidation and serving a cached result",
+        "Rendering only in useEffect",
+        "Running a Route Handler for every paint",
+        "Marking every component 'use client'"
+      ],
+      "answer": "Prerendering at build time or during revalidation and serving a cached result",
+      "explanation": "Modern Next.js documentation describes this mainly as prerendering/static rendering.",
+      "topics": ["SSG", "Prerendering", "Static rendering"],
+      "id": "nextjs-011"
+    },
+    {
+      "type": "single",
+      "question": "In App Router terminology, what best corresponds to request-time SSR?",
+      "options": [
+        "Dynamic Rendering on the server in response to a request",
+        "Static export",
+        "Client rendering after useEffect",
+        "generateStaticParams"
+      ],
+      "answer": "Dynamic Rendering on the server in response to a request",
+      "explanation": "Dynamic rendering generates route output at request time.",
+      "topics": ["SSR", "Dynamic rendering", "Rendering"],
+      "id": "nextjs-012"
+    },
+    {
+      "type": "single",
+      "question": "In current Next.js 16 behavior, what is the default persistent caching behavior of fetch() in Server Components?",
+      "options": [
+        "fetch responses are not cached by default",
+        "Every fetch is cached forever",
+        "Only POST is cached",
+        "Caching depends only on async"
+      ],
+      "answer": "fetch responses are not cached by default",
+      "explanation": "Current Next.js documentation states that fetch requests are uncached by default; explicit caching is opt-in.",
+      "topics": ["Data fetching", "Caching", "fetch"],
+      "id": "nextjs-013"
+    },
+    {
+      "type": "single",
+      "question": "What happens to identical fetch requests made in the same React component tree?",
+      "options": [
+        "They can be memoized/deduplicated during rendering",
+        "They are cached forever across requests",
+        "They always create separate requests",
+        "They automatically become ISR"
+      ],
+      "answer": "They can be memoized/deduplicated during rendering",
+      "explanation": "Render-time request memoization is distinct from persistent caching across requests.",
+      "topics": ["Data fetching", "Request memoization", "Caching"],
+      "id": "nextjs-014"
+    },
+    {
+      "type": "boolean",
+      "question": "Render-time memoization of identical fetch calls is the same as persistent server caching across user requests.",
+      "answer": false,
+      "explanation": "Deduplicating work during one render and retaining results across requests are different mechanisms.",
+      "topics": ["Caching", "Request memoization"],
+      "id": "nextjs-015"
+    },
+    {
+      "type": "single",
+      "question": "What must be enabled to use the Next.js 16 Cache Components model?",
+      "options": [
+        "cacheComponents: true in next.config",
+        "reactStrictMode: false",
+        "output: 'export'",
+        "experimental.appDir: true"
+      ],
+      "answer": "cacheComponents: true in next.config",
+      "explanation": "Cache Components and the 'use cache' directive are enabled with the cacheComponents option.",
+      "topics": ["Cache Components", "Configuration"],
+      "id": "nextjs-016"
+    },
+    {
+      "type": "single",
+      "question": "Where can the 'use cache' directive be applied?",
+      "options": [
+        "At file, async component, or async function level",
+        "Only in Route Handlers",
+        "Only in Client Components",
+        "Only in next.config"
+      ],
+      "answer": "At file, async component, or async function level",
+      "explanation": "'use cache' can cache a route/file scope, component output, or asynchronous function result.",
+      "topics": ["Cache Components", "use cache"],
+      "id": "nextjs-017"
+    },
+    {
+      "type": "single",
+      "question": "What does cacheLife() control inside a 'use cache' scope?",
+      "options": [
+        "Cache freshness/lifetime semantics",
+        "Browser event-listener lifetime",
+        "Route Handler timeout",
+        "React state lifetime"
+      ],
+      "answer": "Cache freshness/lifetime semantics",
+      "explanation": "cacheLife selects or configures how cached data ages and revalidates.",
+      "topics": ["Caching", "cacheLife", "Revalidation"],
+      "id": "nextjs-018"
+    },
+    {
+      "type": "single",
+      "question": "What is cacheTag() used for?",
+      "options": [
+        "Associating cached work with tags that can later be invalidated",
+        "Adding HTML meta tags",
+        "Generating route params",
+        "Tagging Docker images"
+      ],
+      "answer": "Associating cached work with tags that can later be invalidated",
+      "explanation": "Tags let mutations invalidate data shared across routes without coupling to a single URL.",
+      "topics": ["Caching", "cacheTag", "Revalidation"],
+      "id": "nextjs-019"
+    },
+    {
+      "type": "single",
+      "question": "In Next.js 16, when is updateTag() especially appropriate?",
+      "options": [
+        "After a user mutation when immediate read-your-writes behavior is needed",
+        "For client animation state",
+        "For prefetching links",
+        "For resizing images"
+      ],
+      "answer": "After a user mutation when immediate read-your-writes behavior is needed",
+      "explanation": "updateTag is designed for mutations where the user should immediately see their own updated data.",
+      "topics": ["Caching", "updateTag", "Server Actions"],
+      "id": "nextjs-020"
+    },
+    {
+      "type": "single",
+      "question": "What is the recommended modern behavior of revalidateTag(tag, 'max')?",
+      "options": [
+        "Mark tagged data stale and use stale-while-revalidate on the next visit",
+        "Delete the entire app cache immediately",
+        "Restart the server",
+        "Synchronously rebuild the app"
+      ],
+      "answer": "Mark tagged data stale and use stale-while-revalidate on the next visit",
+      "explanation": "The 'max' profile serves stale data while refreshing in the background when the tagged resource is next visited.",
+      "topics": ["Caching", "revalidateTag", "Stale-while-revalidate"],
+      "id": "nextjs-021"
+    },
+    {
+      "type": "single",
+      "question": "What does revalidatePath() invalidate?",
+      "options": [
+        "Cached data associated with a specific path",
+        "Every browser's localStorage",
+        "The npm cache",
+        "Only optimized images"
+      ],
+      "answer": "Cached data associated with a specific path",
+      "explanation": "revalidatePath is path-oriented; tag APIs are useful when the same data appears across multiple paths.",
+      "topics": ["Caching", "revalidatePath"],
+      "id": "nextjs-022"
+    },
+    {
+      "type": "boolean",
+      "question": "Calling refresh() from a Server Action automatically invalidates all tagged server cache entries.",
+      "answer": false,
+      "explanation": "refresh() refreshes the client router; cache invalidation still uses updateTag, revalidateTag, or revalidatePath.",
+      "topics": ["Server Actions", "Caching", "refresh"],
+      "id": "nextjs-023"
+    },
+    {
+      "type": "single",
+      "question": "What is the status of unstable_cache in Next.js 16?",
+      "options": [
+        "It has been superseded by 'use cache' in the Cache Components model",
+        "It is the only supported cache API",
+        "It was renamed useMemo",
+        "It is mandatory for Route Handlers"
+      ],
+      "answer": "It has been superseded by 'use cache' in the Cache Components model",
+      "explanation": "Next.js 16 recommends moving Cache Components workloads from unstable_cache to 'use cache'.",
+      "topics": ["Caching", "Migration", "use cache"],
+      "id": "nextjs-024"
+    },
+    {
+      "type": "single",
+      "question": "Why should cookies() or headers() normally be read outside a standard 'use cache' scope and passed in as arguments?",
+      "options": [
+        "They are request-specific runtime data and should be explicit inputs to cached work",
+        "They work only in Client Components",
+        "They are synchronous APIs",
+        "They are build-time-only values"
+      ],
+      "answer": "They are request-specific runtime data and should be explicit inputs to cached work",
+      "explanation": "Cached functions should have deterministic inputs; request-specific values are normally read outside the cached scope.",
+      "topics": ["Caching", "cookies", "headers", "Dynamic APIs"],
+      "id": "nextjs-025"
+    },
+    {
+      "type": "single",
+      "question": "What is true of cookies() and headers() in current Next.js?",
+      "options": [
+        "They are asynchronous APIs",
+        "They are Client Component-only",
+        "They return mutable browser objects",
+        "They are build-time-only"
+      ],
+      "answer": "They are asynchronous APIs",
+      "explanation": "Modern Next.js exposes these request APIs asynchronously.",
+      "topics": ["Dynamic APIs", "cookies", "headers"],
+      "id": "nextjs-026"
+    },
+    {
+      "type": "single",
+      "question": "Where can cookies be written using the Next.js cookies API?",
+      "options": [
+        "Server Functions/Actions or Route Handlers",
+        "Any Server Component during render",
+        "Static metadata",
+        "generateStaticParams only"
+      ],
+      "answer": "Server Functions/Actions or Route Handlers",
+      "explanation": "Server Components can read incoming cookies, while outgoing cookie mutation belongs in mutation/request-handler contexts.",
+      "topics": ["cookies", "Server Actions", "Route Handlers"],
+      "id": "nextjs-027"
+    },
+    {
+      "type": "single",
+      "question": "Where are App Router Route Handlers defined?",
+      "options": [
+        "In route.ts or route.js files under app",
+        "Only in pages/api",
+        "Inside next.config",
+        "Inside public"
+      ],
+      "answer": "In route.ts or route.js files under app",
+      "explanation": "Route Handlers use the Web Request and Response APIs and are the App Router request-handler convention.",
+      "topics": ["Route Handlers", "App Router"],
+      "id": "nextjs-028"
+    },
+    {
+      "type": "multiple",
+      "question": "Which HTTP methods can a Route Handler export?",
+      "options": ["GET", "POST", "PATCH", "DELETE", "CONNECT"],
+      "answers": ["GET", "POST", "PATCH", "DELETE"],
+      "explanation": "Supported methods include GET, POST, PUT, PATCH, DELETE, HEAD, and OPTIONS.",
+      "topics": ["Route Handlers", "HTTP"],
+      "id": "nextjs-029"
+    },
+    {
+      "type": "boolean",
+      "question": "A page.tsx and route.ts can both exist at the same route segment and handle the same path.",
+      "answer": false,
+      "explanation": "They conflict at the same route level because each takes over the route.",
+      "topics": ["Route Handlers", "Routing"],
+      "id": "nextjs-030"
+    },
+    {
+      "type": "single",
+      "question": "What is the default caching behavior of Route Handlers in current Next.js?",
+      "options": [
+        "They are not cached by default; GET can explicitly opt into static caching",
+        "All methods are cached forever",
+        "Only POST is cached",
+        "They always inherit browser caching"
+      ],
+      "answer": "They are not cached by default; GET can explicitly opt into static caching",
+      "explanation": "GET handlers can opt into static behavior, while other HTTP methods remain dynamic.",
+      "topics": ["Route Handlers", "Caching"],
+      "id": "nextjs-031"
+    },
+    {
+      "type": "single",
+      "question": "A Server Component needs data from the same application's database. Why is calling your own Route Handler usually unnecessary?",
+      "options": [
+        "It can call the data layer directly and avoid an extra server HTTP request",
+        "Server Components cannot use HTTP",
+        "Route Handlers are browser-only",
+        "Route Handlers cannot return JSON"
+      ],
+      "answer": "It can call the data layer directly and avoid an extra server HTTP request",
+      "explanation": "Route Handlers are useful network boundaries, but Server Components can usually access server-side data sources directly.",
+      "topics": ["Server Components", "Route Handlers", "Performance"],
+      "id": "nextjs-032"
+    },
+    {
+      "type": "single",
+      "question": "What is a Server Function?",
+      "options": [
+        "An asynchronous function that executes on the server and can be invoked from application code",
+        "Any function inside a Server Component",
+        "A Web Worker",
+        "A GET-only Route Handler"
+      ],
+      "answer": "An asynchronous function that executes on the server and can be invoked from application code",
+      "explanation": "A Server Action is a Server Function used in an action/mutation context.",
+      "topics": ["Server Functions", "Server Actions"],
+      "id": "nextjs-033"
+    },
+    {
+      "type": "single",
+      "question": "Which directive marks a function or module as containing Server Functions?",
+      "options": ["'use server'", "'use action'", "'server only'", "'use backend'"],
+      "answer": "'use server'",
+      "explanation": "The directive can be used in an async function body or at module level.",
+      "topics": ["Server Functions", "use server"],
+      "id": "nextjs-034"
+    },
+    {
+      "type": "boolean",
+      "question": "A Server Function can be defined directly inside a Client Component.",
+      "answer": false,
+      "explanation": "Client Components can invoke imported Server Functions, but cannot define them directly.",
+      "topics": ["Server Functions", "Client Components"],
+      "id": "nextjs-035"
+    },
+    {
+      "type": "single",
+      "question": "Which HTTP method is used behind the scenes to invoke Server Actions?",
+      "options": ["POST", "GET", "HEAD", "OPTIONS"],
+      "answer": "POST",
+      "explanation": "Server Actions are mutation-oriented and are invoked through POST.",
+      "topics": ["Server Actions", "HTTP"],
+      "id": "nextjs-036"
+    },
+    {
+      "type": "boolean",
+      "question": "Forms invoking Server Actions can support progressive enhancement when JavaScript has not loaded.",
+      "answer": true,
+      "explanation": "Server Action forms can submit without client JavaScript, improving resilience.",
+      "topics": ["Server Actions", "Forms", "Progressive enhancement"],
+      "id": "nextjs-037"
+    },
+    {
+      "type": "single",
+      "question": "What should a Server Action do with client-provided identifiers and form fields before a privileged mutation?",
+      "options": [
+        "Validate input and perform server-side authentication/authorization",
+        "Trust them because Actions are private",
+        "Authorize only in the client",
+        "Store them in localStorage first"
+      ],
+      "answer": "Validate input and perform server-side authentication/authorization",
+      "explanation": "Treat Server Actions as server endpoints: their arguments are untrusted and authorization must be enforced server-side.",
+      "topics": ["Server Actions", "Security", "Validation"],
+      "id": "nextjs-038"
+    },
+    {
+      "type": "single",
+      "question": "How do you declare a basic dynamic App Router segment named slug?",
+      "options": ["[slug]", ":slug", "{slug}", "<slug>"],
+      "answer": "[slug]",
+      "explanation": "A directory such as app/blog/[slug]/page.tsx creates a dynamic route segment.",
+      "topics": ["Dynamic routes", "App Router"],
+      "id": "nextjs-039"
+    },
+    {
+      "type": "single",
+      "question": "In current Next.js, what type of value is the params prop for an async dynamic page?",
+      "options": [
+        "A Promise that should be awaited",
+        "Always a synchronous object",
+        "URLSearchParams",
+        "A React state tuple"
+      ],
+      "answer": "A Promise that should be awaited",
+      "explanation": "Current route APIs expose params asynchronously; older versions permitted synchronous access.",
+      "topics": ["Dynamic routes", "params", "Next.js 16"],
+      "id": "nextjs-040"
+    },
+    {
+      "type": "single",
+      "question": "What is generateStaticParams() used for?",
+      "options": [
+        "Providing dynamic route parameter values to prerender at build time",
+        "Reading query strings",
+        "Creating auth tokens",
+        "Generating CSS classes"
+      ],
+      "answer": "Providing dynamic route parameter values to prerender at build time",
+      "explanation": "It can prerender all or a selected subset of known dynamic paths.",
+      "topics": ["Dynamic routes", "generateStaticParams", "Prerendering"],
+      "id": "nextjs-041"
+    },
+    {
+      "type": "single",
+      "question": "What does a folder named [...slug] represent?",
+      "options": [
+        "A catch-all dynamic segment",
+        "An optional layout",
+        "A private folder",
+        "A route group"
+      ],
+      "answer": "A catch-all dynamic segment",
+      "explanation": "Catch-all segments capture multiple path segments into one parameter.",
+      "topics": ["Dynamic routes", "Catch-all routes"],
+      "id": "nextjs-042"
+    },
+    {
+      "type": "single",
+      "question": "What is the main purpose of loading.tsx in an App Router segment?",
+      "options": [
+        "Provide an immediate Suspense fallback while route content streams",
+        "Load environment variables",
+        "Define API middleware",
+        "Precompile CSS"
+      ],
+      "answer": "Provide an immediate Suspense fallback while route content streams",
+      "explanation": "Next.js automatically places a Suspense boundary around the relevant page content.",
+      "topics": ["Streaming", "Suspense", "loading.tsx"],
+      "id": "nextjs-043"
+    },
+    {
+      "type": "multiple",
+      "question": "What are benefits of appropriately placed Suspense boundaries?",
+      "options": [
+        "Slow sections can stream independently",
+        "Users can see fallback UI earlier",
+        "Fast content need not wait for the slowest data source",
+        "All data becomes permanently cached"
+      ],
+      "answers": [
+        "Slow sections can stream independently",
+        "Users can see fallback UI earlier",
+        "Fast content need not wait for the slowest data source"
+      ],
+      "explanation": "Suspense improves rendering and streaming behavior; it is not a persistent cache.",
+      "topics": ["Suspense", "Streaming", "Performance"],
+      "id": "nextjs-044"
+    },
+    {
+      "type": "single",
+      "question": "Two independent database requests are awaited one after another in the same Server Component. What problem can this create?",
+      "options": [
+        "A request waterfall",
+        "A hydration mismatch",
+        "A route collision",
+        "A cache-tag conflict"
+      ],
+      "answer": "A request waterfall",
+      "explanation": "Independent operations should often be initiated concurrently rather than serialized.",
+      "topics": ["Data fetching", "Performance", "Waterfalls"],
+      "id": "nextjs-045"
+    },
+    {
+      "type": "single",
+      "question": "When several independent requests must all complete before rendering, what is a common way to start them concurrently?",
+      "options": [
+        "Promise.all()",
+        "useEffect() in a Server Component",
+        "setTimeout()",
+        "generateMetadata()"
+      ],
+      "answer": "Promise.all()",
+      "explanation": "Parallel initiation reduces avoidable sequential latency.",
+      "topics": ["Data fetching", "Parallelism", "Performance"],
+      "id": "nextjs-046"
+    },
+    {
+      "type": "single",
+      "question": "What does Next.js Link provide for internal navigation?",
+      "options": [
+        "Prefetching and client-side transitions while preserving shared UI where possible",
+        "Automatic database caching",
+        "Automatic authorization",
+        "A Server Action for every click"
+      ],
+      "answer": "Prefetching and client-side transitions while preserving shared UI where possible",
+      "explanation": "Link integrates with the App Router to make server-rendered routes navigate with SPA-like responsiveness.",
+      "topics": ["Navigation", "Link", "Prefetching"],
+      "id": "nextjs-047"
+    },
+    {
+      "type": "single",
+      "question": "How does standard automatic prefetching differ for static and dynamic routes?",
+      "options": [
+        "Static routes can be fully prefetched; dynamic routes may be skipped or partially prefetched when loading UI is available",
+        "Dynamic routes are always fully prefetched",
+        "Neither is prefetched",
+        "Only Route Handlers are prefetched"
+      ],
+      "answer": "Static routes can be fully prefetched; dynamic routes may be skipped or partially prefetched when loading UI is available",
+      "explanation": "loading.tsx can provide a useful prefetched shell for otherwise request-time dynamic routes.",
+      "topics": ["Navigation", "Prefetching", "Dynamic rendering"],
+      "id": "nextjs-048"
+    },
+    {
+      "type": "single",
+      "question": "Why can adding loading.tsx improve perceived navigation performance for a dynamic route?",
+      "options": [
+        "It enables immediate fallback UI and streaming instead of leaving the user waiting for the full server response",
+        "It makes every query static",
+        "It disables Server Components",
+        "It forces a full reload"
+      ],
+      "answer": "It enables immediate fallback UI and streaming instead of leaving the user waiting for the full server response",
+      "explanation": "The route can transition immediately to a loading state while slower content arrives.",
+      "topics": ["Navigation", "Streaming", "Performance"],
+      "id": "nextjs-049"
+    },
+    {
+      "type": "single",
+      "question": "When might `<Link prefetch={false}>` be reasonable?",
+      "options": [
+        "For very large or low-probability link collections where background prefetching wastes resources",
+        "For every static route",
+        "Whenever a route has a layout",
+        "Only for external URLs"
+      ],
+      "answer": "For very large or low-probability link collections where background prefetching wastes resources",
+      "explanation": "Prefetching trades background work for lower navigation latency.",
+      "topics": ["Navigation", "Prefetching", "Performance"],
+      "id": "nextjs-050"
+    },
+    {
+      "type": "single",
+      "question": "What does next/image primarily help optimize?",
+      "options": [
+        "Responsive sizing, lazy loading, layout stability, and modern image delivery",
+        "SQL plans",
+        "Server Action authorization",
+        "React state"
+      ],
+      "answer": "Responsive sizing, lazy loading, layout stability, and modern image delivery",
+      "explanation": "The Image component supplies framework-level image optimization and loading behavior.",
+      "topics": ["Images", "Performance", "next/image"],
+      "id": "nextjs-051"
+    },
+    {
+      "type": "single",
+      "question": "Starting with Next.js 16, which prop is preferred over the deprecated next/image priority prop when an image should be preloaded?",
+      "options": ["preload", "critical", "eagerPriority", "fetchNow"],
+      "answer": "preload",
+      "explanation": "Next.js 16 deprecated priority in favor of the more explicit preload prop.",
+      "topics": ["Images", "Next.js 16", "Performance"],
+      "id": "nextjs-052"
+    },
+    {
+      "type": "single",
+      "question": "What is a major performance/privacy benefit of next/font?",
+      "options": [
+        "It self-hosts and optimizes fonts without requiring runtime requests to an external font provider",
+        "It converts fonts to React components",
+        "It disables CSS",
+        "It forces system fonts"
+      ],
+      "answer": "It self-hosts and optimizes fonts without requiring runtime requests to an external font provider",
+      "explanation": "Self-hosting reduces external requests and helps avoid font-related layout shifts.",
+      "topics": ["Fonts", "Performance", "next/font"],
+      "id": "nextjs-053"
+    },
+    {
+      "type": "single",
+      "question": "A page's client JavaScript bundle is unexpectedly large and hydration/prefetch starts late. What is a high-value investigation?",
+      "options": [
+        "Inspect bundle composition and narrow 'use client' boundaries or move work back to the server",
+        "Convert every component to a Client Component",
+        "Disable code splitting",
+        "Add more useEffect hooks"
+      ],
+      "answer": "Inspect bundle composition and narrow 'use client' boundaries or move work back to the server",
+      "explanation": "Large client bundles delay download, parsing, hydration, and route prefetch behavior.",
+      "topics": ["Performance", "Bundling", "Hydration"],
+      "id": "nextjs-054"
+    },
+    {
+      "type": "single",
+      "question": "Which App Router mechanisms are intended for page metadata?",
+      "options": [
+        "A static metadata export or generateMetadata(), plus supported metadata files",
+        "Only document.head in useEffect",
+        "Only next.config headers",
+        "Only Route Handlers"
+      ],
+      "answer": "A static metadata export or generateMetadata(), plus supported metadata files",
+      "explanation": "Next.js supports both configuration-based and file-based metadata conventions.",
+      "topics": ["Metadata", "SEO", "App Router"],
+      "id": "nextjs-055"
+    },
+    {
+      "type": "single",
+      "question": "What does a route group such as app/(marketing)/about/page.tsx do to the URL?",
+      "options": [
+        "It organizes routes without adding '(marketing)' to the URL",
+        "It creates /marketing/about",
+        "It creates a dynamic route",
+        "It disables layouts"
+      ],
+      "answer": "It organizes routes without adding '(marketing)' to the URL",
+      "explanation": "Route groups affect organization/layout structure, not the pathname.",
+      "topics": ["App Router", "Route groups"],
+      "id": "nextjs-056"
+    },
+    {
+      "type": "single",
+      "question": "What does error.tsx primarily provide in the App Router?",
+      "options": [
+        "An error-boundary UI for uncaught runtime errors in a route segment",
+        "A replacement for TypeScript errors",
+        "A custom 404 only",
+        "A database retry mechanism"
+      ],
+      "answer": "An error-boundary UI for uncaught runtime errors in a route segment",
+      "explanation": "Special error files let App Router segments isolate failures and render recovery UI.",
+      "topics": ["Error handling", "App Router"],
+      "id": "nextjs-057"
+    },
+    {
+      "type": "single",
+      "question": "In Next.js 16, what happened to the middleware.ts convention?",
+      "options": [
+        "It was deprecated in favor of proxy.ts for the network-boundary use case",
+        "It became mandatory",
+        "It was renamed route.ts",
+        "It moved into public"
+      ],
+      "answer": "It was deprecated in favor of proxy.ts for the network-boundary use case",
+      "explanation": "The rename clarifies that the feature operates at a routing/network boundary rather than as general application middleware.",
+      "topics": ["Proxy", "Next.js 16", "Routing"],
+      "id": "nextjs-058"
+    },
+    {
+      "type": "single",
+      "question": "A self-hosted Next.js application runs on four ECS tasks. Why can relying only on a default instance-local cache cause inconsistent behavior?",
+      "options": [
+        "Each Next.js process can have its own cache and different requests may hit different tasks",
+        "ECS disables caching",
+        "ALBs rewrite cache keys randomly",
+        "Server Components cannot be cached in containers"
+      ],
+      "answer": "Each Next.js process can have its own cache and different requests may hit different tasks",
+      "explanation": "Horizontal self-hosting requires deliberate cache coordination when cache state must be shared across processes.",
+      "topics": ["Self-hosting", "Caching", "ECS", "Production"],
+      "id": "nextjs-059"
+    },
+    {
+      "type": "single",
+      "question": "What is a reason to configure a shared/custom Next.js cache handler in a multi-instance deployment?",
+      "options": [
+        "To share cache state across instances or persist it beyond an individual process lifetime",
+        "To make Client Components execute on the server",
+        "To replace database transactions",
+        "To eliminate the load balancer"
+      ],
+      "answer": "To share cache state across instances or persist it beyond an individual process lifetime",
+      "explanation": "A distributed or durable cache can coordinate cached work across containers when the default local cache is insufficient.",
+      "topics": ["Self-hosting", "Caching", "Distributed systems"],
+      "id": "nextjs-060"
+    }
+  ]
+}

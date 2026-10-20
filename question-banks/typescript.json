@@ -1,0 +1,791 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "typescript",
+  "name": "TypeScript",
+  "description": "Senior TypeScript interview preparation aligned with TypeScript 7.0: narrowing, unions and intersections, unknown vs any, never, generics, keyof/typeof/indexed access, utility types, optionality, assertions and runtime validation, structural typing, mapped and conditional types, tuples, functions, strict compiler settings, and production type-safety trade-offs.",
+  "questions": [
+    {
+      "type": "single",
+      "question": "What is the main difference between any and unknown?",
+      "options": [
+        "unknown requires narrowing before most operations; any largely opts out of type checking",
+        "any is safer than unknown",
+        "unknown can only hold objects",
+        "They are equivalent aliases"
+      ],
+      "answer": "unknown requires narrowing before most operations; any largely opts out of type checking",
+      "explanation": "Both can receive arbitrary values, but unknown forces you to prove what the value is before using it unsafely.",
+      "topics": ["unknown", "any", "Type safety"],
+      "id": "typescript-001"
+    },
+    {
+      "type": "boolean",
+      "question": "A value of type unknown can be assigned directly to a string variable without narrowing or assertion.",
+      "answer": false,
+      "explanation": "unknown is not assignable to a more specific type until it has been narrowed or asserted.",
+      "topics": ["unknown", "Assignability"],
+      "id": "typescript-002"
+    },
+    {
+      "type": "single",
+      "question": "Which type represents values that should never occur?",
+      "options": ["never", "void", "unknown", "undefined"],
+      "answer": "never",
+      "explanation": "never represents an impossible value, such as the return type of a function that always throws or an exhaustively eliminated union.",
+      "topics": ["never", "Type system"],
+      "id": "typescript-003"
+    },
+    {
+      "type": "single",
+      "question": "What is the practical difference between void and never as function return types?",
+      "options": [
+        "void means the caller should not use a returned value; never means the function cannot complete normally",
+        "They are identical",
+        "never means the function returns null",
+        "void means the function always throws"
+      ],
+      "answer": "void means the caller should not use a returned value; never means the function cannot complete normally",
+      "explanation": "A void function can return normally; a never function cannot reach a normal return.",
+      "topics": ["void", "never", "Functions"],
+      "id": "typescript-004"
+    },
+    {
+      "type": "single",
+      "question": "With strictNullChecks enabled, which type accepts both a string and null?",
+      "options": ["string | null", "string", "unknown[]", "never"],
+      "answer": "string | null",
+      "explanation": "Under strict null checking, null and undefined are not implicitly assignable to ordinary value types.",
+      "topics": ["strictNullChecks", "Union types", "Nullability"],
+      "id": "typescript-005"
+    },
+    {
+      "type": "single",
+      "question": "What does a union type A | B mean?",
+      "options": [
+        "A value may conform to A or B",
+        "A value must contain every member of A and B",
+        "A and B are converted to any",
+        "Only primitives can be unioned"
+      ],
+      "answer": "A value may conform to A or B",
+      "explanation": "A union models alternatives. You may only use operations valid for the currently known member until narrowing occurs.",
+      "topics": ["Union types", "Type system"],
+      "id": "typescript-006"
+    },
+    {
+      "type": "single",
+      "question": "What does an intersection type A & B generally mean for object types?",
+      "options": [
+        "The value must satisfy both A and B",
+        "The value may satisfy either A or B",
+        "The compiler selects one at random",
+        "It produces an array containing A and B"
+      ],
+      "answer": "The value must satisfy both A and B",
+      "explanation": "Intersections combine requirements from multiple types.",
+      "topics": ["Intersection types", "Object types"],
+      "id": "typescript-007"
+    },
+    {
+      "type": "single",
+      "question": "Why are discriminated unions useful?",
+      "options": [
+        "A shared literal property lets TypeScript narrow each variant reliably",
+        "They disable structural typing",
+        "They remove the need for runtime branching",
+        "They can only model enums"
+      ],
+      "answer": "A shared literal property lets TypeScript narrow each variant reliably",
+      "explanation": "A property such as kind or type with distinct literal values gives control-flow analysis a dependable discriminant.",
+      "topics": ["Discriminated unions", "Narrowing"],
+      "id": "typescript-008"
+    },
+    {
+      "type": "single",
+      "question": "Given type Shape = {kind:'circle'; radius:number} | {kind:'square'; size:number}, what does checking shape.kind === 'circle' do?",
+      "options": [
+        "Narrows shape to the circle variant inside that branch",
+        "Changes shape at runtime",
+        "Casts shape permanently",
+        "Has no effect on the type"
+      ],
+      "answer": "Narrows shape to the circle variant inside that branch",
+      "explanation": "TypeScript uses the literal discriminant to refine the union member in control flow.",
+      "topics": ["Discriminated unions", "Control-flow narrowing"],
+      "id": "typescript-009"
+    },
+    {
+      "type": "single",
+      "question": "What is a common way to enforce exhaustive handling of a discriminated union?",
+      "options": [
+        "Assign the remaining value to never in the default branch",
+        "Cast every branch to any",
+        "Use optional chaining",
+        "Convert the union to an interface"
+      ],
+      "answer": "Assign the remaining value to never in the default branch",
+      "explanation": "If a new union member is introduced and not handled, the value will no longer be assignable to never.",
+      "topics": ["Exhaustiveness", "never", "Discriminated unions"],
+      "id": "typescript-010"
+    },
+    {
+      "type": "single",
+      "question": "What does typeof value === 'string' provide to TypeScript?",
+      "options": [
+        "A runtime type guard that narrows value",
+        "A compile-time cast only",
+        "A generic constraint",
+        "A mapped type"
+      ],
+      "answer": "A runtime type guard that narrows value",
+      "explanation": "TypeScript understands JavaScript runtime checks such as typeof and uses them for control-flow narrowing.",
+      "topics": ["Narrowing", "typeof", "Type guards"],
+      "id": "typescript-011"
+    },
+    {
+      "type": "single",
+      "question": "Why does typeof value === 'object' not prove that value is a non-null object?",
+      "options": [
+        "Because JavaScript reports typeof null as 'object'",
+        "Because arrays are strings",
+        "Because objects have no runtime type",
+        "Because TypeScript ignores typeof"
+      ],
+      "answer": "Because JavaScript reports typeof null as 'object'",
+      "explanation": "This JavaScript quirk means a null check is often needed in addition to typeof.",
+      "topics": ["Narrowing", "typeof", "null"],
+      "id": "typescript-012"
+    },
+    {
+      "type": "single",
+      "question": "What does value instanceof Error do in TypeScript?",
+      "options": [
+        "Performs a runtime check and narrows value to Error in the matching branch",
+        "Only changes the static type",
+        "Works only on interfaces",
+        "Converts value into an Error"
+      ],
+      "answer": "Performs a runtime check and narrows value to Error in the matching branch",
+      "explanation": "instanceof participates in control-flow narrowing when the constructor relationship is meaningful at runtime.",
+      "topics": ["Narrowing", "instanceof", "Type guards"],
+      "id": "typescript-013"
+    },
+    {
+      "type": "single",
+      "question": "What is a user-defined type predicate?",
+      "options": [
+        "A function return type such as value is User that tells TypeScript how a runtime check narrows a value",
+        "A decorator on a class",
+        "A generic constraint",
+        "A type assertion"
+      ],
+      "answer": "A function return type such as value is User that tells TypeScript how a runtime check narrows a value",
+      "explanation": "Type predicates let reusable runtime checks inform the compiler's control-flow analysis.",
+      "topics": ["Type predicates", "Narrowing", "Type guards"],
+      "id": "typescript-014"
+    },
+    {
+      "type": "boolean",
+      "question": "A type assertion like value as User validates at runtime that value actually has the User shape.",
+      "answer": false,
+      "explanation": "Type assertions have no runtime validation effect; they only tell the compiler to trust the programmer.",
+      "topics": ["Type assertions", "Runtime validation"],
+      "id": "typescript-015"
+    },
+    {
+      "type": "single",
+      "question": "When data comes from JSON.parse, an HTTP response, or an external message, what is the safest general approach?",
+      "options": [
+        "Treat it as unknown and perform runtime validation before trusting its shape",
+        "Assert it directly to the expected interface",
+        "Declare it any permanently",
+        "Use keyof on the JSON string"
+      ],
+      "answer": "Treat it as unknown and perform runtime validation before trusting its shape",
+      "explanation": "TypeScript types are erased at runtime, so external data needs real validation if correctness or security depends on its shape.",
+      "topics": ["Runtime validation", "unknown", "External data"],
+      "id": "typescript-016"
+    },
+    {
+      "type": "single",
+      "question": "What is structural typing in TypeScript?",
+      "options": [
+        "Compatibility is primarily based on a value's shape rather than an explicitly declared nominal relationship",
+        "Every compatible type must extend the same class",
+        "Types are identified only by names",
+        "Interfaces are checked only at runtime"
+      ],
+      "answer": "Compatibility is primarily based on a value's shape rather than an explicitly declared nominal relationship",
+      "explanation": "If a value has the required structure, it can often be assigned even if it was declared under a different type name.",
+      "topics": ["Structural typing", "Type compatibility"],
+      "id": "typescript-017"
+    },
+    {
+      "type": "boolean",
+      "question": "Two interfaces with different names but identical public structure are normally incompatible in TypeScript.",
+      "answer": false,
+      "explanation": "TypeScript is structurally typed, so compatible shapes are generally assignable regardless of interface name.",
+      "topics": ["Structural typing", "Interfaces"],
+      "id": "typescript-018"
+    },
+    {
+      "type": "single",
+      "question": "Why can private or protected class members make two otherwise structurally similar class types incompatible?",
+      "options": [
+        "Those members must originate from a compatible class declaration lineage",
+        "Private fields are ignored by the type system",
+        "Classes use purely nominal typing",
+        "Protected members are converted to any"
+      ],
+      "answer": "Those members must originate from a compatible class declaration lineage",
+      "explanation": "Private/protected members add a nominal-like compatibility restriction to class instances.",
+      "topics": ["Classes", "Type compatibility", "Structural typing"],
+      "id": "typescript-019"
+    },
+    {
+      "type": "single",
+      "question": "What is a generic type parameter used for?",
+      "options": [
+        "Express relationships between types while preserving specific type information",
+        "Disable type checking inside a function",
+        "Create runtime templates",
+        "Force all arguments to be the same primitive"
+      ],
+      "answer": "Express relationships between types while preserving specific type information",
+      "explanation": "Generics let APIs remain reusable while carrying type relationships from inputs to outputs.",
+      "topics": ["Generics", "Type inference"],
+      "id": "typescript-020"
+    },
+    {
+      "type": "single",
+      "question": "What is the inferred return type of function identity<T>(value: T): T when called as identity('abc')?",
+      "options": ["string", "any", "unknown", "never"],
+      "answer": "string",
+      "explanation": "Type inference chooses a type compatible with the argument and propagates it through the generic return type.",
+      "topics": ["Generics", "Type inference"],
+      "id": "typescript-021"
+    },
+    {
+      "type": "single",
+      "question": "What does T extends { id: string } mean in a generic declaration?",
+      "options": [
+        "T must be assignable to a type containing an id string property",
+        "T inherits runtime code from the object",
+        "T can only be exactly { id: string }",
+        "T becomes a union with { id: string }"
+      ],
+      "answer": "T must be assignable to a type containing an id string property",
+      "explanation": "Generic constraints limit acceptable type arguments while still preserving additional specific properties.",
+      "topics": ["Generics", "Constraints"],
+      "id": "typescript-022"
+    },
+    {
+      "type": "single",
+      "question": "What does keyof User produce for type User = { id: string; name: string }?",
+      "options": ["'id' | 'name'", "string", "[id, name]", "User"],
+      "answer": "'id' | 'name'",
+      "explanation": "keyof produces a union of known property keys.",
+      "topics": ["keyof", "Type operators"],
+      "id": "typescript-023"
+    },
+    {
+      "type": "single",
+      "question": "Why is K extends keyof T useful in a generic property-access function?",
+      "options": [
+        "It restricts K to valid property keys of T",
+        "It converts all keys to strings at runtime",
+        "It prevents generic inference",
+        "It makes every property optional"
+      ],
+      "answer": "It restricts K to valid property keys of T",
+      "explanation": "This lets TypeScript reject invalid property names and infer the corresponding value type.",
+      "topics": ["Generics", "keyof", "Indexed access"],
+      "id": "typescript-024"
+    },
+    {
+      "type": "single",
+      "question": "What does T[K] represent when K is a key of T?",
+      "options": [
+        "The type of the property or properties selected by K",
+        "A runtime property read",
+        "A mapped type over every key",
+        "The constructor of T"
+      ],
+      "answer": "The type of the property or properties selected by K",
+      "explanation": "Indexed access types retrieve property types from another type.",
+      "topics": ["Indexed access types", "keyof"],
+      "id": "typescript-025"
+    },
+    {
+      "type": "single",
+      "question": "What is the purpose of typeof in a type position, such as type Config = typeof config?",
+      "options": [
+        "Derive a static type from the type of an existing value",
+        "Execute JavaScript typeof at runtime",
+        "Create an interface implementation",
+        "Narrow a union"
+      ],
+      "answer": "Derive a static type from the type of an existing value",
+      "explanation": "TypeScript's type-position typeof lets types be derived from values without duplicating their structure.",
+      "topics": ["typeof", "Type operators"],
+      "id": "typescript-026"
+    },
+    {
+      "type": "single",
+      "question": "What does ReturnType<typeof fn> produce?",
+      "options": [
+        "The return type of fn",
+        "The parameters of fn",
+        "The runtime result of calling fn",
+        "A Promise around fn"
+      ],
+      "answer": "The return type of fn",
+      "explanation": "ReturnType is a built-in conditional utility type that extracts a callable type's return value.",
+      "topics": ["Utility types", "ReturnType", "typeof"],
+      "id": "typescript-027"
+    },
+    {
+      "type": "single",
+      "question": "What does Parameters<typeof fn> produce?",
+      "options": [
+        "A tuple containing fn's parameter types",
+        "The function's return type",
+        "A union of argument names",
+        "A runtime array of arguments"
+      ],
+      "answer": "A tuple containing fn's parameter types",
+      "explanation": "Parameters extracts the parameter list of a callable type into a tuple.",
+      "topics": ["Utility types", "Parameters", "Tuples"],
+      "id": "typescript-028"
+    },
+    {
+      "type": "single",
+      "question": "What does Partial<User> do?",
+      "options": [
+        "Makes all properties of User optional",
+        "Makes all properties readonly",
+        "Removes null from User",
+        "Selects half the properties"
+      ],
+      "answer": "Makes all properties of User optional",
+      "explanation": "Partial is a mapped utility type over keyof User.",
+      "topics": ["Utility types", "Partial", "Mapped types"],
+      "id": "typescript-029"
+    },
+    {
+      "type": "single",
+      "question": "What does Required<User> do?",
+      "options": [
+        "Makes all properties required",
+        "Removes methods",
+        "Makes properties readonly",
+        "Adds runtime validation"
+      ],
+      "answer": "Makes all properties required",
+      "explanation": "Required removes optional modifiers from the selected type's properties.",
+      "topics": ["Utility types", "Required", "Mapped types"],
+      "id": "typescript-030"
+    },
+    {
+      "type": "single",
+      "question": "What does Pick<User, 'id' | 'name'> do?",
+      "options": [
+        "Creates a type containing only id and name from User",
+        "Removes id and name from User",
+        "Makes id and name optional",
+        "Extracts their runtime values"
+      ],
+      "answer": "Creates a type containing only id and name from User",
+      "explanation": "Pick selects a subset of keys from another type.",
+      "topics": ["Utility types", "Pick"],
+      "id": "typescript-031"
+    },
+    {
+      "type": "single",
+      "question": "What does Omit<User, 'password'> do?",
+      "options": [
+        "Creates a type with User's properties except password",
+        "Makes password optional",
+        "Sets password to never at runtime",
+        "Deletes password from an existing object"
+      ],
+      "answer": "Creates a type with User's properties except password",
+      "explanation": "Omit is a compile-time transformation and does not remove properties from runtime objects.",
+      "topics": ["Utility types", "Omit"],
+      "id": "typescript-032"
+    },
+    {
+      "type": "single",
+      "question": "What does Record<Role, Permission[]> model when Role is a union of literal keys?",
+      "options": [
+        "An object type with one property for each Role and Permission[] values",
+        "A runtime Map instance",
+        "A tuple of roles",
+        "An enum"
+      ],
+      "answer": "An object type with one property for each Role and Permission[] values",
+      "explanation": "Record constructs an object shape from a key type and a value type.",
+      "topics": ["Utility types", "Record", "Mapped types"],
+      "id": "typescript-033"
+    },
+    {
+      "type": "single",
+      "question": "What does Readonly<User> guarantee?",
+      "options": [
+        "Properties cannot be assigned through that Readonly type",
+        "The runtime object is deeply frozen",
+        "Nested objects become recursively immutable",
+        "The object cannot be garbage collected"
+      ],
+      "answer": "Properties cannot be assigned through that Readonly type",
+      "explanation": "Readonly is a compile-time shallow restriction; it does not call Object.freeze or recursively freeze nested objects.",
+      "topics": ["Utility types", "Readonly", "Immutability"],
+      "id": "typescript-034"
+    },
+    {
+      "type": "boolean",
+      "question": "TypeScript's built-in Readonly<T> is deeply recursive by default.",
+      "answer": false,
+      "explanation": "Readonly only marks the immediate properties of T as readonly.",
+      "topics": ["Readonly", "Utility types"],
+      "id": "typescript-035"
+    },
+    {
+      "type": "single",
+      "question": "What does the satisfies operator primarily do?",
+      "options": [
+        "Checks that an expression is assignable to a target type while preserving the expression's more specific inferred type",
+        "Casts an expression to the target type",
+        "Performs runtime validation",
+        "Makes every property readonly"
+      ],
+      "answer": "Checks that an expression is assignable to a target type while preserving the expression's more specific inferred type",
+      "explanation": "satisfies validates compatibility without replacing the expression's inferred type as a normal annotation often would.",
+      "topics": ["satisfies", "Type inference", "Type safety"],
+      "id": "typescript-036"
+    },
+    {
+      "type": "single",
+      "question": "What does 'as const' do to a literal expression?",
+      "options": [
+        "Prevents literal widening and makes object properties readonly and arrays readonly tuples",
+        "Deep-freezes the value at runtime",
+        "Converts the value to unknown",
+        "Marks every nested object method pure"
+      ],
+      "answer": "Prevents literal widening and makes object properties readonly and arrays readonly tuples",
+      "explanation": "const assertions affect TypeScript's inferred types; they do not freeze runtime objects.",
+      "topics": ["const assertions", "Literal types", "Readonly"],
+      "id": "typescript-037"
+    },
+    {
+      "type": "boolean",
+      "question": "const declaration and 'as const' have exactly the same type effect on object property values.",
+      "answer": false,
+      "explanation": "A const variable prevents rebinding, but an object literal's property values may still widen; 'as const' suppresses that widening and marks properties readonly.",
+      "topics": ["const assertions", "Literal inference"],
+      "id": "typescript-038"
+    },
+    {
+      "type": "single",
+      "question": "What is the difference between an optional property x?: string and x: string | undefined?",
+      "options": [
+        "The optional property may be absent; the required property must exist but may hold undefined",
+        "There is no semantic difference",
+        "The optional property can never contain undefined",
+        "The required property may be absent"
+      ],
+      "answer": "The optional property may be absent; the required property must exist but may hold undefined",
+      "explanation": "Object presence and the value undefined are distinct concepts, especially under exactOptionalPropertyTypes.",
+      "topics": ["Optional properties", "undefined", "Object types"],
+      "id": "typescript-039"
+    },
+    {
+      "type": "single",
+      "question": "What does exactOptionalPropertyTypes strengthen?",
+      "options": [
+        "It distinguishes a missing optional property from explicitly assigning undefined unless undefined is part of the property's type",
+        "It makes every property required",
+        "It disables optional chaining",
+        "It automatically removes null"
+      ],
+      "answer": "It distinguishes a missing optional property from explicitly assigning undefined unless undefined is part of the property's type",
+      "explanation": "This flag models optional-property presence more precisely.",
+      "topics": ["exactOptionalPropertyTypes", "TSConfig", "Optional properties"],
+      "id": "typescript-040"
+    },
+    {
+      "type": "single",
+      "question": "What does noUncheckedIndexedAccess do for undeclared keys covered by an index signature?",
+      "options": [
+        "Adds undefined to the resulting indexed-access type",
+        "Throws at runtime when a key is missing",
+        "Disables index signatures",
+        "Makes every index access any"
+      ],
+      "answer": "Adds undefined to the resulting indexed-access type",
+      "explanation": "The flag forces callers to account for the possibility that an indexed key is absent.",
+      "topics": ["noUncheckedIndexedAccess", "TSConfig", "Index signatures"],
+      "id": "typescript-041"
+    },
+    {
+      "type": "single",
+      "question": "What does the top-level strict compiler option do?",
+      "options": [
+        "Enables a family of stricter type-checking options",
+        "Turns TypeScript into a nominal type system",
+        "Prevents JavaScript emission",
+        "Automatically validates runtime data"
+      ],
+      "answer": "Enables a family of stricter type-checking options",
+      "explanation": "strict enables stricter checks such as strictNullChecks, noImplicitAny, strictFunctionTypes, and related options.",
+      "topics": ["strict", "TSConfig", "Compiler options"],
+      "id": "typescript-042"
+    },
+    {
+      "type": "single",
+      "question": "With useUnknownInCatchVariables enabled, what should you assume about catch (err)?",
+      "options": [
+        "err is unknown and should be narrowed before accessing properties like message",
+        "err is always Error",
+        "err is always string",
+        "err is never"
+      ],
+      "answer": "err is unknown and should be narrowed before accessing properties like message",
+      "explanation": "JavaScript can throw arbitrary values, so unknown forces safer error handling.",
+      "topics": ["useUnknownInCatchVariables", "unknown", "Error handling"],
+      "id": "typescript-043"
+    },
+    {
+      "type": "single",
+      "question": "What is a mapped type?",
+      "options": [
+        "A type that iterates over a union of property keys to produce another object type",
+        "A runtime Map subclass",
+        "A generic function overload",
+        "A discriminated union"
+      ],
+      "answer": "A type that iterates over a union of property keys to produce another object type",
+      "explanation": "Mapped types commonly use [K in keyof T] to transform an existing object type.",
+      "topics": ["Mapped types", "keyof", "Type manipulation"],
+      "id": "typescript-044"
+    },
+    {
+      "type": "single",
+      "question": "What does the -? modifier do in a mapped type property?",
+      "options": [
+        "Removes the optional modifier",
+        "Makes the property optional",
+        "Removes readonly",
+        "Excludes the property"
+      ],
+      "answer": "Removes the optional modifier",
+      "explanation": "Mapped type modifiers can add or remove optionality and readonly status.",
+      "topics": ["Mapped types", "Optional properties"],
+      "id": "typescript-045"
+    },
+    {
+      "type": "single",
+      "question": "What is a conditional type?",
+      "options": [
+        "A type expression of the form T extends U ? X : Y",
+        "A runtime if statement",
+        "A switch over enum values",
+        "A mapped type that can only return boolean"
+      ],
+      "answer": "A type expression of the form T extends U ? X : Y",
+      "explanation": "Conditional types choose one type or another based on assignability relationships.",
+      "topics": ["Conditional types", "Type manipulation"],
+      "id": "typescript-046"
+    },
+    {
+      "type": "single",
+      "question": "What does infer do inside a conditional type?",
+      "options": [
+        "Introduces a type variable inferred from a matched type pattern",
+        "Forces a runtime type check",
+        "Disables generic inference",
+        "Creates a value variable"
+      ],
+      "answer": "Introduces a type variable inferred from a matched type pattern",
+      "explanation": "infer is often used to extract pieces such as array element, Promise result, or function return types.",
+      "topics": ["Conditional types", "infer", "Type inference"],
+      "id": "typescript-047"
+    },
+    {
+      "type": "single",
+      "question": "What happens when a naked generic type parameter in a conditional type is given a union?",
+      "options": [
+        "The conditional type is usually distributive over the union members",
+        "The union is converted to an intersection automatically",
+        "The conditional always selects the false branch",
+        "TypeScript emits runtime branching code"
+      ],
+      "answer": "The conditional type is usually distributive over the union members",
+      "explanation": "Distributive conditional types apply the condition independently to each union constituent.",
+      "topics": ["Conditional types", "Distributivity", "Union types"],
+      "id": "typescript-048"
+    },
+    {
+      "type": "single",
+      "question": "What are template literal types useful for?",
+      "options": [
+        "Building string literal types from other literal types and unions",
+        "Generating runtime template strings",
+        "Replacing JSX",
+        "Typing only environment variables"
+      ],
+      "answer": "Building string literal types from other literal types and unions",
+      "explanation": "They allow APIs to encode string naming patterns such as event names or property-derived keys.",
+      "topics": ["Template literal types", "Literal types"],
+      "id": "typescript-049"
+    },
+    {
+      "type": "single",
+      "question": "Which type best models an object whose arbitrary string keys all map to numbers?",
+      "options": ["{ [key: string]: number }", "string[]", "Record<number, string>", "unknown"],
+      "answer": "{ [key: string]: number }",
+      "explanation": "An index signature describes unknown property names with a known value type.",
+      "topics": ["Index signatures", "Object types"],
+      "id": "typescript-050"
+    },
+    {
+      "type": "single",
+      "question": "What is the key difference between an interface and a type alias?",
+      "options": [
+        "Interfaces support declaration merging; type aliases can directly name unions, primitives, tuples, and other arbitrary type expressions",
+        "Interfaces can model objects but type aliases cannot",
+        "Type aliases exist at runtime but interfaces do not",
+        "Interfaces cannot extend other types"
+      ],
+      "answer": "Interfaces support declaration merging; type aliases can directly name unions, primitives, tuples, and other arbitrary type expressions",
+      "explanation": "Both work well for many object shapes, but they have different capabilities and extension/merging behavior.",
+      "topics": ["interface", "type aliases", "Declaration merging"],
+      "id": "typescript-051"
+    },
+    {
+      "type": "boolean",
+      "question": "Both interface declarations with the same name can merge in compatible contexts.",
+      "answer": true,
+      "explanation": "Declaration merging is a distinguishing capability of interfaces.",
+      "topics": ["Interfaces", "Declaration merging"],
+      "id": "typescript-052"
+    },
+    {
+      "type": "single",
+      "question": "What is function overloading in TypeScript?",
+      "options": [
+        "Providing multiple call signatures for one implementation",
+        "Declaring multiple JavaScript function bodies with the same name",
+        "Automatically dispatching on runtime argument types",
+        "Using a union instead of a function"
+      ],
+      "answer": "Providing multiple call signatures for one implementation",
+      "explanation": "Overload signatures describe supported call shapes; a single implementation handles the runtime logic.",
+      "topics": ["Functions", "Overloads"],
+      "id": "typescript-053"
+    },
+    {
+      "type": "single",
+      "question": "When is a union parameter usually preferable to overloads?",
+      "options": [
+        "When the function behaves the same way for each alternative and the return relationship does not require distinct signatures",
+        "Whenever there are more than two parameters",
+        "Only for async functions",
+        "Never; overloads are always clearer"
+      ],
+      "answer": "When the function behaves the same way for each alternative and the return relationship does not require distinct signatures",
+      "explanation": "Unions are often simpler when overloads would merely repeat equivalent call behavior.",
+      "topics": ["Functions", "Overloads", "Union types"],
+      "id": "typescript-054"
+    },
+    {
+      "type": "single",
+      "question": "What does readonly on a property prevent?",
+      "options": [
+        "Assignment through that typed property reference",
+        "All mutation of nested data at runtime",
+        "Reading the property",
+        "Object allocation"
+      ],
+      "answer": "Assignment through that typed property reference",
+      "explanation": "readonly is a compile-time restriction and is shallow unless deeper types are also readonly.",
+      "topics": ["readonly", "Object types", "Immutability"],
+      "id": "typescript-055"
+    },
+    {
+      "type": "single",
+      "question": "What is a tuple type such as [string, number]?",
+      "options": [
+        "An array type with known element positions and corresponding types",
+        "A runtime immutable array",
+        "A union of string and number",
+        "A Record with numeric keys only"
+      ],
+      "answer": "An array type with known element positions and corresponding types",
+      "explanation": "Tuples model fixed or structured positional data more precisely than ordinary arrays.",
+      "topics": ["Tuples", "Arrays"],
+      "id": "typescript-056"
+    },
+    {
+      "type": "single",
+      "question": "Why is enum sometimes avoided in library/domain modeling when literal unions can express the same states?",
+      "options": [
+        "Literal unions often stay closer to plain JavaScript and can avoid extra emitted/runtime enum behavior",
+        "Enums cannot represent strings",
+        "Enums disable narrowing",
+        "Enums are unsupported by TypeScript 7"
+      ],
+      "answer": "Literal unions often stay closer to plain JavaScript and can avoid extra emitted/runtime enum behavior",
+      "explanation": "This is a design trade-off rather than a rule; enums remain valid TypeScript.",
+      "topics": ["Enums", "Literal unions", "Design trade-offs"],
+      "id": "typescript-057"
+    },
+    {
+      "type": "single",
+      "question": "What is excess property checking most likely to catch?",
+      "options": [
+        "Unexpected properties on a fresh object literal assigned or passed to a narrower object type",
+        "Every extra property on every structurally compatible variable",
+        "Missing runtime JSON validation",
+        "Private class members"
+      ],
+      "answer": "Unexpected properties on a fresh object literal assigned or passed to a narrower object type",
+      "explanation": "Fresh object literals receive extra checks that do not apply identically to every intermediate variable under structural typing.",
+      "topics": ["Excess property checks", "Object types", "Structural typing"],
+      "id": "typescript-058"
+    },
+    {
+      "type": "single",
+      "question": "What is the principal change in TypeScript 7.0 compared with TypeScript 6.0?",
+      "options": [
+        "The compiler and language service were ported to native Go for major performance improvements while preserving TypeScript semantics",
+        "TypeScript became nominally typed",
+        "Interfaces were removed",
+        "Generics now exist at runtime"
+      ],
+      "answer": "The compiler and language service were ported to native Go for major performance improvements while preserving TypeScript semantics",
+      "explanation": "TypeScript 7.0's headline change is its native implementation and parallelism rather than a redesigned type system.",
+      "topics": ["TypeScript 7", "Compiler", "Performance"],
+      "id": "typescript-059"
+    },
+    {
+      "type": "multiple",
+      "question": "Which practices generally improve TypeScript safety at application boundaries?",
+      "options": [
+        "Prefer unknown over any for untrusted values",
+        "Validate external data at runtime",
+        "Enable strict compiler settings",
+        "Use unchecked type assertions to silence all errors"
+      ],
+      "answers": [
+        "Prefer unknown over any for untrusted values",
+        "Validate external data at runtime",
+        "Enable strict compiler settings"
+      ],
+      "explanation": "TypeScript is erased at runtime. Strong compile-time settings plus runtime validation at untrusted boundaries provide better guarantees than assertions.",
+      "topics": ["Runtime validation", "strict", "unknown", "Type safety"],
+      "id": "typescript-060"
+    }
+  ]
+}

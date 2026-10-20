@@ -1,0 +1,1026 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "python-senior",
+  "name": "Senior Python",
+  "description": "Senior-level Python interview preparation covering object semantics, collections, functions, typing, OOP, concurrency, asyncio, backend engineering, testing, and production practices.",
+  "questions": [
+    {
+      "id": "python-senior-001",
+      "type": "single",
+      "question": "Given `a = [1, 2]`, `b = a`, and then `b.append(3)`, what is the value of `a`?",
+      "options": ["[1, 2]", "[1, 2, 3]", "[3]", "It depends on garbage collection"],
+      "answer": "[1, 2, 3]",
+      "explanation": "Assignment binds another name to the same list object. It does not copy the list, so mutating the object through `b` is visible through `a`.",
+      "topics": ["Object references", "Assignment semantics", "Mutability"]
+    },
+    {
+      "id": "python-senior-002",
+      "type": "single",
+      "question": "Given `a = [[1], [2]]` and `b = a.copy()`, what happens after `b[0].append(3)`?",
+      "options": [
+        "Only b becomes [[1, 3], [2]]",
+        "Both a and b contain [[1, 3], [2]]",
+        "Python raises TypeError",
+        "a becomes [[1], [2], [3]]"
+      ],
+      "answer": "Both a and b contain [[1, 3], [2]]",
+      "explanation": "`list.copy()` performs a shallow copy. The outer lists differ, but both contain references to the same nested lists.",
+      "topics": ["Shallow copy", "Nested objects", "Object references"]
+    },
+    {
+      "id": "python-senior-003",
+      "type": "boolean",
+      "question": "`copy.deepcopy()` recursively creates independent copies of nested objects whenever possible.",
+      "answer": true,
+      "explanation": "`deepcopy` recursively copies the object graph while maintaining a memo table to handle shared references and cycles. Custom classes can influence this behavior.",
+      "topics": ["Deep copy", "copy module", "Object graphs"]
+    },
+    {
+      "id": "python-senior-004",
+      "type": "single",
+      "question": "What is the primary difference between `==` and `is`?",
+      "options": [
+        "`==` tests identity while `is` tests value equality",
+        "`==` tests value equality while `is` tests object identity",
+        "They are always equivalent",
+        "`is` calls `__eq__` while `==` compares memory addresses"
+      ],
+      "answer": "`==` tests value equality while `is` tests object identity",
+      "explanation": "`==` normally delegates to equality methods such as `__eq__`. `is` asks whether two references point to the exact same object.",
+      "topics": ["Equality", "Identity", "Object model"]
+    },
+    {
+      "id": "python-senior-005",
+      "type": "multiple",
+      "question": "Which values are normally hashable?",
+      "options": ["42", "\"python\"", "(1, 2, 3)", "[1, 2, 3]"],
+      "answers": ["42", "\"python\"", "(1, 2, 3)"],
+      "explanation": "Integers, strings, and tuples containing only hashable values are hashable. Lists are mutable and therefore unhashable.",
+      "topics": ["Hashability", "Dictionary keys", "Sets"]
+    },
+    {
+      "id": "python-senior-006",
+      "type": "boolean",
+      "question": "Every tuple is hashable.",
+      "answer": false,
+      "explanation": "A tuple is hashable only when all of its elements are hashable. A tuple containing a list, for example, is not hashable.",
+      "topics": ["Tuples", "Hashability", "Immutable containers"]
+    },
+    {
+      "id": "python-senior-007",
+      "type": "boolean",
+      "question": "Modern Python dictionaries preserve insertion order as part of the language specification.",
+      "answer": true,
+      "explanation": "Dictionary insertion order became a language guarantee starting with Python 3.7.",
+      "topics": ["Dictionaries", "Insertion order", "Python collections"]
+    },
+    {
+      "id": "python-senior-008",
+      "type": "single",
+      "question": "What is problematic about `matrix = [[0] * 3] * 3`?",
+      "options": [
+        "It creates an immutable matrix",
+        "All three rows reference the same inner list",
+        "It creates three independent rows",
+        "It raises ValueError"
+      ],
+      "answer": "All three rows reference the same inner list",
+      "explanation": "List multiplication copies references. Mutating one nested row can therefore appear to mutate every row.",
+      "topics": ["List multiplication", "Aliasing", "Object references"]
+    },
+    {
+      "id": "python-senior-009",
+      "type": "multiple",
+      "question": "Which properties are characteristic of Python sets?",
+      "options": [
+        "Elements must be hashable",
+        "Duplicate equal elements are collapsed",
+        "Element order should be relied upon as insertion order",
+        "Average membership testing is typically O(1)"
+      ],
+      "answers": [
+        "Elements must be hashable",
+        "Duplicate equal elements are collapsed",
+        "Average membership testing is typically O(1)"
+      ],
+      "explanation": "Sets use hashing, require hashable elements, eliminate duplicates, and normally provide constant-time membership checks. Their iteration order is not an insertion-order API guarantee.",
+      "topics": ["Sets", "Hash tables", "Complexity"]
+    },
+    {
+      "id": "python-senior-010",
+      "type": "single",
+      "question": "What is the average-case complexity of retrieving a dictionary value by key?",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+      "answer": "O(1)",
+      "explanation": "Python dictionaries are hash tables and normally provide constant-time lookup, although pathological collision cases can degrade performance.",
+      "topics": ["Dictionaries", "Hash tables", "Big O"]
+    },
+    {
+      "id": "python-senior-011",
+      "type": "boolean",
+      "question": "In Python 3, the loop variable of a list comprehension leaks into the surrounding scope.",
+      "answer": false,
+      "explanation": "Python 3 comprehensions execute in their own implicit scope, so their iteration variable does not leak into the enclosing scope.",
+      "topics": ["Comprehensions", "Scope", "Python 3"]
+    },
+    {
+      "id": "python-senior-012",
+      "type": "single",
+      "question": "What is the main memory advantage of a generator expression over an equivalent list comprehension?",
+      "options": [
+        "Generators compress values in memory",
+        "Generators compute values lazily instead of materializing the entire collection",
+        "Generators use multiple CPU cores",
+        "Generators store values in Redis"
+      ],
+      "answer": "Generators compute values lazily instead of materializing the entire collection",
+      "explanation": "Generators produce values on demand, which is useful for large or potentially unbounded sequences.",
+      "topics": ["Generators", "Lazy evaluation", "Memory efficiency"]
+    },
+    {
+      "id": "python-senior-013",
+      "type": "boolean",
+      "question": "After a generator is exhausted, iterating over the same generator object again normally starts it from the beginning.",
+      "answer": false,
+      "explanation": "Generator objects are stateful iterators. Once exhausted they remain exhausted; create a new generator to iterate again.",
+      "topics": ["Generators", "Iterators", "State"]
+    },
+    {
+      "id": "python-senior-014",
+      "type": "single",
+      "question": "What does `yield from iterable` primarily do?",
+      "options": [
+        "Runs the iterable in another thread",
+        "Delegates iteration to another iterable or generator",
+        "Converts the iterable into a list",
+        "Prevents StopIteration"
+      ],
+      "answer": "Delegates iteration to another iterable or generator",
+      "explanation": "`yield from` forwards values from a subiterator and also supports generator delegation semantics such as propagating `send`, `throw`, and return values.",
+      "topics": ["Generators", "yield from", "Iteration"]
+    },
+    {
+      "id": "python-senior-015",
+      "type": "multiple",
+      "question": "Which methods are directly associated with Python's iterator protocol?",
+      "options": ["__iter__", "__next__", "__getitem__", "__enter__"],
+      "answers": ["__iter__", "__next__"],
+      "explanation": "An iterator exposes `__iter__()` and `__next__()`. `__next__()` raises `StopIteration` when the sequence is exhausted.",
+      "topics": ["Iterator protocol", "Dunder methods", "Iteration"]
+    },
+    {
+      "id": "python-senior-016",
+      "type": "single",
+      "question": "When are Python default argument expressions evaluated?",
+      "options": [
+        "On every function invocation",
+        "When the function definition executes",
+        "Only when the argument is omitted",
+        "During garbage collection"
+      ],
+      "answer": "When the function definition executes",
+      "explanation": "Defaults are evaluated once when the function definition executes. This is why mutable default arguments can unintentionally retain state across calls.",
+      "topics": ["Default arguments", "Functions", "Mutable defaults"]
+    },
+    {
+      "id": "python-senior-017",
+      "type": "single",
+      "question": "What will `[lambda: i for i in range(3)]` typically demonstrate when all lambdas are invoked after the comprehension finishes?",
+      "options": [
+        "Each lambda permanently captures its current integer value",
+        "All lambdas resolve the same final value of i unless it is bound explicitly",
+        "Lambda expressions cannot form closures",
+        "Each lambda raises NameError"
+      ],
+      "answer": "All lambdas resolve the same final value of i unless it is bound explicitly",
+      "explanation": "Closures capture variables through late binding rather than snapshotting their values. A common workaround is `lambda i=i: i`.",
+      "topics": ["Closures", "Late binding", "Lambda"]
+    },
+    {
+      "id": "python-senior-018",
+      "type": "single",
+      "question": "What does `nonlocal` allow an inner function to do?",
+      "options": [
+        "Modify a variable in an enclosing function scope",
+        "Modify any global variable",
+        "Create a new module-level variable",
+        "Disable lexical scoping"
+      ],
+      "answer": "Modify a variable in an enclosing function scope",
+      "explanation": "`nonlocal` binds a name to an existing variable in the nearest enclosing non-global scope.",
+      "topics": ["Closures", "nonlocal", "Scope"]
+    },
+    {
+      "id": "python-senior-019",
+      "type": "single",
+      "question": "Why is `functools.wraps` commonly used inside decorators?",
+      "options": [
+        "It automatically makes the wrapped function asynchronous",
+        "It preserves metadata such as the wrapped function's name and docstring",
+        "It caches every function result",
+        "It converts a decorator into a context manager"
+      ],
+      "answer": "It preserves metadata such as the wrapped function's name and docstring",
+      "explanation": "`functools.wraps` copies relevant metadata and sets `__wrapped__`, improving introspection, debugging, documentation, and tooling.",
+      "topics": ["Decorators", "functools.wraps", "Introspection"]
+    },
+    {
+      "id": "python-senior-020",
+      "type": "multiple",
+      "question": "Which parameter definitions can be used to constrain how callers pass arguments?",
+      "options": [
+        "Positional-only parameters using `/`",
+        "Keyword-only parameters using `*`",
+        "`*args` for arbitrary positional arguments",
+        "`**kwargs` for arbitrary keyword arguments"
+      ],
+      "answers": ["Positional-only parameters using `/`", "Keyword-only parameters using `*`"],
+      "explanation": "The `/` marker makes parameters before it positional-only, while `*` makes parameters after it keyword-only. By contrast, `*args` and `**kwargs` broaden the accepted call signature by collecting arbitrary positional and keyword arguments rather than constraining how named parameters must be supplied.",
+      "topics": [
+        "Function signatures",
+        "Positional-only parameters",
+        "Keyword-only parameters",
+        "*args",
+        "**kwargs"
+      ]
+    },
+    {
+      "id": "python-senior-021",
+      "type": "boolean",
+      "question": "If a context manager's `__exit__` method returns a truthy value, an exception raised inside the `with` block can be suppressed.",
+      "answer": true,
+      "explanation": "`__exit__` receives exception information. Returning a truthy value tells Python that the exception has been handled.",
+      "topics": ["Context managers", "with statement", "Exception handling"]
+    },
+    {
+      "id": "python-senior-022",
+      "type": "boolean",
+      "question": "A `finally` block normally executes even when the corresponding `try` block performs a return.",
+      "answer": true,
+      "explanation": "`finally` is intended for cleanup and generally executes as control leaves the `try` statement, including through return or exception propagation.",
+      "topics": ["Exceptions", "finally", "Control flow"]
+    },
+    {
+      "id": "python-senior-023",
+      "type": "single",
+      "question": "What does `raise ServiceError() from exc` provide?",
+      "options": [
+        "Explicit exception chaining",
+        "Automatic retries",
+        "Exception suppression",
+        "Stack trace removal"
+      ],
+      "answer": "Explicit exception chaining",
+      "explanation": "`raise ... from ...` records the original exception as the explicit cause, making layered failures easier to diagnose.",
+      "topics": ["Exception chaining", "Custom exceptions", "Error handling"]
+    },
+    {
+      "id": "python-senior-024",
+      "type": "boolean",
+      "question": "`except Exception:` normally catches `KeyboardInterrupt` and `SystemExit`.",
+      "answer": false,
+      "explanation": "`KeyboardInterrupt` and `SystemExit` inherit directly from `BaseException`, not `Exception`, so normal application exception handlers do not swallow them.",
+      "topics": ["Exceptions", "BaseException", "Exception hierarchy"]
+    },
+    {
+      "id": "python-senior-025",
+      "type": "boolean",
+      "question": "A frozen dataclass guarantees that every object reachable through its fields is immutable.",
+      "answer": false,
+      "explanation": "`frozen=True` prevents normal reassignment of dataclass fields. It does not recursively freeze mutable objects stored inside those fields.",
+      "topics": ["dataclass", "Immutability", "frozen dataclasses"]
+    },
+    {
+      "id": "python-senior-026",
+      "type": "single",
+      "question": "What is the preferred dataclass definition for a field that should receive a new empty list for every instance?",
+      "options": [
+        "items: list = []",
+        "items: list = field(default_factory=list)",
+        "items: list = list",
+        "items: list = None"
+      ],
+      "answer": "items: list = field(default_factory=list)",
+      "explanation": "`default_factory` creates a fresh value for each instance and avoids sharing a mutable default object.",
+      "topics": ["dataclass", "default_factory", "Mutable defaults"]
+    },
+    {
+      "id": "python-senior-027",
+      "type": "boolean",
+      "question": "Members of an `Enum` class can safely be compared by identity, such as `status is Status.ACTIVE`.",
+      "answer": true,
+      "explanation": "Enum members are singleton objects within the Enum class, so identity comparisons are valid.",
+      "topics": ["Enum", "Identity", "Domain modeling"]
+    },
+    {
+      "id": "python-senior-028",
+      "type": "boolean",
+      "question": "Python automatically enforces ordinary type annotations at runtime.",
+      "answer": false,
+      "explanation": "Type annotations are metadata. Static type checkers and runtime validation libraries can use them, but Python itself does not generally enforce them.",
+      "topics": ["Type hints", "Static typing", "Runtime behavior"]
+    },
+    {
+      "id": "python-senior-029",
+      "type": "single",
+      "question": "Conceptually, what does `Optional[str]` mean?",
+      "options": [
+        "The argument may be omitted from every function call",
+        "The value can be either str or None",
+        "The string may be empty",
+        "The value must have a default"
+      ],
+      "answer": "The value can be either str or None",
+      "explanation": "`Optional[T]` means `T | None`. It does not mean that a function parameter itself has a default value.",
+      "topics": ["Typing", "Optional", "Union types"]
+    },
+    {
+      "id": "python-senior-030",
+      "type": "single",
+      "question": "What is a major advantage of `typing.Protocol`?",
+      "options": [
+        "It enables structural typing based on supported behavior",
+        "It forces every implementation to inherit from the Protocol at runtime",
+        "It replaces Python's garbage collector",
+        "It automatically serializes objects"
+      ],
+      "answer": "It enables structural typing based on supported behavior",
+      "explanation": "Protocols support static structural subtyping: an object can satisfy an interface by providing the required methods and attributes without explicitly inheriting from it.",
+      "topics": ["Protocol", "Structural typing", "Interfaces"]
+    },
+    {
+      "id": "python-senior-031",
+      "type": "multiple",
+      "question": "Which constructs can help a static type checker narrow a union type?",
+      "options": [
+        "isinstance() checks",
+        "Checks against None",
+        "TypeGuard functions",
+        "Calling gc.collect()"
+      ],
+      "answers": ["isinstance() checks", "Checks against None", "TypeGuard functions"],
+      "explanation": "Static type checkers perform control-flow-based narrowing using runtime predicates and explicit constructs such as TypeGuard.",
+      "topics": ["Type narrowing", "TypeGuard", "Static analysis"]
+    },
+    {
+      "id": "python-senior-032",
+      "type": "single",
+      "question": "What normally happens when the same module is imported multiple times in one interpreter process?",
+      "options": [
+        "Its top-level code always executes again",
+        "The cached module in sys.modules is normally reused",
+        "Python creates a new subprocess",
+        "The module is automatically deep-copied"
+      ],
+      "answer": "The cached module in sys.modules is normally reused",
+      "explanation": "The import system normally checks `sys.modules` first. Explicit reload mechanisms can cause module code to run again.",
+      "topics": ["Imports", "sys.modules", "Modules"]
+    },
+    {
+      "id": "python-senior-033",
+      "type": "single",
+      "question": "When is the condition `if __name__ == '__main__':` normally true?",
+      "options": [
+        "When the module is imported",
+        "When the file is executed as the entry-point module",
+        "When the module defines a main function",
+        "Only inside virtual environments"
+      ],
+      "answer": "When the file is executed as the entry-point module",
+      "explanation": "The entry-point module receives the special name `__main__`. Imported modules normally receive their module name.",
+      "topics": ["__main__", "Modules", "Entry points"]
+    },
+    {
+      "id": "python-senior-034",
+      "type": "boolean",
+      "question": "Relative imports such as `from .service import Client` rely on package context and may fail if a package module is executed directly as an ordinary script.",
+      "answer": true,
+      "explanation": "Explicit relative imports depend on the module's package metadata. Running internal package modules directly can remove the required package context.",
+      "topics": ["Imports", "Packages", "Relative imports"]
+    },
+    {
+      "id": "python-senior-035",
+      "type": "multiple",
+      "question": "What does a Python virtual environment primarily help isolate?",
+      "options": [
+        "Installed Python packages",
+        "Command-line Python and pip paths",
+        "Project dependency versions",
+        "The operating system kernel"
+      ],
+      "answers": [
+        "Installed Python packages",
+        "Command-line Python and pip paths",
+        "Project dependency versions"
+      ],
+      "explanation": "Virtual environments provide isolated Python executable/package environments. They do not virtualize the operating system itself.",
+      "topics": ["Virtual environments", "Dependencies", "Packaging"]
+    },
+    {
+      "id": "python-senior-036",
+      "type": "single",
+      "question": "Inside a function, what are `args` and `kwargs` when declared as `def f(*args, **kwargs)`?",
+      "options": [
+        "args is a tuple and kwargs is a dictionary",
+        "args is a list and kwargs is a set",
+        "Both are dictionaries",
+        "Both are generators"
+      ],
+      "answer": "args is a tuple and kwargs is a dictionary",
+      "explanation": "`*args` collects extra positional arguments into a tuple, while `**kwargs` collects extra keyword arguments into a dictionary.",
+      "topics": ["*args", "**kwargs", "Function signatures"]
+    },
+    {
+      "id": "python-senior-037",
+      "type": "single",
+      "question": "Given `first, *middle, last = [1, 2, 3, 4]`, what is `middle`?",
+      "options": ["[2, 3]", "(2, 3)", "[1, 2, 3]", "3"],
+      "answer": "[2, 3]",
+      "explanation": "Extended iterable unpacking collects the starred portion into a list.",
+      "topics": ["Unpacking", "Iterable unpacking", "Python syntax"]
+    },
+    {
+      "id": "python-senior-038",
+      "type": "single",
+      "question": "What is the conventional distinction between `__repr__` and `__str__`?",
+      "options": [
+        "`__repr__` targets developers and debugging while `__str__` targets readable user-facing representation",
+        "`__repr__` is only for integers",
+        "`__str__` must always return valid Python code",
+        "There is no difference"
+      ],
+      "answer": "`__repr__` targets developers and debugging while `__str__` targets readable user-facing representation",
+      "explanation": "`repr()` generally aims for an unambiguous developer-oriented representation; `str()` generally aims for readability.",
+      "topics": ["__repr__", "__str__", "Dunder methods"]
+    },
+    {
+      "id": "python-senior-039",
+      "type": "boolean",
+      "question": "Defining `__eq__` on a normal class without defining an appropriate `__hash__` can make instances unhashable.",
+      "answer": true,
+      "explanation": "Python generally sets `__hash__` to None when a class defines custom equality without a compatible hash implementation, protecting the hash/equality contract.",
+      "topics": ["__eq__", "__hash__", "Hashability"]
+    },
+    {
+      "id": "python-senior-040",
+      "type": "single",
+      "question": "What is a common risk of storing a mutable object such as a list in a class attribute?",
+      "options": [
+        "Every instance may observe the same shared mutable object",
+        "Class attributes cannot contain lists",
+        "The list automatically becomes immutable",
+        "Each access automatically deep-copies the list"
+      ],
+      "answer": "Every instance may observe the same shared mutable object",
+      "explanation": "Class attributes belong to the class and are shared unless an instance shadows the attribute. Mutating a shared object can therefore affect multiple instances.",
+      "topics": ["Class attributes", "Instance attributes", "Mutable state"]
+    },
+    {
+      "id": "python-senior-041",
+      "type": "single",
+      "question": "Which characteristic makes an object a data descriptor?",
+      "options": [
+        "It defines __get__ and either __set__ or __delete__",
+        "It defines only __repr__",
+        "It inherits from dataclass",
+        "It defines __iter__"
+      ],
+      "answer": "It defines __get__ and either __set__ or __delete__",
+      "explanation": "Descriptors customize attribute access. Data descriptors define `__set__` or `__delete__` in addition to descriptor retrieval behavior and take precedence over instance dictionary entries.",
+      "topics": ["Descriptors", "Attribute lookup", "Python object model"]
+    },
+    {
+      "id": "python-senior-042",
+      "type": "boolean",
+      "question": "`super()` follows Python's method resolution order rather than simply calling a method on the class's textual parent.",
+      "answer": true,
+      "explanation": "`super()` is MRO-aware, which is particularly important for cooperative multiple inheritance.",
+      "topics": ["super", "MRO", "Inheritance"]
+    },
+    {
+      "id": "python-senior-043",
+      "type": "single",
+      "question": "Why is composition often preferred over inheritance for unrelated application services?",
+      "options": [
+        "It generally reduces coupling and allows behavior to be combined explicitly",
+        "Python does not support inheritance",
+        "Composition makes all methods static",
+        "Inheritance cannot be tested"
+      ],
+      "answer": "It generally reduces coupling and allows behavior to be combined explicitly",
+      "explanation": "Composition tends to avoid fragile inheritance hierarchies and lets objects depend on explicit collaborators with focused responsibilities.",
+      "topics": ["Composition", "Inheritance", "Software design"]
+    },
+    {
+      "id": "python-senior-044",
+      "type": "multiple",
+      "question": "Which statements correctly distinguish abstract base classes and Protocols?",
+      "options": [
+        "ABCs commonly express nominal inheritance relationships",
+        "Protocols can express structural typing",
+        "A class can statically satisfy a Protocol without explicitly inheriting from it",
+        "Protocols automatically instantiate missing methods"
+      ],
+      "answers": [
+        "ABCs commonly express nominal inheritance relationships",
+        "Protocols can express structural typing",
+        "A class can statically satisfy a Protocol without explicitly inheriting from it"
+      ],
+      "explanation": "ABCs typically define explicit inheritance-based contracts. Protocols allow compatible structure to satisfy an interface without nominal inheritance.",
+      "topics": ["ABC", "Protocol", "Interfaces"]
+    },
+    {
+      "id": "python-senior-045",
+      "type": "single",
+      "question": "How does CPython primarily reclaim most objects that are no longer referenced?",
+      "options": [
+        "Reference counting, supplemented by cyclic garbage collection",
+        "Only through a stop-the-world tracing collector",
+        "Manual free() calls",
+        "Objects are never reclaimed"
+      ],
+      "answer": "Reference counting, supplemented by cyclic garbage collection",
+      "explanation": "CPython primarily uses reference counting for reclamation and includes a cyclic garbage collector for reference cycles.",
+      "topics": ["Reference counting", "Garbage collection", "CPython"]
+    },
+    {
+      "id": "python-senior-046",
+      "type": "boolean",
+      "question": "`del variable` guarantees that the object referenced by the variable is immediately destroyed.",
+      "answer": false,
+      "explanation": "`del` removes a binding or reference. The object survives if other references exist, and destruction timing is implementation-dependent.",
+      "topics": ["del", "Object lifetime", "Garbage collection"]
+    },
+    {
+      "id": "python-senior-047",
+      "type": "single",
+      "question": "What happens if a long-running synchronous function is called directly inside an asyncio coroutine without yielding control?",
+      "options": [
+        "It can block the event-loop thread",
+        "Python automatically moves it to another process",
+        "It becomes non-blocking because the caller is async",
+        "asyncio cancels the function immediately"
+      ],
+      "answer": "It can block the event-loop thread",
+      "explanation": "`async` does not automatically make synchronous work non-blocking. Blocking calls executed on the event-loop thread prevent other tasks from making progress.",
+      "topics": ["asyncio", "Event loop", "Blocking operations"]
+    },
+    {
+      "id": "python-senior-048",
+      "type": "single",
+      "question": "What happens when an `async def` function is called normally?",
+      "options": [
+        "It returns a coroutine object",
+        "It immediately executes to completion",
+        "It creates a new OS thread",
+        "It creates a new process"
+      ],
+      "answer": "It returns a coroutine object",
+      "explanation": "Calling an async function creates a coroutine object. Its body runs when the coroutine is awaited or scheduled for execution.",
+      "topics": ["async", "await", "Coroutines"]
+    },
+    {
+      "id": "python-senior-049",
+      "type": "single",
+      "question": "With default settings, what does `asyncio.gather()` do when one awaited operation raises an exception?",
+      "options": [
+        "It propagates the first exception while other submitted awaitables are not automatically cancelled solely by gather",
+        "It silently ignores all exceptions",
+        "It always cancels every other awaitable before propagating",
+        "It converts every exception into None"
+      ],
+      "answer": "It propagates the first exception while other submitted awaitables are not automatically cancelled solely by gather",
+      "explanation": "With `return_exceptions=False`, the first raised exception is propagated. Unlike structured concurrency with TaskGroup, `gather` does not automatically cancel all remaining awaitables simply because one failed.",
+      "topics": ["asyncio.gather", "Concurrency", "Error handling"]
+    },
+    {
+      "id": "python-senior-050",
+      "type": "single",
+      "question": "What is an important behavior of `asyncio.TaskGroup` when one child task fails with an unhandled non-cancellation exception?",
+      "options": [
+        "Remaining tasks in the group are cancelled",
+        "All failures are silently ignored",
+        "The entire Python interpreter exits immediately",
+        "The failed task is automatically retried forever"
+      ],
+      "answer": "Remaining tasks in the group are cancelled",
+      "explanation": "TaskGroup provides structured concurrency. A child failure triggers cancellation of the group's remaining tasks, and failures are ultimately reported using exception-group semantics.",
+      "topics": ["TaskGroup", "Structured concurrency", "asyncio"]
+    },
+    {
+      "id": "python-senior-051",
+      "type": "boolean",
+      "question": "Coroutine cancellation should generally be allowed to propagate after performing necessary cleanup.",
+      "answer": true,
+      "explanation": "Cancellation is part of normal asyncio control flow. Accidentally swallowing `CancelledError` can interfere with timeouts, TaskGroup behavior, and graceful shutdown.",
+      "topics": ["Cancellation", "CancelledError", "Graceful shutdown"]
+    },
+    {
+      "id": "python-senior-052",
+      "type": "single",
+      "question": "What is the practical effect of the traditional CPython GIL for CPU-bound pure-Python threads?",
+      "options": [
+        "Only one thread normally executes Python bytecode at a time within a process",
+        "Every thread automatically runs on a different CPU core",
+        "Threads cannot perform I/O concurrently",
+        "The GIL guarantees application-level thread safety"
+      ],
+      "answer": "Only one thread normally executes Python bytecode at a time within a process",
+      "explanation": "In traditional GIL-enabled CPython builds, the GIL limits simultaneous execution of Python bytecode. Threads can still be useful for I/O-bound workloads because blocking operations can release the GIL.",
+      "topics": ["GIL", "CPython", "Threads"]
+    },
+    {
+      "id": "python-senior-053",
+      "type": "boolean",
+      "question": "The GIL means application code cannot have race conditions involving shared mutable state.",
+      "answer": false,
+      "explanation": "Operations can interleave across threads, and compound application operations are generally not atomic. Synchronization is still required where shared state has invariants.",
+      "topics": ["GIL", "Race conditions", "Thread safety"]
+    },
+    {
+      "id": "python-senior-054",
+      "type": "single",
+      "question": "For CPU-intensive pure-Python work that should use multiple CPU cores, which approach is traditionally most appropriate?",
+      "options": [
+        "Multiple processes",
+        "Adding more asyncio coroutines",
+        "Increasing HTTP keep-alive",
+        "Using a larger list"
+      ],
+      "answer": "Multiple processes",
+      "explanation": "Processes use separate interpreters and can traditionally bypass the per-process GIL for CPU-bound pure-Python workloads.",
+      "topics": ["Multiprocessing", "CPU-bound workloads", "Parallelism"]
+    },
+    {
+      "id": "python-senior-055",
+      "type": "multiple",
+      "question": "When can threads still be useful in traditional CPython?",
+      "options": [
+        "Network I/O",
+        "Filesystem I/O",
+        "Calling native extensions that release the GIL",
+        "Guaranteeing arbitrary pure-Python CPU work scales linearly across cores"
+      ],
+      "answers": [
+        "Network I/O",
+        "Filesystem I/O",
+        "Calling native extensions that release the GIL"
+      ],
+      "explanation": "Threads are useful when work spends substantial time outside execution of Python bytecode, particularly blocking I/O or native code that releases the GIL.",
+      "topics": ["Threads", "I/O-bound workloads", "GIL"]
+    },
+    {
+      "id": "python-senior-056",
+      "type": "single",
+      "question": "What is `asyncio.to_thread()` primarily useful for?",
+      "options": [
+        "Running a blocking synchronous function without blocking the event-loop thread",
+        "Making every CPU-bound function perfectly parallel",
+        "Creating another Python interpreter process",
+        "Converting a coroutine into JSON"
+      ],
+      "answer": "Running a blocking synchronous function without blocking the event-loop thread",
+      "explanation": "`asyncio.to_thread()` executes a synchronous callable in a worker thread, making it convenient for integrating blocking I/O into asynchronous applications.",
+      "topics": ["asyncio.to_thread", "Thread pools", "Blocking I/O"]
+    },
+    {
+      "id": "python-senior-057",
+      "type": "multiple",
+      "question": "What are important reasons for using a database connection pool in a backend service?",
+      "options": [
+        "Reuse established connections",
+        "Bound concurrent database connections",
+        "Reduce repeated connection-establishment overhead",
+        "Guarantee every query is fast"
+      ],
+      "answers": [
+        "Reuse established connections",
+        "Bound concurrent database connections",
+        "Reduce repeated connection-establishment overhead"
+      ],
+      "explanation": "Pools amortize connection setup and protect the database from unlimited connection growth. They do not make inefficient SQL automatically fast.",
+      "topics": ["Connection pooling", "Databases", "Backend architecture"]
+    },
+    {
+      "id": "python-senior-058",
+      "type": "multiple",
+      "question": "What benefits can `requests.Session` provide compared with repeatedly calling top-level `requests.get()` independently?",
+      "options": [
+        "Connection pooling and reuse",
+        "Persistent headers and cookies",
+        "Shared session configuration",
+        "Automatic asynchronous execution"
+      ],
+      "answers": [
+        "Connection pooling and reuse",
+        "Persistent headers and cookies",
+        "Shared session configuration"
+      ],
+      "explanation": "A Session maintains configuration and uses urllib3 connection pooling. The `requests` library remains synchronous.",
+      "topics": ["requests", "HTTP clients", "Connection pooling"]
+    },
+    {
+      "id": "python-senior-059",
+      "type": "boolean",
+      "question": "In a high-throughput asynchronous application, repeatedly creating a new `httpx.AsyncClient` for every request is generally preferable to reusing a client.",
+      "answer": false,
+      "explanation": "Long-lived clients allow HTTP connection pooling and keep-alive reuse. Creating a client for every request defeats much of that benefit.",
+      "topics": ["httpx", "AsyncClient", "HTTP connection pooling"]
+    },
+    {
+      "id": "python-senior-060",
+      "type": "single",
+      "question": "What normally happens when `json.dumps()` encounters a standard `datetime` object without a custom serializer?",
+      "options": [
+        "It raises TypeError",
+        "It automatically converts it to ISO 8601",
+        "It converts it to a Unix timestamp",
+        "It silently removes the field"
+      ],
+      "answer": "It raises TypeError",
+      "explanation": "Python's standard JSON encoder supports a limited set of built-in types. Types such as datetime require preprocessing or a custom encoding strategy.",
+      "topics": ["JSON serialization", "datetime", "API boundaries"]
+    },
+    {
+      "id": "python-senior-061",
+      "type": "multiple",
+      "question": "What are appropriate uses for Pydantic-style validation in a backend service?",
+      "options": [
+        "Validating external request data",
+        "Parsing configuration",
+        "Defining typed boundary models",
+        "Replacing every internal domain object regardless of need"
+      ],
+      "answers": [
+        "Validating external request data",
+        "Parsing configuration",
+        "Defining typed boundary models"
+      ],
+      "explanation": "Validation libraries are particularly valuable at untrusted system boundaries. Using them for every internal object can add unnecessary coupling and overhead.",
+      "topics": ["Pydantic", "Validation", "Boundary models"]
+    },
+    {
+      "id": "python-senior-062",
+      "type": "single",
+      "question": "What is the ORM N+1 query problem?",
+      "options": [
+        "Loading one collection and then issuing an additional query for each related object",
+        "Running exactly N database replicas",
+        "Executing N queries concurrently",
+        "Using more than one database transaction"
+      ],
+      "answer": "Loading one collection and then issuing an additional query for each related object",
+      "explanation": "Lazy-loading relationships inside a loop can turn one initial query into many additional queries. Eager-loading strategies can often avoid this.",
+      "topics": ["ORM", "N+1 queries", "SQLAlchemy"]
+    },
+    {
+      "id": "python-senior-063",
+      "type": "boolean",
+      "question": "A SQLAlchemy Session should generally be treated as a unit-of-work object with an explicit lifecycle rather than as a global thread-safe singleton.",
+      "answer": true,
+      "explanation": "A Session tracks transactional and identity-map state. Typical applications scope it to a request, job, or other unit of work rather than sharing one instance across concurrent operations.",
+      "topics": ["SQLAlchemy", "Session", "Unit of Work"]
+    },
+    {
+      "id": "python-senior-064",
+      "type": "multiple",
+      "question": "Which capabilities are commonly provided by pytest fixtures?",
+      "options": [
+        "Reusable test setup",
+        "Dependency injection into tests",
+        "Cleanup using yield fixtures",
+        "Different lifecycle scopes"
+      ],
+      "answers": [
+        "Reusable test setup",
+        "Dependency injection into tests",
+        "Cleanup using yield fixtures",
+        "Different lifecycle scopes"
+      ],
+      "explanation": "Fixtures provide composable setup and teardown and can be scoped at function, class, module, package, or session levels.",
+      "topics": ["pytest", "Fixtures", "Testing"]
+    },
+    {
+      "id": "python-senior-065",
+      "type": "single",
+      "question": "Which logging form generally avoids eagerly formatting a message that may never be emitted?",
+      "options": [
+        "logger.debug(\"user_id=%s\", user_id)",
+        "logger.debug(f\"user_id={user_id}\")",
+        "print(\"user_id=\" + str(user_id))",
+        "logger.debug(\"user_id=\" + str(user_id))"
+      ],
+      "answer": "logger.debug(\"user_id=%s\", user_id)",
+      "explanation": "Passing arguments separately allows the logging framework to defer interpolation until it determines that the log record will actually be emitted.",
+      "topics": ["Logging", "Performance", "Structured diagnostics"]
+    },
+    {
+      "id": "python-senior-066",
+      "type": "multiple",
+      "question": "Which properties usually characterize good production application configuration?",
+      "options": [
+        "Secrets are kept outside source code",
+        "Configuration is validated at startup",
+        "Environment-specific values can be supplied externally",
+        "Missing mandatory configuration silently falls back to arbitrary values"
+      ],
+      "answers": [
+        "Secrets are kept outside source code",
+        "Configuration is validated at startup",
+        "Environment-specific values can be supplied externally"
+      ],
+      "explanation": "Production configuration should be explicit, validated, externally configurable, and should avoid embedding secrets in the source repository.",
+      "topics": ["Configuration", "Secrets", "Production practices"]
+    },
+    {
+      "id": "python-senior-067",
+      "type": "single",
+      "question": "What is a major benefit of dependency injection in Python backend code?",
+      "options": [
+        "Collaborators can be replaced explicitly for testing and different runtime configurations",
+        "It eliminates the need for interfaces or boundaries",
+        "It automatically parallelizes the application",
+        "It prevents all runtime errors"
+      ],
+      "answer": "Collaborators can be replaced explicitly for testing and different runtime configurations",
+      "explanation": "Dependency injection makes dependencies explicit and reduces coupling to concrete infrastructure such as databases, HTTP clients, clocks, and external APIs.",
+      "topics": ["Dependency injection", "Testability", "Architecture"]
+    },
+    {
+      "id": "python-senior-068",
+      "type": "single",
+      "question": "A service needs to make ten independent HTTP calls concurrently using an asynchronous client. Which approach best matches asyncio's concurrency model?",
+      "options": [
+        "Create or collect the coroutines and await them concurrently",
+        "Call each blocking request sequentially from the event loop",
+        "Use recursion to increase concurrency",
+        "Call time.sleep() between requests"
+      ],
+      "answer": "Create or collect the coroutines and await them concurrently",
+      "explanation": "Asyncio concurrency works by allowing independent I/O operations to overlap while tasks yield control during awaits.",
+      "topics": ["asyncio", "Concurrent I/O", "HTTP clients"]
+    },
+    {
+      "id": "python-senior-069",
+      "type": "single",
+      "question": "Why is calling `time.sleep(5)` inside an async request handler usually problematic?",
+      "options": [
+        "It blocks the event-loop thread for approximately five seconds",
+        "It automatically creates five new threads",
+        "It changes the system clock",
+        "It permanently cancels the coroutine"
+      ],
+      "answer": "It blocks the event-loop thread for approximately five seconds",
+      "explanation": "Use `await asyncio.sleep()` for asynchronous waiting. `time.sleep()` is synchronous and prevents the event loop from scheduling other tasks on that thread.",
+      "topics": ["asyncio", "time.sleep", "Event loop blocking"]
+    },
+    {
+      "id": "python-senior-070",
+      "type": "boolean",
+      "question": "Async concurrency and parallel execution are the same concept.",
+      "answer": false,
+      "explanation": "Concurrency is about making progress on multiple tasks over overlapping periods. Parallelism means tasks literally execute simultaneously, usually using multiple cores, processes, or appropriate native execution.",
+      "topics": ["Concurrency", "Parallelism", "asyncio"]
+    },
+    {
+      "id": "python-senior-071",
+      "type": "single",
+      "question": "Why should an HTTP client usually have explicit timeouts?",
+      "options": [
+        "To prevent external calls from consuming resources indefinitely",
+        "To guarantee the remote server succeeds",
+        "To convert synchronous calls into asynchronous ones",
+        "To prevent DNS from being used"
+      ],
+      "answer": "To prevent external calls from consuming resources indefinitely",
+      "explanation": "Without bounded timeouts, slow dependencies can tie up workers, connections, tasks, or threads and cause cascading failure.",
+      "topics": ["HTTP timeouts", "Resilience", "Third-party APIs"]
+    },
+    {
+      "id": "python-senior-072",
+      "type": "multiple",
+      "question": "Which failures are commonly reasonable candidates for a bounded HTTP retry policy?",
+      "options": [
+        "Temporary 503 responses",
+        "Connection resets",
+        "Rate limiting when Retry-After semantics are respected",
+        "Permanent 400 validation errors"
+      ],
+      "answers": [
+        "Temporary 503 responses",
+        "Connection resets",
+        "Rate limiting when Retry-After semantics are respected"
+      ],
+      "explanation": "Retries should target transient failures and must consider operation idempotency. Retrying permanent client validation failures typically only adds load.",
+      "topics": ["Retries", "HTTP", "Resilience"]
+    },
+    {
+      "id": "python-senior-073",
+      "type": "single",
+      "question": "Why is exponential backoff commonly combined with jitter?",
+      "options": [
+        "To reduce synchronized retry storms across clients",
+        "To guarantee exactly-once delivery",
+        "To make JSON serialization faster",
+        "To eliminate the need for timeouts"
+      ],
+      "answer": "To reduce synchronized retry storms across clients",
+      "explanation": "Without jitter, many clients failing at the same time can retry on identical schedules, producing another load spike against the recovering dependency.",
+      "topics": ["Exponential backoff", "Jitter", "Retries"]
+    },
+    {
+      "id": "python-senior-074",
+      "type": "boolean",
+      "question": "Retrying a non-idempotent operation without an idempotency strategy can create duplicate side effects.",
+      "answer": true,
+      "explanation": "A timeout may occur after the server committed an operation but before the client received the response. Blind retries can therefore duplicate writes, charges, messages, or other side effects.",
+      "topics": ["Idempotency", "Retries", "Distributed systems"]
+    },
+    {
+      "id": "python-senior-075",
+      "type": "single",
+      "question": "What is the primary purpose of a semaphore around outbound async API calls?",
+      "options": [
+        "Bound the number of concurrent operations",
+        "Serialize every object to JSON",
+        "Make Python use multiple processes automatically",
+        "Guarantee remote API success"
+      ],
+      "answer": "Bound the number of concurrent operations",
+      "explanation": "An asyncio Semaphore can impose local concurrency limits, helping prevent connection exhaustion and excessive pressure on downstream APIs.",
+      "topics": ["Semaphores", "Concurrency limits", "Backpressure"]
+    },
+    {
+      "id": "python-senior-076",
+      "type": "multiple",
+      "question": "Which practices help produce maintainable Python backend services?",
+      "options": [
+        "Keep side effects near system boundaries",
+        "Prefer explicit dependencies",
+        "Separate domain logic from transport and persistence details",
+        "Make every function depend directly on global state"
+      ],
+      "answers": [
+        "Keep side effects near system boundaries",
+        "Prefer explicit dependencies",
+        "Separate domain logic from transport and persistence details"
+      ],
+      "explanation": "Keeping core logic independent from HTTP, databases, clocks, queues, and other infrastructure improves reasoning, testing, and adaptability.",
+      "topics": ["Backend architecture", "Separation of concerns", "Testability"]
+    },
+    {
+      "id": "python-senior-077",
+      "type": "single",
+      "question": "A function performs validation, database writes, HTTP calls, logging configuration, and response formatting. Which design concern is most evident?",
+      "options": [
+        "Low cohesion and too many responsibilities",
+        "Excessive immutability",
+        "Too much static typing",
+        "Insufficient recursion"
+      ],
+      "answer": "Low cohesion and too many responsibilities",
+      "explanation": "Mixing unrelated responsibilities increases coupling and makes failures, testing, and changes harder to isolate.",
+      "topics": ["Cohesion", "Single Responsibility Principle", "Clean Code"]
+    },
+    {
+      "id": "python-senior-078",
+      "type": "boolean",
+      "question": "Mocking every internal function call usually makes a unit test more robust to implementation refactoring.",
+      "answer": false,
+      "explanation": "Over-mocking implementation details creates brittle tests. Prefer testing observable behavior and mocking genuine external boundaries where appropriate.",
+      "topics": ["Testing", "Mocks", "Test design"]
+    },
+    {
+      "id": "python-senior-079",
+      "type": "multiple",
+      "question": "Which tests are especially valuable for a Python integration with a third-party API?",
+      "options": [
+        "Unit tests for transformation and retry decisions",
+        "Contract tests against representative provider payloads",
+        "Integration tests for persistence behavior",
+        "Tests that assume external APIs never change"
+      ],
+      "answers": [
+        "Unit tests for transformation and retry decisions",
+        "Contract tests against representative provider payloads",
+        "Integration tests for persistence behavior"
+      ],
+      "explanation": "Third-party integrations benefit from layered tests because failures can originate in business logic, provider schemas, HTTP behavior, or persistence.",
+      "topics": ["Integration testing", "Contract testing", "Third-party APIs"]
+    },
+    {
+      "id": "python-senior-080",
+      "type": "single",
+      "question": "A Python worker receives the same job twice because the queue provides at-least-once delivery. What is the most important application-level defense?",
+      "options": [
+        "Make processing idempotent or deduplicate using a stable operation identifier",
+        "Disable exception handling",
+        "Increase the recursion limit",
+        "Use only global variables"
+      ],
+      "answer": "Make processing idempotent or deduplicate using a stable operation identifier",
+      "explanation": "At-least-once delivery permits duplicate execution. Correct worker design therefore assumes duplicates can occur and protects externally visible side effects.",
+      "topics": ["Idempotency", "Workers", "At-least-once delivery"]
+    }
+  ]
+}

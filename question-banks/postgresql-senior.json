@@ -1,0 +1,1257 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "postgresql-senior",
+  "name": "Senior PostgreSQL",
+  "description": "Senior-level PostgreSQL interview preparation covering relational modeling, SQL, indexes, query planning, transactions, MVCC, locking, performance, migrations, partitioning, and integration-data design.",
+  "questions": [
+    {
+      "id": "postgresql-senior-001",
+      "type": "single",
+      "question": "What is the primary purpose of normalization in a relational schema?",
+      "options": [
+        "Reduce redundant data and update anomalies",
+        "Guarantee every query uses an index",
+        "Eliminate foreign keys",
+        "Store all entities in one table"
+      ],
+      "answer": "Reduce redundant data and update anomalies",
+      "explanation": "Normalization separates data according to functional dependencies, reducing duplication and anomalies during inserts, updates, and deletes.",
+      "topics": ["Normalization", "Relational modeling", "Data integrity"]
+    },
+    {
+      "id": "postgresql-senior-002",
+      "type": "boolean",
+      "question": "Denormalization can be an intentional performance trade-off when read patterns justify duplicating derived or frequently accessed data.",
+      "answer": true,
+      "explanation": "Denormalization can reduce joins or computation at read time, but increases consistency and update complexity.",
+      "topics": ["Denormalization", "Performance trade-offs", "Schema design"]
+    },
+    {
+      "id": "postgresql-senior-003",
+      "type": "multiple",
+      "question": "Which database constraints can directly enforce data integrity?",
+      "options": ["PRIMARY KEY", "FOREIGN KEY", "UNIQUE", "CHECK"],
+      "answers": ["PRIMARY KEY", "FOREIGN KEY", "UNIQUE", "CHECK"],
+      "explanation": "All four constraints can enforce invariants at the database level independently of application code.",
+      "topics": ["Constraints", "Data integrity", "Schema design"]
+    },
+    {
+      "id": "postgresql-senior-004",
+      "type": "single",
+      "question": "What does a foreign key primarily guarantee?",
+      "options": [
+        "Referenced rows satisfy a relationship constraint",
+        "The referencing column is automatically indexed",
+        "Queries automatically use JOINs",
+        "The referenced table cannot contain NULL"
+      ],
+      "answer": "Referenced rows satisfy a relationship constraint",
+      "explanation": "A foreign key enforces referential integrity. PostgreSQL does not automatically create an index on the referencing column.",
+      "topics": ["Foreign keys", "Referential integrity", "Indexes"]
+    },
+    {
+      "id": "postgresql-senior-005",
+      "type": "boolean",
+      "question": "PostgreSQL automatically creates an index on the referencing column whenever a FOREIGN KEY is defined.",
+      "answer": false,
+      "explanation": "Indexes are automatically created for primary keys and unique constraints, but not for the referencing side of a foreign key.",
+      "topics": ["Foreign keys", "Indexes", "PostgreSQL behavior"]
+    },
+    {
+      "id": "postgresql-senior-006",
+      "type": "single",
+      "question": "What is the usual relational model for a many-to-many relationship between users and roles?",
+      "options": [
+        "A junction table containing user_id and role_id foreign keys",
+        "A comma-separated role list inside users",
+        "One nullable role_id column",
+        "Duplicating each user row for every role"
+      ],
+      "answer": "A junction table containing user_id and role_id foreign keys",
+      "explanation": "A junction table models each relationship explicitly and allows appropriate uniqueness and foreign-key constraints.",
+      "topics": ["Many-to-many", "Junction tables", "Relational modeling"]
+    },
+    {
+      "id": "postgresql-senior-007",
+      "type": "multiple",
+      "question": "For a user_roles junction table, which design choices are commonly appropriate?",
+      "options": [
+        "FOREIGN KEY on user_id",
+        "FOREIGN KEY on role_id",
+        "UNIQUE or PRIMARY KEY on (user_id, role_id)",
+        "Store role names as comma-separated text instead"
+      ],
+      "answers": [
+        "FOREIGN KEY on user_id",
+        "FOREIGN KEY on role_id",
+        "UNIQUE or PRIMARY KEY on (user_id, role_id)"
+      ],
+      "explanation": "Foreign keys preserve referential integrity and a composite uniqueness constraint prevents duplicate relationships.",
+      "topics": ["Many-to-many", "Composite keys", "Constraints"]
+    },
+    {
+      "id": "postgresql-senior-008",
+      "type": "single",
+      "question": "Which join returns only rows for which the join condition matches on both sides?",
+      "options": ["INNER JOIN", "LEFT JOIN", "FULL OUTER JOIN", "CROSS JOIN"],
+      "answer": "INNER JOIN",
+      "explanation": "INNER JOIN returns rows for which the join predicate evaluates to true for both participating relations.",
+      "topics": ["INNER JOIN", "SQL joins", "Relational algebra"]
+    },
+    {
+      "id": "postgresql-senior-009",
+      "type": "single",
+      "question": "What does a LEFT JOIN preserve?",
+      "options": [
+        "All rows from the left table, even when there is no match on the right",
+        "Only matching rows",
+        "All rows from the right table only",
+        "Only rows containing no NULL values"
+      ],
+      "answer": "All rows from the left table, even when there is no match on the right",
+      "explanation": "Unmatched left-side rows are returned with NULL values for columns from the right-side relation.",
+      "topics": ["LEFT JOIN", "SQL joins", "NULL"]
+    },
+    {
+      "id": "postgresql-senior-010",
+      "type": "single",
+      "question": "Why can moving a condition on the right table from the ON clause to the WHERE clause change the result of a LEFT JOIN?",
+      "options": [
+        "The WHERE predicate can eliminate NULL-extended unmatched rows",
+        "WHERE clauses execute before JOIN syntax is parsed",
+        "ON clauses cannot contain comparisons",
+        "LEFT JOIN ignores the ON clause"
+      ],
+      "answer": "The WHERE predicate can eliminate NULL-extended unmatched rows",
+      "explanation": "A predicate such as `WHERE right.status = 'active'` rejects rows where `right.status` is NULL, potentially making the query behave like an inner join for that condition.",
+      "topics": ["LEFT JOIN", "WHERE vs ON", "Query semantics"]
+    },
+    {
+      "id": "postgresql-senior-011",
+      "type": "single",
+      "question": "What is the difference between COUNT(*) and COUNT(column)?",
+      "options": [
+        "COUNT(*) counts rows while COUNT(column) ignores NULL values in that column",
+        "They are always identical",
+        "COUNT(column) includes only duplicate values",
+        "COUNT(*) cannot be used with GROUP BY"
+      ],
+      "answer": "COUNT(*) counts rows while COUNT(column) ignores NULL values in that column",
+      "explanation": "COUNT(expression) counts non-NULL evaluations of the expression; COUNT(*) counts input rows.",
+      "topics": ["COUNT", "NULL", "Aggregations"]
+    },
+    {
+      "id": "postgresql-senior-012",
+      "type": "single",
+      "question": "What is HAVING primarily used for?",
+      "options": [
+        "Filtering groups after aggregation",
+        "Filtering rows before aggregation",
+        "Defining indexes",
+        "Ordering rows before a JOIN"
+      ],
+      "answer": "Filtering groups after aggregation",
+      "explanation": "WHERE filters input rows, while HAVING filters grouped or aggregate results.",
+      "topics": ["HAVING", "GROUP BY", "Aggregations"]
+    },
+    {
+      "id": "postgresql-senior-013",
+      "type": "boolean",
+      "question": "A WHERE clause is generally applied before GROUP BY and aggregation.",
+      "answer": true,
+      "explanation": "Conceptually, WHERE filters rows before grouping, while HAVING operates on groups after aggregation.",
+      "topics": ["WHERE", "GROUP BY", "SQL execution semantics"]
+    },
+    {
+      "id": "postgresql-senior-014",
+      "type": "single",
+      "question": "Which SQL feature is best suited to calculating a running total without collapsing individual rows?",
+      "options": ["Window function", "CHECK constraint", "CROSS JOIN", "DELETE RETURNING"],
+      "answer": "Window function",
+      "explanation": "Window functions compute values across related rows while retaining each input row in the result.",
+      "topics": ["Window functions", "Running totals", "Analytics SQL"]
+    },
+    {
+      "id": "postgresql-senior-015",
+      "type": "multiple",
+      "question": "Which are common PostgreSQL window functions?",
+      "options": ["ROW_NUMBER()", "RANK()", "LAG()", "LEAD()"],
+      "answers": ["ROW_NUMBER()", "RANK()", "LAG()", "LEAD()"],
+      "explanation": "These functions operate over windows defined by OVER, optionally with PARTITION BY and ORDER BY.",
+      "topics": ["Window functions", "ROW_NUMBER", "LAG and LEAD"]
+    },
+    {
+      "id": "postgresql-senior-016",
+      "type": "single",
+      "question": "What does `ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY created_at DESC)` provide?",
+      "options": [
+        "A sequential number within each customer partition",
+        "A globally unique primary key",
+        "The number of database connections",
+        "A persistent stored column"
+      ],
+      "answer": "A sequential number within each customer partition",
+      "explanation": "ROW_NUMBER restarts for each partition and follows the specified ordering.",
+      "topics": ["ROW_NUMBER", "PARTITION BY", "Window functions"]
+    },
+    {
+      "id": "postgresql-senior-017",
+      "type": "single",
+      "question": "A common way to retrieve the latest row per customer is to use which technique?",
+      "options": [
+        "ROW_NUMBER() over each customer partition and filter row_number = 1",
+        "COUNT(*) only",
+        "A CHECK constraint",
+        "TRUNCATE"
+      ],
+      "answer": "ROW_NUMBER() over each customer partition and filter row_number = 1",
+      "explanation": "Ranking rows per customer by descending timestamp is a general solution. PostgreSQL's DISTINCT ON can also solve this efficiently in many cases.",
+      "topics": ["Latest row per group", "Window functions", "DISTINCT ON"]
+    },
+    {
+      "id": "postgresql-senior-018",
+      "type": "single",
+      "question": "What is PostgreSQL's DISTINCT ON commonly useful for?",
+      "options": [
+        "Selecting one ordered row per distinct key",
+        "Creating unique indexes",
+        "Removing all indexes",
+        "Changing transaction isolation"
+      ],
+      "answer": "Selecting one ordered row per distinct key",
+      "explanation": "`DISTINCT ON (key)` combined with a compatible ORDER BY is a PostgreSQL-specific way to select, for example, the newest row for each key.",
+      "topics": ["DISTINCT ON", "Latest row per group", "PostgreSQL SQL"]
+    },
+    {
+      "id": "postgresql-senior-019",
+      "type": "boolean",
+      "question": "A CTE always guarantees that PostgreSQL materializes its result into a temporary structure before the rest of the query runs.",
+      "answer": false,
+      "explanation": "Modern PostgreSQL can inline non-recursive, side-effect-free CTEs in many cases. MATERIALIZED can explicitly request materialization.",
+      "topics": ["CTE", "Materialization", "Query planner"]
+    },
+    {
+      "id": "postgresql-senior-020",
+      "type": "single",
+      "question": "What is a recursive CTE commonly used for?",
+      "options": [
+        "Traversing hierarchical or graph-like relationships",
+        "Creating a database connection pool",
+        "Defining primary keys",
+        "Vacuuming tables"
+      ],
+      "answer": "Traversing hierarchical or graph-like relationships",
+      "explanation": "WITH RECURSIVE can repeatedly feed results back into a query, making it useful for trees, dependency graphs, and hierarchical structures.",
+      "topics": ["Recursive CTE", "Hierarchies", "WITH RECURSIVE"]
+    },
+    {
+      "id": "postgresql-senior-021",
+      "type": "single",
+      "question": "Which construct is often preferable to `NOT IN (subquery)` when the subquery may return NULL?",
+      "options": ["NOT EXISTS", "CROSS JOIN", "COUNT(*)", "UNION ALL"],
+      "answer": "NOT EXISTS",
+      "explanation": "NULL inside a NOT IN set can cause comparisons to evaluate to UNKNOWN and produce surprising results. NOT EXISTS typically expresses anti-join semantics more safely.",
+      "topics": ["NOT EXISTS", "NOT IN", "NULL semantics"]
+    },
+    {
+      "id": "postgresql-senior-022",
+      "type": "boolean",
+      "question": "In SQL, `NULL = NULL` evaluates to true.",
+      "answer": false,
+      "explanation": "NULL represents an unknown value. Ordinary comparisons with NULL evaluate to UNKNOWN. Use IS NULL or IS NOT DISTINCT FROM when appropriate.",
+      "topics": ["NULL", "Three-valued logic", "SQL semantics"]
+    },
+    {
+      "id": "postgresql-senior-023",
+      "type": "single",
+      "question": "Which PostgreSQL comparison treats two NULL values as equal for comparison purposes?",
+      "options": ["IS NOT DISTINCT FROM", "=", "LIKE", "IN"],
+      "answer": "IS NOT DISTINCT FROM",
+      "explanation": "`IS NOT DISTINCT FROM` behaves like equality while treating NULL as a comparable value.",
+      "topics": ["IS NOT DISTINCT FROM", "NULL", "Comparison semantics"]
+    },
+    {
+      "id": "postgresql-senior-024",
+      "type": "single",
+      "question": "What does `INSERT ... ON CONFLICT DO UPDATE` implement?",
+      "options": [
+        "An atomic upsert pattern",
+        "A table lock",
+        "A recursive query",
+        "A database backup"
+      ],
+      "answer": "An atomic upsert pattern",
+      "explanation": "ON CONFLICT uses a unique or exclusion constraint/index to detect conflicts and atomically update or ignore the conflicting row.",
+      "topics": ["UPSERT", "ON CONFLICT", "Idempotency"]
+    },
+    {
+      "id": "postgresql-senior-025",
+      "type": "boolean",
+      "question": "`ON CONFLICT DO NOTHING` can be useful for idempotent ingestion when a unique business key identifies duplicate events.",
+      "answer": true,
+      "explanation": "A suitable unique constraint lets PostgreSQL reject duplicate logical inserts atomically, avoiding a race-prone check-then-insert pattern.",
+      "topics": ["Idempotency", "ON CONFLICT", "Unique constraints"]
+    },
+    {
+      "id": "postgresql-senior-026",
+      "type": "single",
+      "question": "Why is a `SELECT` followed by a conditional `INSERT` usually weaker than a unique constraint plus `ON CONFLICT` for duplicate prevention?",
+      "options": [
+        "Concurrent transactions can both observe absence before either inserts",
+        "SELECT cannot read indexed columns",
+        "INSERT cannot occur inside transactions",
+        "Unique constraints are only documentation"
+      ],
+      "answer": "Concurrent transactions can both observe absence before either inserts",
+      "explanation": "Check-then-act introduces a race condition. A unique constraint delegates conflict detection to the database atomically.",
+      "topics": ["Race conditions", "UPSERT", "Concurrency"]
+    },
+    {
+      "id": "postgresql-senior-027",
+      "type": "single",
+      "question": "When is JSONB a good fit?",
+      "options": [
+        "For semi-structured attributes whose shape legitimately varies",
+        "For every column because schemas are unnecessary",
+        "For replacing all foreign keys",
+        "Only for storing binary images"
+      ],
+      "answer": "For semi-structured attributes whose shape legitimately varies",
+      "explanation": "JSONB is valuable for flexible or provider-specific data, but strongly relational and frequently queried attributes usually benefit from ordinary typed columns.",
+      "topics": ["JSONB", "Schema design", "Semi-structured data"]
+    },
+    {
+      "id": "postgresql-senior-028",
+      "type": "multiple",
+      "question": "What are potential disadvantages of putting most application data into large JSONB documents?",
+      "options": [
+        "Weaker relational constraints",
+        "More difficult indexing decisions",
+        "Harder schema evolution and query reasoning",
+        "JSONB values cannot be queried at all"
+      ],
+      "answers": [
+        "Weaker relational constraints",
+        "More difficult indexing decisions",
+        "Harder schema evolution and query reasoning"
+      ],
+      "explanation": "JSONB is queryable and indexable, but overuse can move important schema invariants out of PostgreSQL's relational model.",
+      "topics": ["JSONB", "Schema design", "Trade-offs"]
+    },
+    {
+      "id": "postgresql-senior-029",
+      "type": "single",
+      "question": "Which PostgreSQL index type is the usual default for equality and range predicates?",
+      "options": ["B-tree", "GIN", "GiST", "BRIN only"],
+      "answer": "B-tree",
+      "explanation": "B-tree indexes efficiently support equality, ordering, and range comparisons for many common scalar types.",
+      "topics": ["B-tree", "Indexes", "Query performance"]
+    },
+    {
+      "id": "postgresql-senior-030",
+      "type": "boolean",
+      "question": "Creating an index necessarily makes every query involving that column faster.",
+      "answer": false,
+      "explanation": "Indexes consume storage and write overhead, and the planner may correctly prefer a sequential scan when an index would cost more.",
+      "topics": ["Indexes", "Query planner", "Performance trade-offs"]
+    },
+    {
+      "id": "postgresql-senior-031",
+      "type": "single",
+      "question": "For an index on `(customer_id, created_at)`, which query pattern is usually best aligned with its leading column?",
+      "options": [
+        "WHERE customer_id = ? ORDER BY created_at",
+        "WHERE created_at = ? with no customer predicate",
+        "WHERE lower(email) = ?",
+        "WHERE status IS NULL only"
+      ],
+      "answer": "WHERE customer_id = ? ORDER BY created_at",
+      "explanation": "Multicolumn B-tree indexes are most directly useful when predicates constrain the leading columns.",
+      "topics": ["Composite indexes", "Column order", "B-tree"]
+    },
+    {
+      "id": "postgresql-senior-032",
+      "type": "boolean",
+      "question": "An index on `(a, b)` is generally equivalent to separate indexes on `a` and `b` for all query patterns.",
+      "answer": false,
+      "explanation": "Composite and separate indexes have different ordering, selectivity, storage, and planner behavior. An `(a,b)` index is not generally interchangeable with indexes on `a` and `b` individually.",
+      "topics": ["Composite indexes", "Index design", "Query patterns"]
+    },
+    {
+      "id": "postgresql-senior-033",
+      "type": "single",
+      "question": "What should primarily determine the order of columns in a composite index?",
+      "options": [
+        "Actual query predicates, ordering requirements, and selectivity",
+        "Alphabetical order",
+        "Column creation order",
+        "Column name length"
+      ],
+      "answer": "Actual query predicates, ordering requirements, and selectivity",
+      "explanation": "Index design should follow workload access patterns rather than simplistic rules such as always placing the highest-cardinality column first.",
+      "topics": ["Composite indexes", "Index column order", "Query patterns"]
+    },
+    {
+      "id": "postgresql-senior-034",
+      "type": "single",
+      "question": "What is a partial index?",
+      "options": [
+        "An index containing only rows satisfying a predicate",
+        "An index missing some columns due to corruption",
+        "An index stored partly in memory",
+        "An automatically temporary index"
+      ],
+      "answer": "An index containing only rows satisfying a predicate",
+      "explanation": "For example, an index with `WHERE status = 'pending'` can stay small and efficient when queries frequently target that subset.",
+      "topics": ["Partial indexes", "Index predicates", "Performance"]
+    },
+    {
+      "id": "postgresql-senior-035",
+      "type": "single",
+      "question": "Which workload is a strong candidate for a partial index?",
+      "options": [
+        "Frequently querying a small subset of active or pending rows",
+        "Queries that always scan every row",
+        "A table with no predicates",
+        "A column never used by queries"
+      ],
+      "answer": "Frequently querying a small subset of active or pending rows",
+      "explanation": "Partial indexes are particularly effective when the indexed predicate selects a stable, useful subset of a much larger table.",
+      "topics": ["Partial indexes", "Queue tables", "Index design"]
+    },
+    {
+      "id": "postgresql-senior-036",
+      "type": "single",
+      "question": "What does the INCLUDE clause allow in a PostgreSQL B-tree index?",
+      "options": [
+        "Store additional non-key columns for potential index-only scans",
+        "Add arbitrary WHERE predicates",
+        "Automatically partition the table",
+        "Disable uniqueness"
+      ],
+      "answer": "Store additional non-key columns for potential index-only scans",
+      "explanation": "INCLUDE columns are stored as payload rather than search keys, allowing the index to cover more queries.",
+      "topics": ["Covering indexes", "INCLUDE", "Index-only scans"]
+    },
+    {
+      "id": "postgresql-senior-037",
+      "type": "boolean",
+      "question": "An index-only scan always avoids every heap access.",
+      "answer": false,
+      "explanation": "PostgreSQL may still need to inspect the heap when the visibility map does not prove that tuples are visible to the current transaction.",
+      "topics": ["Index-only scan", "Visibility map", "MVCC"]
+    },
+    {
+      "id": "postgresql-senior-038",
+      "type": "single",
+      "question": "What does index selectivity describe?",
+      "options": [
+        "How effectively a predicate narrows the rows being searched",
+        "Whether an index is stored on SSD",
+        "The number of columns in every table",
+        "How long a transaction has existed"
+      ],
+      "answer": "How effectively a predicate narrows the rows being searched",
+      "explanation": "Highly selective predicates return a small fraction of rows and are often good candidates for indexed access.",
+      "topics": ["Selectivity", "Indexes", "Query planner"]
+    },
+    {
+      "id": "postgresql-senior-039",
+      "type": "boolean",
+      "question": "A low-cardinality boolean column is always useless to index.",
+      "answer": false,
+      "explanation": "A standalone full index may often be unattractive, but a partial index such as `WHERE processed = false` can be highly effective when only a small fraction of rows match.",
+      "topics": ["Cardinality", "Partial indexes", "Index selectivity"]
+    },
+    {
+      "id": "postgresql-senior-040",
+      "type": "single",
+      "question": "Why might PostgreSQL choose a sequential scan even though a suitable index exists?",
+      "options": [
+        "The planner estimates reading a large portion of the table is cheaper sequentially",
+        "PostgreSQL never uses indexes automatically",
+        "Sequential scans only occur on empty tables",
+        "Indexes cannot support WHERE clauses"
+      ],
+      "answer": "The planner estimates reading a large portion of the table is cheaper sequentially",
+      "explanation": "For low-selectivity predicates or small tables, sequential access can cost less than index lookups plus heap fetches.",
+      "topics": ["Sequential scan", "Query planner", "Cost estimation"]
+    },
+    {
+      "id": "postgresql-senior-041",
+      "type": "single",
+      "question": "What does EXPLAIN provide?",
+      "options": [
+        "The planner's estimated execution plan without normally running the query",
+        "A database backup",
+        "Actual runtime measurements for every query automatically",
+        "A list of table constraints only"
+      ],
+      "answer": "The planner's estimated execution plan without normally running the query",
+      "explanation": "EXPLAIN shows the selected plan and estimated costs, row counts, and plan nodes.",
+      "topics": ["EXPLAIN", "Query planning", "Performance analysis"]
+    },
+    {
+      "id": "postgresql-senior-042",
+      "type": "single",
+      "question": "What important additional information does EXPLAIN ANALYZE provide?",
+      "options": [
+        "Actual execution timing and row counts because the query is executed",
+        "Only index definitions",
+        "Only SQL syntax validation",
+        "Automatic query rewriting"
+      ],
+      "answer": "Actual execution timing and row counts because the query is executed",
+      "explanation": "EXPLAIN ANALYZE executes the statement and compares actual runtime behavior with planner estimates.",
+      "topics": ["EXPLAIN ANALYZE", "Actual rows", "Query tuning"]
+    },
+    {
+      "id": "postgresql-senior-043",
+      "type": "boolean",
+      "question": "Running EXPLAIN ANALYZE on an UPDATE or DELETE executes the data modification unless it is protected by a transaction that is rolled back.",
+      "answer": true,
+      "explanation": "ANALYZE executes the statement, so care is required with write statements.",
+      "topics": ["EXPLAIN ANALYZE", "Writes", "Query diagnostics"]
+    },
+    {
+      "id": "postgresql-senior-044",
+      "type": "single",
+      "question": "A query plan estimates 10 rows but actually returns 2,000,000. What does this most strongly suggest?",
+      "options": [
+        "Planner cardinality estimates are inaccurate",
+        "The primary key is corrupt",
+        "The query is necessarily deadlocked",
+        "MVCC has been disabled"
+      ],
+      "answer": "Planner cardinality estimates are inaccurate",
+      "explanation": "Large estimated-versus-actual row differences can cause poor join and scan choices and may indicate stale statistics or correlated predicates.",
+      "topics": ["Cardinality estimation", "ANALYZE", "Query planner"]
+    },
+    {
+      "id": "postgresql-senior-045",
+      "type": "single",
+      "question": "What is a Bitmap Heap Scan typically used for?",
+      "options": [
+        "Fetching many qualifying heap rows after constructing a bitmap of relevant pages",
+        "Reading every table row sequentially",
+        "Replicating a database",
+        "Checking transaction isolation"
+      ],
+      "answer": "Fetching many qualifying heap rows after constructing a bitmap of relevant pages",
+      "explanation": "Bitmap scans can be efficient when an index identifies enough rows that individual random heap fetches would be costly.",
+      "topics": ["Bitmap Heap Scan", "Bitmap Index Scan", "Query plans"]
+    },
+    {
+      "id": "postgresql-senior-046",
+      "type": "multiple",
+      "question": "Which join algorithms may appear in PostgreSQL execution plans?",
+      "options": ["Nested Loop", "Hash Join", "Merge Join", "Bubble Join"],
+      "answers": ["Nested Loop", "Hash Join", "Merge Join"],
+      "explanation": "PostgreSQL selects among nested-loop, hash, and merge joins depending on estimated costs, ordering, available indexes, and data size.",
+      "topics": ["Join algorithms", "Query plans", "Performance"]
+    },
+    {
+      "id": "postgresql-senior-047",
+      "type": "single",
+      "question": "When is a Nested Loop Join often particularly effective?",
+      "options": [
+        "When the outer relation is small and indexed lookups into the inner relation are cheap",
+        "Only when both tables contain billions of rows",
+        "Only for CROSS JOIN",
+        "Only when no indexes exist"
+      ],
+      "answer": "When the outer relation is small and indexed lookups into the inner relation are cheap",
+      "explanation": "A nested loop can be extremely efficient when each outer row drives a fast selective lookup into the inner relation.",
+      "topics": ["Nested Loop", "Join algorithms", "Indexes"]
+    },
+    {
+      "id": "postgresql-senior-048",
+      "type": "single",
+      "question": "What does ACID atomicity mean?",
+      "options": [
+        "A transaction's changes are applied as a unit or not applied",
+        "Every transaction executes on one CPU instruction",
+        "Every query is read-only",
+        "Transactions cannot overlap"
+      ],
+      "answer": "A transaction's changes are applied as a unit or not applied",
+      "explanation": "Atomicity prevents partial transaction effects from becoming committed state.",
+      "topics": ["ACID", "Atomicity", "Transactions"]
+    },
+    {
+      "id": "postgresql-senior-049",
+      "type": "multiple",
+      "question": "Which properties make up ACID?",
+      "options": ["Atomicity", "Consistency", "Isolation", "Durability"],
+      "answers": ["Atomicity", "Consistency", "Isolation", "Durability"],
+      "explanation": "ACID describes key transactional guarantees: Atomicity, Consistency, Isolation, and Durability.",
+      "topics": ["ACID", "Transactions", "Database fundamentals"]
+    },
+    {
+      "id": "postgresql-senior-050",
+      "type": "single",
+      "question": "What is PostgreSQL MVCC primarily designed to provide?",
+      "options": [
+        "Concurrent access through multiple row versions",
+        "Automatic horizontal sharding",
+        "One global lock for all queries",
+        "Automatic JSON conversion"
+      ],
+      "answer": "Concurrent access through multiple row versions",
+      "explanation": "MVCC lets transactions observe appropriate row versions according to their snapshots, reducing direct reader-writer blocking.",
+      "topics": ["MVCC", "Snapshots", "Concurrency"]
+    },
+    {
+      "id": "postgresql-senior-051",
+      "type": "boolean",
+      "question": "In PostgreSQL MVCC, UPDATE generally creates a new tuple version rather than overwriting the old tuple in place.",
+      "answer": true,
+      "explanation": "The previous tuple version remains until it is no longer needed and can eventually be reclaimed by VACUUM.",
+      "topics": ["MVCC", "UPDATE", "Tuple versions"]
+    },
+    {
+      "id": "postgresql-senior-052",
+      "type": "single",
+      "question": "What is PostgreSQL's default transaction isolation level?",
+      "options": ["READ COMMITTED", "READ UNCOMMITTED", "REPEATABLE READ", "SERIALIZABLE"],
+      "answer": "READ COMMITTED",
+      "explanation": "PostgreSQL defaults to READ COMMITTED, where each statement gets a snapshot of committed data as of that statement's start.",
+      "topics": ["READ COMMITTED", "Isolation levels", "Transactions"]
+    },
+    {
+      "id": "postgresql-senior-053",
+      "type": "single",
+      "question": "Under PostgreSQL READ COMMITTED, can two SELECT statements in the same transaction observe different committed data?",
+      "options": [
+        "Yes",
+        "No, never",
+        "Only if the table has no primary key",
+        "Only for temporary tables"
+      ],
+      "answer": "Yes",
+      "explanation": "Each statement in READ COMMITTED gets a new snapshot, so rows committed by other transactions between statements may become visible.",
+      "topics": ["READ COMMITTED", "Snapshots", "Isolation"]
+    },
+    {
+      "id": "postgresql-senior-054",
+      "type": "single",
+      "question": "What key behavior does PostgreSQL REPEATABLE READ provide?",
+      "options": [
+        "A transaction generally sees a stable snapshot for its duration",
+        "Every table is locked exclusively",
+        "No transaction can ever fail",
+        "It disables MVCC"
+      ],
+      "answer": "A transaction generally sees a stable snapshot for its duration",
+      "explanation": "REPEATABLE READ uses a transaction-level snapshot and prevents many anomalies that are possible under READ COMMITTED.",
+      "topics": ["REPEATABLE READ", "Snapshots", "Isolation"]
+    },
+    {
+      "id": "postgresql-senior-055",
+      "type": "single",
+      "question": "What additional behavior should an application expect when using PostgreSQL SERIALIZABLE isolation?",
+      "options": [
+        "Transactions may fail with serialization errors and need retrying",
+        "Every query becomes faster",
+        "Foreign keys are disabled",
+        "All writes become asynchronous"
+      ],
+      "answer": "Transactions may fail with serialization errors and need retrying",
+      "explanation": "Serializable isolation detects dangerous concurrent patterns. Applications must be prepared to retry aborted transactions.",
+      "topics": ["SERIALIZABLE", "Serialization failures", "Transaction retries"]
+    },
+    {
+      "id": "postgresql-senior-056",
+      "type": "single",
+      "question": "What does `SELECT ... FOR UPDATE` do?",
+      "options": [
+        "Locks selected rows against conflicting modifications until the transaction ends",
+        "Immediately updates every selected row",
+        "Creates an index",
+        "Locks the whole database"
+      ],
+      "answer": "Locks selected rows against conflicting modifications until the transaction ends",
+      "explanation": "FOR UPDATE acquires row-level locks that serialize conflicting updates or locking operations.",
+      "topics": ["SELECT FOR UPDATE", "Row locks", "Concurrency control"]
+    },
+    {
+      "id": "postgresql-senior-057",
+      "type": "single",
+      "question": "What is `FOR UPDATE SKIP LOCKED` especially useful for?",
+      "options": [
+        "Multiple workers claiming independent queue rows without waiting on rows already locked by another worker",
+        "Guaranteeing global FIFO ordering automatically",
+        "Backing up the database",
+        "Running read-only analytics"
+      ],
+      "answer": "Multiple workers claiming independent queue rows without waiting on rows already locked by another worker",
+      "explanation": "SKIP LOCKED lets concurrent consumers bypass rows currently locked by other transactions, making it useful for database-backed work queues.",
+      "topics": ["SKIP LOCKED", "Worker queues", "Concurrency"]
+    },
+    {
+      "id": "postgresql-senior-058",
+      "type": "boolean",
+      "question": "`SKIP LOCKED` is generally appropriate when a query requires a perfectly consistent analytical view of all matching rows.",
+      "answer": false,
+      "explanation": "SKIP LOCKED intentionally omits locked rows, so it produces an inconsistent view of the full matching set. This is useful for queues but usually inappropriate for ordinary reporting.",
+      "topics": ["SKIP LOCKED", "Consistency", "Queues"]
+    },
+    {
+      "id": "postgresql-senior-059",
+      "type": "single",
+      "question": "What is optimistic concurrency control commonly based on?",
+      "options": [
+        "Checking a version or timestamp when performing the update",
+        "Holding an exclusive database lock for the entire user session",
+        "Disabling transactions",
+        "Using only SELECT statements"
+      ],
+      "answer": "Checking a version or timestamp when performing the update",
+      "explanation": "An update can include a condition such as `WHERE id = ? AND version = ?`; zero affected rows indicates someone else modified the record.",
+      "topics": ["Optimistic locking", "Version columns", "Concurrency control"]
+    },
+    {
+      "id": "postgresql-senior-060",
+      "type": "single",
+      "question": "When is pessimistic row locking often appropriate?",
+      "options": [
+        "When conflicting concurrent modifications must be serialized before proceeding",
+        "For every read-only request",
+        "To avoid defining unique constraints",
+        "To replace indexes"
+      ],
+      "answer": "When conflicting concurrent modifications must be serialized before proceeding",
+      "explanation": "Pessimistic locking acquires locks before making decisions that depend on stable current state.",
+      "topics": ["Pessimistic locking", "Row locks", "Concurrency"]
+    },
+    {
+      "id": "postgresql-senior-061",
+      "type": "single",
+      "question": "What is a database deadlock?",
+      "options": [
+        "Two or more transactions wait on one another in a cycle",
+        "A query uses a sequential scan",
+        "A table has no primary key",
+        "A transaction commits successfully"
+      ],
+      "answer": "Two or more transactions wait on one another in a cycle",
+      "explanation": "PostgreSQL detects deadlocks and aborts one participant so the others can continue.",
+      "topics": ["Deadlocks", "Locks", "Concurrency"]
+    },
+    {
+      "id": "postgresql-senior-062",
+      "type": "multiple",
+      "question": "Which practices can reduce deadlock risk?",
+      "options": [
+        "Acquire locks in a consistent order",
+        "Keep transactions short",
+        "Avoid unnecessary locked resources",
+        "Have different code paths intentionally lock the same rows in opposite orders"
+      ],
+      "answers": [
+        "Acquire locks in a consistent order",
+        "Keep transactions short",
+        "Avoid unnecessary locked resources"
+      ],
+      "explanation": "Consistent lock ordering and shorter transactions reduce the opportunity for cyclic waits.",
+      "topics": ["Deadlocks", "Lock ordering", "Transaction design"]
+    },
+    {
+      "id": "postgresql-senior-063",
+      "type": "boolean",
+      "question": "Application code should generally be prepared to handle and retry appropriately scoped transactions after a PostgreSQL deadlock error.",
+      "answer": true,
+      "explanation": "PostgreSQL resolves a deadlock by aborting one transaction. If the operation is retryable, the application can start a new transaction and try again.",
+      "topics": ["Deadlock retry", "Error handling", "Transactions"]
+    },
+    {
+      "id": "postgresql-senior-064",
+      "type": "single",
+      "question": "Why are long-running transactions problematic in PostgreSQL?",
+      "options": [
+        "They can retain old MVCC snapshots and delay cleanup of dead tuples",
+        "They automatically delete indexes",
+        "They disable WAL permanently",
+        "PostgreSQL allows transactions for at most one second"
+      ],
+      "answer": "They can retain old MVCC snapshots and delay cleanup of dead tuples",
+      "explanation": "Long transactions can prevent VACUUM from reclaiming row versions still potentially visible to an old snapshot and may also hold locks for too long.",
+      "topics": ["Long-running transactions", "MVCC", "VACUUM"]
+    },
+    {
+      "id": "postgresql-senior-065",
+      "type": "multiple",
+      "question": "What problems can an oversized database connection pool cause?",
+      "options": [
+        "Too many PostgreSQL backend processes",
+        "Memory pressure",
+        "Contention and reduced throughput",
+        "Guaranteed faster queries"
+      ],
+      "answers": [
+        "Too many PostgreSQL backend processes",
+        "Memory pressure",
+        "Contention and reduced throughput"
+      ],
+      "explanation": "More connections are not always better. PostgreSQL uses a process per connection and excessive active concurrency can overwhelm CPU, memory, and I/O.",
+      "topics": ["Connection pooling", "Database concurrency", "Capacity planning"]
+    },
+    {
+      "id": "postgresql-senior-066",
+      "type": "single",
+      "question": "What is the primary role of a connection pool such as PgBouncer or an application pool?",
+      "options": [
+        "Reuse and limit database connections",
+        "Automatically optimize all SQL",
+        "Replace PostgreSQL transactions",
+        "Replicate every table"
+      ],
+      "answer": "Reuse and limit database connections",
+      "explanation": "Pools amortize connection setup and constrain the number of concurrent database sessions.",
+      "topics": ["Connection pooling", "PgBouncer", "Scalability"]
+    },
+    {
+      "id": "postgresql-senior-067",
+      "type": "single",
+      "question": "What is VACUUM primarily responsible for?",
+      "options": [
+        "Making space from obsolete tuple versions reusable and maintaining MVCC housekeeping",
+        "Deleting every unused table",
+        "Rebuilding application code",
+        "Encrypting backups"
+      ],
+      "answer": "Making space from obsolete tuple versions reusable and maintaining MVCC housekeeping",
+      "explanation": "VACUUM processes dead tuples and also performs important transaction-ID and visibility maintenance.",
+      "topics": ["VACUUM", "Dead tuples", "MVCC"]
+    },
+    {
+      "id": "postgresql-senior-068",
+      "type": "boolean",
+      "question": "A normal VACUUM usually returns freed table space directly to the operating system.",
+      "answer": false,
+      "explanation": "Standard VACUUM generally marks space reusable within PostgreSQL files. VACUUM FULL rewrites the table and can shrink its physical file, but requires stronger locking.",
+      "topics": ["VACUUM", "VACUUM FULL", "Storage"]
+    },
+    {
+      "id": "postgresql-senior-069",
+      "type": "single",
+      "question": "What is autovacuum?",
+      "options": [
+        "PostgreSQL's background mechanism for automatically running vacuum and analyze work based on table activity",
+        "An external backup service",
+        "A SQL formatter",
+        "A replication protocol"
+      ],
+      "answer": "PostgreSQL's background mechanism for automatically running vacuum and analyze work based on table activity",
+      "explanation": "Autovacuum maintains tables as updates and deletes generate dead tuples and as statistics need refreshing.",
+      "topics": ["Autovacuum", "VACUUM", "ANALYZE"]
+    },
+    {
+      "id": "postgresql-senior-070",
+      "type": "single",
+      "question": "What does ANALYZE primarily update?",
+      "options": [
+        "Statistics used by the query planner",
+        "Application source code",
+        "WAL retention settings",
+        "Foreign-key definitions"
+      ],
+      "answer": "Statistics used by the query planner",
+      "explanation": "ANALYZE samples table data and updates statistics such as value distributions that the planner uses for cardinality estimates.",
+      "topics": ["ANALYZE", "Planner statistics", "Cardinality estimation"]
+    },
+    {
+      "id": "postgresql-senior-071",
+      "type": "single",
+      "question": "What is table bloat?",
+      "options": [
+        "Excess physical space caused by obsolete tuple versions and page usage patterns",
+        "Having too many foreign keys",
+        "Using aliases in SQL",
+        "A transaction isolation mode"
+      ],
+      "answer": "Excess physical space caused by obsolete tuple versions and page usage patterns",
+      "explanation": "Heavy updates and deletes can leave substantial reusable but physically allocated space, especially when vacuum behavior and workload characteristics are unfavorable.",
+      "topics": ["Table bloat", "VACUUM", "Storage"]
+    },
+    {
+      "id": "postgresql-senior-072",
+      "type": "single",
+      "question": "What is a key goal of a zero- or low-downtime database migration?",
+      "options": [
+        "Keep old and new application versions compatible during rollout where necessary",
+        "Assume every deployment happens atomically across all servers",
+        "Always drop old columns before deploying code",
+        "Disable transactions permanently"
+      ],
+      "answer": "Keep old and new application versions compatible during rollout where necessary",
+      "explanation": "Distributed deployments often require expand-and-contract migrations so multiple application versions can coexist during rollout.",
+      "topics": ["Database migrations", "Expand and contract", "Zero downtime"]
+    },
+    {
+      "id": "postgresql-senior-073",
+      "type": "multiple",
+      "question": "Which steps are commonly part of an expand-and-contract migration?",
+      "options": [
+        "Add the new schema in a backward-compatible way",
+        "Deploy code capable of using the new schema",
+        "Backfill data if necessary",
+        "Remove obsolete schema only after old code no longer depends on it"
+      ],
+      "answers": [
+        "Add the new schema in a backward-compatible way",
+        "Deploy code capable of using the new schema",
+        "Backfill data if necessary",
+        "Remove obsolete schema only after old code no longer depends on it"
+      ],
+      "explanation": "Separating expansion, data migration, application rollout, and contraction reduces deployment coupling and downtime risk.",
+      "topics": ["Expand and contract", "Migrations", "Backfills"]
+    },
+    {
+      "id": "postgresql-senior-074",
+      "type": "boolean",
+      "question": "Creating a large index with `CREATE INDEX CONCURRENTLY` is intended to reduce blocking of normal table writes compared with ordinary CREATE INDEX.",
+      "answer": true,
+      "explanation": "CONCURRENTLY performs additional phases to avoid blocking ordinary inserts, updates, and deletes for the duration of the build, although it has its own limitations and overhead.",
+      "topics": ["CREATE INDEX CONCURRENTLY", "Migrations", "Locking"]
+    },
+    {
+      "id": "postgresql-senior-075",
+      "type": "single",
+      "question": "What is declarative table partitioning?",
+      "options": [
+        "Splitting a logical table into physical partitions based on a partition key",
+        "Automatically creating multiple PostgreSQL clusters",
+        "Replicating every row to every server",
+        "Replacing primary keys with JSON"
+      ],
+      "answer": "Splitting a logical table into physical partitions based on a partition key",
+      "explanation": "PostgreSQL supports range, list, and hash partitioning while presenting partitions through a parent table.",
+      "topics": ["Partitioning", "Range partitioning", "Scalability"]
+    },
+    {
+      "id": "postgresql-senior-076",
+      "type": "multiple",
+      "question": "When can partitioning be especially useful?",
+      "options": [
+        "Very large time-series tables",
+        "Efficiently dropping or archiving old ranges",
+        "Queries that can prune most partitions",
+        "Automatically making every query faster regardless of workload"
+      ],
+      "answers": [
+        "Very large time-series tables",
+        "Efficiently dropping or archiving old ranges",
+        "Queries that can prune most partitions"
+      ],
+      "explanation": "Partitioning is primarily a data-management and access-pattern tool. It adds complexity and is not a universal performance optimization.",
+      "topics": ["Partitioning", "Partition pruning", "Time-series data"]
+    },
+    {
+      "id": "postgresql-senior-077",
+      "type": "boolean",
+      "question": "Partitioning is the same thing as sharding across independent database servers.",
+      "answer": false,
+      "explanation": "Native PostgreSQL partitioning divides data within a logical database system. Sharding distributes data across separate database nodes or clusters.",
+      "topics": ["Partitioning", "Sharding", "Scalability"]
+    },
+    {
+      "id": "postgresql-senior-078",
+      "type": "single",
+      "question": "For monetary values such as advertising spend, which PostgreSQL type is generally preferable when exact decimal arithmetic is required?",
+      "options": ["NUMERIC", "REAL", "DOUBLE PRECISION", "TEXT"],
+      "answer": "NUMERIC",
+      "explanation": "NUMERIC provides exact decimal arithmetic, avoiding binary floating-point rounding issues that may be unacceptable for money.",
+      "topics": ["NUMERIC", "Money", "Data types"]
+    },
+    {
+      "id": "postgresql-senior-079",
+      "type": "boolean",
+      "question": "Using DOUBLE PRECISION for exact financial totals can introduce binary floating-point rounding effects.",
+      "answer": true,
+      "explanation": "Binary floating-point cannot exactly represent many decimal fractions. NUMERIC is usually preferable where exact decimal arithmetic is required.",
+      "topics": ["Floating point", "NUMERIC", "Financial data"]
+    },
+    {
+      "id": "postgresql-senior-080",
+      "type": "single",
+      "question": "For an application operating across multiple time zones, which general strategy is usually safest for event timestamps?",
+      "options": [
+        "Store absolute instants using timestamptz and convert for presentation",
+        "Store formatted local-time strings",
+        "Remove time-zone information everywhere",
+        "Use only the application server's local timezone"
+      ],
+      "answer": "Store absolute instants using timestamptz and convert for presentation",
+      "explanation": "PostgreSQL timestamptz represents an absolute instant and renders it according to the session time zone. This reduces ambiguity across regions and daylight-saving changes.",
+      "topics": ["timestamptz", "Time zones", "Timestamp modeling"]
+    },
+    {
+      "id": "postgresql-senior-081",
+      "type": "boolean",
+      "question": "PostgreSQL `timestamp with time zone` stores the original textual timezone name supplied with every value.",
+      "answer": false,
+      "explanation": "timestamptz represents an absolute instant internally. The original timezone label is not preserved as part of the stored value.",
+      "topics": ["timestamptz", "Time zones", "PostgreSQL types"]
+    },
+    {
+      "id": "postgresql-senior-082",
+      "type": "single",
+      "question": "A system imports advertising entities from Google, Meta, and Microsoft. What is a strong uniqueness strategy for external entities?",
+      "options": [
+        "UNIQUE(platform, external_id)",
+        "UNIQUE(external_id) regardless of platform",
+        "No unique constraint",
+        "Use campaign name as the primary key"
+      ],
+      "answer": "UNIQUE(platform, external_id)",
+      "explanation": "External identifiers may only be unique within a provider. Combining provider identity with external ID creates a stable cross-provider business key.",
+      "topics": ["External IDs", "Composite uniqueness", "Integration modeling"]
+    },
+    {
+      "id": "postgresql-senior-083",
+      "type": "single",
+      "question": "Why is campaign name usually a poor primary business identifier for imported advertising data?",
+      "options": [
+        "Names can change and may not be unique",
+        "PostgreSQL cannot index text",
+        "Names cannot contain spaces",
+        "Primary keys must always be timestamps"
+      ],
+      "answer": "Names can change and may not be unique",
+      "explanation": "External provider IDs are usually more stable identifiers than mutable human-readable names.",
+      "topics": ["Natural keys", "External IDs", "Data modeling"]
+    },
+    {
+      "id": "postgresql-senior-084",
+      "type": "multiple",
+      "question": "Which fields could reasonably belong in an `integration_accounts` table for an advertising-platform integration?",
+      "options": [
+        "provider",
+        "external_account_id",
+        "credential or secret reference",
+        "sync status or checkpoint metadata"
+      ],
+      "answers": [
+        "provider",
+        "external_account_id",
+        "credential or secret reference",
+        "sync status or checkpoint metadata"
+      ],
+      "explanation": "The table should model the provider account and operational metadata, while sensitive tokens are often referenced from a secure secret-management mechanism rather than stored casually.",
+      "topics": ["Integration accounts", "Schema design", "External APIs"]
+    },
+    {
+      "id": "postgresql-senior-085",
+      "type": "single",
+      "question": "For daily campaign metrics, which uniqueness constraint is commonly appropriate when one row represents one campaign's metrics for one day?",
+      "options": [
+        "UNIQUE(campaign_id, metric_date)",
+        "UNIQUE(metric_date)",
+        "UNIQUE(spend)",
+        "No uniqueness constraint"
+      ],
+      "answer": "UNIQUE(campaign_id, metric_date)",
+      "explanation": "The grain of the table determines the key. If each campaign has one metric row per date, the campaign/date combination represents that grain.",
+      "topics": ["Fact tables", "Metrics", "Composite uniqueness"]
+    },
+    {
+      "id": "postgresql-senior-086",
+      "type": "single",
+      "question": "Suppose campaign metrics can change retroactively because conversions arrive late. Which ingestion strategy is most appropriate?",
+      "options": [
+        "Idempotent upserts that update the existing campaign/date row",
+        "Reject every repeated campaign/date row",
+        "Never refresh historical dates",
+        "Create a new database for each update"
+      ],
+      "answer": "Idempotent upserts that update the existing campaign/date row",
+      "explanation": "Marketing metrics are often mutable for recent periods. A stable uniqueness key plus ON CONFLICT DO UPDATE supports safe repeated synchronization.",
+      "topics": ["Idempotent upserts", "Late-arriving data", "Advertising metrics"]
+    },
+    {
+      "id": "postgresql-senior-087",
+      "type": "single",
+      "question": "A synchronization worker may be retried after successfully writing data but before recording job completion. What database design best reduces duplicate data?",
+      "options": [
+        "Unique business keys and idempotent upserts",
+        "Random sleep calls",
+        "Disabling transactions",
+        "Removing all constraints"
+      ],
+      "answer": "Unique business keys and idempotent upserts",
+      "explanation": "Retry-safe synchronization assumes jobs may execute more than once and makes persistence operations idempotent.",
+      "topics": ["Idempotency", "Retries", "Synchronization jobs"]
+    },
+    {
+      "id": "postgresql-senior-088",
+      "type": "multiple",
+      "question": "Which columns would be useful in a synchronization_jobs table?",
+      "options": ["status", "attempt_count", "available_at", "last_error"],
+      "answers": ["status", "attempt_count", "available_at", "last_error"],
+      "explanation": "These fields support job lifecycle management, retries, scheduling, and operational diagnosis.",
+      "topics": ["Job tables", "Retries", "Operational modeling"]
+    },
+    {
+      "id": "postgresql-senior-089",
+      "type": "single",
+      "question": "For a large job table where workers frequently query `WHERE status = 'pending' AND available_at <= now()`, which index is worth considering?",
+      "options": [
+        "A partial index on available_at for rows where status = 'pending'",
+        "An index only on last_error",
+        "No index regardless of table size",
+        "A GIN index on every column"
+      ],
+      "answer": "A partial index on available_at for rows where status = 'pending'",
+      "explanation": "If pending jobs are a small operational subset, a partial index can keep the claim path efficient while avoiding indexing completed history.",
+      "topics": ["Partial indexes", "Job queues", "Worker performance"]
+    },
+    {
+      "id": "postgresql-senior-090",
+      "type": "single",
+      "question": "A query filters by `account_id`, then by date range, and sorts by date. Which index is a plausible starting point?",
+      "options": [
+        "(account_id, metric_date)",
+        "(metric_date, account_id) in every possible workload",
+        "(spend)",
+        "No index because ranges cannot use B-tree indexes"
+      ],
+      "answer": "(account_id, metric_date)",
+      "explanation": "Equality on account_id followed by a range or ordering on metric_date aligns naturally with a composite B-tree index, though actual plans must still be measured.",
+      "topics": ["Composite indexes", "Date ranges", "Query patterns"]
+    },
+    {
+      "id": "postgresql-senior-091",
+      "type": "boolean",
+      "question": "Adding indexes to a write-heavy metrics table has a cost because INSERT and UPDATE operations must also maintain those indexes.",
+      "answer": true,
+      "explanation": "Each index adds storage and write amplification, so indexes should correspond to real query and constraint needs.",
+      "topics": ["Write amplification", "Indexes", "Performance trade-offs"]
+    },
+    {
+      "id": "postgresql-senior-092",
+      "type": "single",
+      "question": "A `campaign_metrics` query always filters by `campaign_id` and `date`, but an index exists only on `spend`. What is the primary problem?",
+      "options": [
+        "The index does not match the workload's access pattern",
+        "PostgreSQL only allows one index per table",
+        "Numeric columns cannot be indexed",
+        "Filtering is impossible without JSONB"
+      ],
+      "answer": "The index does not match the workload's access pattern",
+      "explanation": "Indexes should serve actual predicates, joins, uniqueness constraints, or ordering requirements rather than simply indexing arbitrary columns.",
+      "topics": ["Index design", "Workload-driven optimization", "Query performance"]
+    },
+    {
+      "id": "postgresql-senior-093",
+      "type": "single",
+      "question": "What is the most reliable first step when a previously fast PostgreSQL query becomes unexpectedly slow?",
+      "options": [
+        "Inspect its execution plan and runtime behavior with EXPLAIN ANALYZE where safe",
+        "Immediately add indexes to every column",
+        "Rewrite PostgreSQL in another language",
+        "Disable autovacuum"
+      ],
+      "answer": "Inspect its execution plan and runtime behavior with EXPLAIN ANALYZE where safe",
+      "explanation": "Query tuning should start from evidence: plans, estimates versus actual rows, buffer usage, statistics, data distribution, and workload changes.",
+      "topics": ["Query tuning", "EXPLAIN ANALYZE", "Diagnostics"]
+    },
+    {
+      "id": "postgresql-senior-094",
+      "type": "multiple",
+      "question": "Which factors can cause PostgreSQL query performance to change over time without changing the SQL text?",
+      "options": [
+        "Data volume growth",
+        "Changed data distribution",
+        "Stale planner statistics",
+        "Different cache state"
+      ],
+      "answers": [
+        "Data volume growth",
+        "Changed data distribution",
+        "Stale planner statistics",
+        "Different cache state"
+      ],
+      "explanation": "Plans and runtimes depend on data size, distribution, statistics, memory/cache state, concurrency, configuration, and other environmental factors.",
+      "topics": ["Query performance", "Planner statistics", "Data growth"]
+    },
+    {
+      "id": "postgresql-senior-095",
+      "type": "single",
+      "question": "A query has a very selective expression `lower(email) = lower(?)`. A normal index on email is not being used effectively. What may help?",
+      "options": [
+        "An expression index on lower(email)",
+        "Removing the WHERE clause",
+        "Using a foreign key",
+        "Changing the primary key to email length"
+      ],
+      "answer": "An expression index on lower(email)",
+      "explanation": "PostgreSQL supports indexes on expressions, allowing queries using the same expression to use indexed access.",
+      "topics": ["Expression indexes", "Case-insensitive lookup", "Index design"]
+    },
+    {
+      "id": "postgresql-senior-096",
+      "type": "boolean",
+      "question": "Wrapping an indexed column in a function can prevent a plain index on the original column from directly supporting that predicate.",
+      "answer": true,
+      "explanation": "For predicates such as `lower(email)`, the planner generally needs a compatible expression index unless it can transform the expression in another supported way.",
+      "topics": ["Expression indexes", "Sargability", "Query optimization"]
+    },
+    {
+      "id": "postgresql-senior-097",
+      "type": "single",
+      "question": "Which approach is usually preferable for paginating a very large ordered table when users move sequentially through results?",
+      "options": [
+        "Keyset or cursor pagination using the indexed sort key",
+        "Increasing OFFSET indefinitely",
+        "Loading the entire table into application memory",
+        "Removing ORDER BY"
+      ],
+      "answer": "Keyset or cursor pagination using the indexed sort key",
+      "explanation": "Large OFFSET values require PostgreSQL to identify and discard preceding rows. Keyset pagination can continue efficiently from the last seen key.",
+      "topics": ["Cursor pagination", "Keyset pagination", "Performance"]
+    },
+    {
+      "id": "postgresql-senior-098",
+      "type": "single",
+      "question": "Why can `OFFSET 1000000 LIMIT 50` become expensive?",
+      "options": [
+        "PostgreSQL still has to locate and discard the preceding rows",
+        "LIMIT disables indexes",
+        "OFFSET causes a table lock",
+        "PostgreSQL creates one million connections"
+      ],
+      "answer": "PostgreSQL still has to locate and discard the preceding rows",
+      "explanation": "OFFSET pagination work generally grows as the requested offset grows, even though only a small page is returned.",
+      "topics": ["OFFSET pagination", "Pagination", "Query performance"]
+    },
+    {
+      "id": "postgresql-senior-099",
+      "type": "single",
+      "question": "A transaction updates an advertising account row, calls an external API for 20 seconds, and then commits. What is the principal database-design concern?",
+      "options": [
+        "The transaction remains open and may hold locks and an old snapshot during slow external I/O",
+        "PostgreSQL cannot call external APIs",
+        "Transactions automatically expire after one second",
+        "The external API makes the transaction SERIALIZABLE"
+      ],
+      "answer": "The transaction remains open and may hold locks and an old snapshot during slow external I/O",
+      "explanation": "Avoid holding database transactions open across slow network operations where possible. Separate external side effects from short transactional state changes using appropriate workflow patterns.",
+      "topics": ["Long transactions", "External APIs", "Transaction boundaries"]
+    },
+    {
+      "id": "postgresql-senior-100",
+      "type": "single",
+      "question": "An application inserts a database row and must publish an event reliably. Committing the database transaction and then publishing directly has what failure mode?",
+      "options": [
+        "The database commit can succeed and the process can fail before the event is published",
+        "PostgreSQL automatically rolls back committed data if Kafka is unavailable",
+        "Publishing after commit guarantees exactly-once delivery",
+        "The event always appears before the database row"
+      ],
+      "answer": "The database commit can succeed and the process can fail before the event is published",
+      "explanation": "This dual-write problem is commonly addressed with patterns such as a transactional outbox, where business data and an event record are committed atomically.",
+      "topics": ["Transactional outbox", "Dual writes", "Distributed systems"]
+    }
+  ]
+}

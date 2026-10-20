@@ -1,0 +1,847 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "production-debugging",
+  "name": "Production Debugging",
+  "description": "Senior production-debugging and incident-response preparation: triage, user impact, observability, logs/metrics/traces, golden signals, hypothesis-driven troubleshooting, rollback and mitigation, databases, caches, queues, networking, retries, saturation, distributed-system failure modes, incident coordination, verification, RCA, and postmortems.",
+  "questions": [
+    {
+      "type": "single",
+      "question": "A production alert fires for elevated HTTP 5xx responses. What should you establish first?",
+      "options": [
+        "The user impact, scope, severity, and whether the issue is still ongoing",
+        "The exact root cause",
+        "Which engineer wrote the failing code",
+        "A permanent code fix"
+      ],
+      "answer": "The user impact, scope, severity, and whether the issue is still ongoing",
+      "explanation": "Triage starts by determining what is broken, who is affected, how severely, and whether the incident is active.",
+      "topics": ["Triage", "Incident response", "Impact assessment"],
+      "id": "production-debugging-001"
+    },
+    {
+      "type": "single",
+      "question": "During a major incident, what is usually the highest-priority engineering goal?",
+      "options": [
+        "Mitigate user impact and restore a safe level of service",
+        "Prove the exact root cause before changing anything",
+        "Rewrite the affected subsystem",
+        "Complete the postmortem"
+      ],
+      "answer": "Mitigate user impact and restore a safe level of service",
+      "explanation": "During an active incident, restoring service generally takes precedence over proving the root cause.",
+      "topics": ["Mitigation", "Incident response"],
+      "id": "production-debugging-002"
+    },
+    {
+      "type": "boolean",
+      "question": "You should always find the root cause before rolling back a clearly bad deployment.",
+      "answer": false,
+      "explanation": "If rollback is known to be safe and likely to reduce impact, mitigation should not wait for complete root-cause certainty.",
+      "topics": ["Rollback", "Mitigation", "Incident response"],
+      "id": "production-debugging-003"
+    },
+    {
+      "type": "single",
+      "question": "Which sequence best represents a disciplined production-debugging workflow?",
+      "options": [
+        "Assess impact -> inspect telemetry -> form hypotheses -> test safely -> mitigate -> verify -> RCA",
+        "Change several settings -> restart everything -> inspect logs",
+        "Read code -> deploy a fix -> ask whether users were affected",
+        "Find root cause -> assess impact -> create alert"
+      ],
+      "answer": "Assess impact -> inspect telemetry -> form hypotheses -> test safely -> mitigate -> verify -> RCA",
+      "explanation": "Good debugging separates observation, hypothesis, experiment, mitigation, validation, and later root-cause work.",
+      "topics": ["Troubleshooting method", "Incident response"],
+      "id": "production-debugging-004"
+    },
+    {
+      "type": "single",
+      "question": "What is the key distinction between a symptom and a cause?",
+      "options": [
+        "A symptom describes what users or the system experience; a cause explains why it is happening",
+        "Symptoms are always logs and causes are always metrics",
+        "Symptoms are frontend-only and causes are backend-only",
+        "There is no practical distinction"
+      ],
+      "answer": "A symptom describes what users or the system experience; a cause explains why it is happening",
+      "explanation": "For example, HTTP 500s are a symptom; database connection exhaustion might be a cause.",
+      "topics": ["Symptoms vs causes", "Monitoring"],
+      "id": "production-debugging-005"
+    },
+    {
+      "type": "single",
+      "question": "Which set contains Google's four golden signals for a user-facing service?",
+      "options": [
+        "Latency, traffic, errors, saturation",
+        "CPU, RAM, disk, network",
+        "Logs, metrics, traces, profiles",
+        "Availability, durability, consistency, cost"
+      ],
+      "answer": "Latency, traffic, errors, saturation",
+      "explanation": "These four signals give a high-level view of user-visible service behavior and capacity pressure.",
+      "topics": ["Golden signals", "Observability", "Monitoring"],
+      "id": "production-debugging-006"
+    },
+    {
+      "type": "single",
+      "question": "What does saturation measure?",
+      "options": [
+        "How close a constrained resource is to its effective capacity",
+        "Only CPU percentage",
+        "The percentage of cached responses",
+        "The number of successful requests"
+      ],
+      "answer": "How close a constrained resource is to its effective capacity",
+      "explanation": "Saturation can involve CPU, memory, connections, thread pools, queue depth, disk, network, or another bounded resource.",
+      "topics": ["Golden signals", "Saturation", "Capacity"],
+      "id": "production-debugging-007"
+    },
+    {
+      "type": "single",
+      "question": "Why can average latency hide a serious production problem?",
+      "options": [
+        "A small fraction of very slow requests can be invisible in the average while badly affecting users",
+        "Average latency cannot be calculated for HTTP",
+        "Averages always equal p99 latency",
+        "Only failed requests have latency"
+      ],
+      "answer": "A small fraction of very slow requests can be invisible in the average while badly affecting users",
+      "explanation": "Percentiles such as p95 or p99 often expose tail latency that an average obscures.",
+      "topics": ["Latency", "Percentiles", "Observability"],
+      "id": "production-debugging-008"
+    },
+    {
+      "type": "single",
+      "question": "A service's p99 latency spikes but p50 remains normal. What does this suggest?",
+      "options": [
+        "A subset of requests is experiencing severe tail latency rather than uniform slowdown",
+        "All requests are equally slow",
+        "The metrics system is necessarily broken",
+        "Traffic has dropped to zero"
+      ],
+      "answer": "A subset of requests is experiencing severe tail latency rather than uniform slowdown",
+      "explanation": "Tail latency commonly points toward specific endpoints, dependencies, retries, contention, or hot partitions.",
+      "topics": ["Latency", "Percentiles", "Debugging"],
+      "id": "production-debugging-009"
+    },
+    {
+      "type": "single",
+      "question": "Why should successful-request latency and failed-request latency often be examined separately?",
+      "options": [
+        "Fast failures can make aggregate latency appear healthy even while users are receiving errors",
+        "Failed requests have no latency",
+        "Successful requests cannot time out",
+        "HTTP status codes are unrelated to latency"
+      ],
+      "answer": "Fast failures can make aggregate latency appear healthy even while users are receiving errors",
+      "explanation": "Aggregating successful and failed requests can produce misleading conclusions.",
+      "topics": ["Latency", "Errors", "Metrics"],
+      "id": "production-debugging-010"
+    },
+    {
+      "type": "single",
+      "question": "What are metrics best suited for during an incident?",
+      "options": [
+        "Finding aggregate changes, trends, saturation, rates, and when the incident began",
+        "Showing every variable value in one failed request",
+        "Replacing stack traces",
+        "Proving source-code causality"
+      ],
+      "answer": "Finding aggregate changes, trends, saturation, rates, and when the incident began",
+      "explanation": "Metrics are compact time-series summaries and are strong for detecting scope, timing, and correlations.",
+      "topics": ["Metrics", "Observability"],
+      "id": "production-debugging-011"
+    },
+    {
+      "type": "single",
+      "question": "What are logs especially useful for?",
+      "options": [
+        "Detailed event-level evidence such as errors, state transitions, identifiers, and stack traces",
+        "Only long-term capacity planning",
+        "Replacing all service metrics",
+        "Measuring exact CPU utilization without instrumentation"
+      ],
+      "answer": "Detailed event-level evidence such as errors, state transitions, identifiers, and stack traces",
+      "explanation": "Logs provide discrete contextual events that can explain individual failures.",
+      "topics": ["Logs", "Observability"],
+      "id": "production-debugging-012"
+    },
+    {
+      "type": "single",
+      "question": "What are distributed traces especially useful for?",
+      "options": [
+        "Following one request across service boundaries and identifying where time or failures occur",
+        "Counting total monthly users",
+        "Replacing structured logs",
+        "Storing application configuration"
+      ],
+      "answer": "Following one request across service boundaries and identifying where time or failures occur",
+      "explanation": "Traces model the causal path and timing of work across components.",
+      "topics": ["Traces", "Distributed systems", "Observability"],
+      "id": "production-debugging-013"
+    },
+    {
+      "type": "multiple",
+      "question": "Which fields make application logs substantially more useful in production?",
+      "options": [
+        "Timestamp",
+        "Service/version",
+        "Request or trace ID",
+        "Structured error/context fields",
+        "Random decorative text"
+      ],
+      "answers": [
+        "Timestamp",
+        "Service/version",
+        "Request or trace ID",
+        "Structured error/context fields"
+      ],
+      "explanation": "Structured contextual fields allow filtering, correlation, and comparison across deployments and services.",
+      "topics": ["Logs", "Structured logging", "Observability"],
+      "id": "production-debugging-014"
+    },
+    {
+      "type": "single",
+      "question": "Why is a request ID or trace ID valuable in a distributed system?",
+      "options": [
+        "It lets telemetry from the same request be correlated across components",
+        "It guarantees request success",
+        "It replaces authentication",
+        "It prevents network retries"
+      ],
+      "answer": "It lets telemetry from the same request be correlated across components",
+      "explanation": "Context propagation is fundamental to reconstructing causal request paths across service boundaries.",
+      "topics": ["Trace context", "Correlation IDs", "Distributed systems"],
+      "id": "production-debugging-015"
+    },
+    {
+      "type": "boolean",
+      "question": "Putting credentials, API keys, or sensitive PII in tracing baggage is a good way to improve debugging.",
+      "answer": false,
+      "explanation": "Baggage may propagate across services and may be logged or exported, so sensitive values should not be placed there.",
+      "topics": ["Observability", "Security", "Baggage"],
+      "id": "production-debugging-016"
+    },
+    {
+      "type": "single",
+      "question": "What is black-box monitoring?",
+      "options": [
+        "Observing externally visible system behavior without depending on internal implementation details",
+        "Monitoring only databases",
+        "Debugging without logs",
+        "Monitoring encrypted traffic"
+      ],
+      "answer": "Observing externally visible system behavior without depending on internal implementation details",
+      "explanation": "Availability probes and user-facing request checks are typical black-box signals.",
+      "topics": ["Black-box monitoring", "Monitoring"],
+      "id": "production-debugging-017"
+    },
+    {
+      "type": "single",
+      "question": "What is white-box monitoring?",
+      "options": [
+        "Observing internal system signals such as queues, connection pools, internal latency, and application metrics",
+        "Monitoring only public APIs",
+        "Monitoring source-control branches",
+        "Checking CSS rendering"
+      ],
+      "answer": "Observing internal system signals such as queues, connection pools, internal latency, and application metrics",
+      "explanation": "White-box data helps explain why an externally visible symptom is occurring.",
+      "topics": ["White-box monitoring", "Monitoring"],
+      "id": "production-debugging-018"
+    },
+    {
+      "type": "single",
+      "question": "What is a good alerting principle?",
+      "options": [
+        "Page on urgent actionable conditions tied to actual or imminent user impact",
+        "Page for every unusual metric movement",
+        "Page for every application log error",
+        "Page only when CPU reaches 100%"
+      ],
+      "answer": "Page on urgent actionable conditions tied to actual or imminent user impact",
+      "explanation": "High-noise alerts produce alert fatigue and reduce the effectiveness of paging.",
+      "topics": ["Alerting", "Monitoring", "SRE"],
+      "id": "production-debugging-019"
+    },
+    {
+      "type": "boolean",
+      "question": "A high rate of alerts that responders routinely ignore is harmless as long as serious alerts are also present.",
+      "answer": false,
+      "explanation": "Alert noise encourages responders to skim or ignore pages, which can mask real incidents.",
+      "topics": ["Alert fatigue", "Alerting"],
+      "id": "production-debugging-020"
+    },
+    {
+      "type": "single",
+      "question": "A production regression begins at 14:03. What is a high-value first correlation?",
+      "options": [
+        "Changes deployed or configured shortly before 14:03",
+        "Code committed six months ago regardless of deployment",
+        "Developer laptop CPU usage",
+        "The oldest unresolved ticket"
+      ],
+      "answer": "Changes deployed or configured shortly before 14:03",
+      "explanation": "Time correlation between onset and recent changes is one of the fastest ways to narrow hypotheses.",
+      "topics": ["Change correlation", "Deployments", "Debugging"],
+      "id": "production-debugging-021"
+    },
+    {
+      "type": "single",
+      "question": "Why is 'what changed?' such a useful production-debugging question?",
+      "options": [
+        "Failures often correlate with code, config, traffic, dependency, infrastructure, or data changes",
+        "Every incident is caused by a deployment",
+        "Systems never fail without human changes",
+        "It eliminates the need for telemetry"
+      ],
+      "answer": "Failures often correlate with code, config, traffic, dependency, infrastructure, or data changes",
+      "explanation": "Recent changes are high-value hypotheses, but not proof; dependencies and workload shifts can change independently.",
+      "topics": ["Change correlation", "Hypothesis testing"],
+      "id": "production-debugging-022"
+    },
+    {
+      "type": "single",
+      "question": "A deployment happened shortly before the incident. What is the correct conclusion?",
+      "options": [
+        "It is a strong hypothesis that must be tested, not automatically proven as the root cause",
+        "The deployment is definitely the cause",
+        "Deployments can never cause incidents",
+        "Rollback should never be considered"
+      ],
+      "answer": "It is a strong hypothesis that must be tested, not automatically proven as the root cause",
+      "explanation": "Temporal correlation narrows investigation but does not establish causality.",
+      "topics": ["Hypothesis testing", "Deployments"],
+      "id": "production-debugging-023"
+    },
+    {
+      "type": "single",
+      "question": "What makes a debugging hypothesis useful?",
+      "options": [
+        "It predicts an observable result that can distinguish it from competing explanations",
+        "It sounds technically sophisticated",
+        "It requires changing many variables at once",
+        "It cannot be falsified"
+      ],
+      "answer": "It predicts an observable result that can distinguish it from competing explanations",
+      "explanation": "Good troubleshooting follows the scientific method: hypotheses should be testable and falsifiable.",
+      "topics": ["Hypothesis testing", "Troubleshooting method"],
+      "id": "production-debugging-024"
+    },
+    {
+      "type": "single",
+      "question": "Why should you change one major variable at a time when testing an incident hypothesis when practical?",
+      "options": [
+        "So the result can be attributed to the tested change",
+        "Because production systems support only one configuration value",
+        "To make incidents last longer",
+        "Because logs cannot handle concurrent changes"
+      ],
+      "answer": "So the result can be attributed to the tested change",
+      "explanation": "Simultaneous unrelated changes destroy causal clarity and can create new failure modes.",
+      "topics": ["Hypothesis testing", "Change management"],
+      "id": "production-debugging-025"
+    },
+    {
+      "type": "single",
+      "question": "What does a negative debugging result provide?",
+      "options": [
+        "Evidence that rules out or weakens a hypothesis",
+        "No useful information",
+        "Proof that monitoring is wrong",
+        "A reason to restart the service"
+      ],
+      "answer": "Evidence that rules out or weakens a hypothesis",
+      "explanation": "Well-designed experiments that eliminate possibilities are meaningful progress.",
+      "topics": ["Hypothesis testing", "Troubleshooting method"],
+      "id": "production-debugging-026"
+    },
+    {
+      "type": "single",
+      "question": "What does 'reduce and simplify' mean during troubleshooting?",
+      "options": [
+        "Narrow the failing path, component, input, region, user cohort, or dependency until the fault boundary becomes clearer",
+        "Delete observability data",
+        "Remove production safety checks",
+        "Rewrite the system"
+      ],
+      "answer": "Narrow the failing path, component, input, region, user cohort, or dependency until the fault boundary becomes clearer",
+      "explanation": "Reducing the problem space helps isolate interfaces and components that behave differently from expectations.",
+      "topics": ["Fault isolation", "Troubleshooting method"],
+      "id": "production-debugging-027"
+    },
+    {
+      "type": "single",
+      "question": "Only one API endpoint is slow while other endpoints in the same service are normal. What should this change in your investigation?",
+      "options": [
+        "Focus on dependencies, queries, code paths, and payload characteristics unique to that endpoint",
+        "Assume the entire host is CPU-saturated",
+        "Restart the entire database immediately",
+        "Ignore endpoint-specific traces"
+      ],
+      "answer": "Focus on dependencies, queries, code paths, and payload characteristics unique to that endpoint",
+      "explanation": "Scope differences help isolate what is unique about the failing path.",
+      "topics": ["Fault isolation", "API debugging"],
+      "id": "production-debugging-028"
+    },
+    {
+      "type": "single",
+      "question": "Only one region is failing. Which category becomes especially important?",
+      "options": [
+        "Region-specific infrastructure, configuration, dependencies, capacity, DNS, and rollout state",
+        "Only frontend React state",
+        "Only database SQL syntax",
+        "Global source-code differences are impossible"
+      ],
+      "answer": "Region-specific infrastructure, configuration, dependencies, capacity, DNS, and rollout state",
+      "explanation": "A geographically isolated failure strongly points toward differences in regional state or dependencies.",
+      "topics": ["Fault isolation", "Regional failures", "Distributed systems"],
+      "id": "production-debugging-029"
+    },
+    {
+      "type": "single",
+      "question": "A rollback immediately restores error rate and latency to normal. What does that establish?",
+      "options": [
+        "Strong evidence that the reverted change or its interaction with production state was causal",
+        "Absolute proof of the exact faulty line of code",
+        "That no RCA is needed",
+        "That the database was healthy throughout the incident"
+      ],
+      "answer": "Strong evidence that the reverted change or its interaction with production state was causal",
+      "explanation": "Rollback can establish strong causal evidence while still leaving the precise mechanism to be investigated later.",
+      "topics": ["Rollback", "Causality", "RCA"],
+      "id": "production-debugging-030"
+    },
+    {
+      "type": "single",
+      "question": "What should you consider before rolling back an application after a database schema migration?",
+      "options": [
+        "Whether the old application version remains compatible with the current schema and data",
+        "Only whether the Docker image still exists",
+        "Only whether CPU is high",
+        "Whether logs use JSON"
+      ],
+      "answer": "Whether the old application version remains compatible with the current schema and data",
+      "explanation": "Non-backward-compatible schema changes can make an otherwise straightforward code rollback unsafe.",
+      "topics": ["Rollback", "Database migrations", "Change safety"],
+      "id": "production-debugging-031"
+    },
+    {
+      "type": "single",
+      "question": "A service shows high latency but low CPU. Which conclusion is best?",
+      "options": [
+        "The service may be waiting on I/O, locks, connections, queues, or downstream dependencies",
+        "The latency metric must be wrong",
+        "The service is definitely healthy",
+        "CPU should be increased until it reaches 100%"
+      ],
+      "answer": "The service may be waiting on I/O, locks, connections, queues, or downstream dependencies",
+      "explanation": "Latency does not require CPU saturation; waiting and contention are common causes.",
+      "topics": ["Latency", "Dependencies", "Resource saturation"],
+      "id": "production-debugging-032"
+    },
+    {
+      "type": "multiple",
+      "question": "Which conditions can cause high application latency without high CPU?",
+      "options": [
+        "Database lock waits",
+        "Connection-pool exhaustion",
+        "Slow downstream APIs",
+        "Network packet loss",
+        "A perfectly idle dependency with no requests"
+      ],
+      "answers": [
+        "Database lock waits",
+        "Connection-pool exhaustion",
+        "Slow downstream APIs",
+        "Network packet loss"
+      ],
+      "explanation": "Waiting on constrained or slow external resources can dominate latency while application CPUs remain lightly used.",
+      "topics": ["Latency", "Dependencies", "Networking", "Database"],
+      "id": "production-debugging-033"
+    },
+    {
+      "type": "single",
+      "question": "Requests start timing out while a thread or worker pool is at its maximum size. What failure mode should you suspect?",
+      "options": [
+        "Queueing and pool exhaustion causing requests to wait for execution capacity",
+        "DNS cache poisoning by default",
+        "A memory leak is proven",
+        "Frontend hydration failure"
+      ],
+      "answer": "Queueing and pool exhaustion causing requests to wait for execution capacity",
+      "explanation": "Bounded pools are saturation points; once all workers are busy, latency grows through queueing.",
+      "topics": ["Thread pools", "Saturation", "Queueing"],
+      "id": "production-debugging-034"
+    },
+    {
+      "type": "single",
+      "question": "A database connection pool has max=20 and all 20 connections are continuously busy. New requests wait for a connection. What metric is most directly saturated?",
+      "options": [
+        "Database connection pool capacity",
+        "HTTP request size",
+        "CPU instruction cache",
+        "DNS TTL"
+      ],
+      "answer": "Database connection pool capacity",
+      "explanation": "Connection pools are bounded resources and should be monitored like CPU, workers, or queues.",
+      "topics": ["Connection pools", "Saturation", "Database"],
+      "id": "production-debugging-035"
+    },
+    {
+      "type": "single",
+      "question": "Application instances are scaled from 10 to 50 and the database immediately starts rejecting connections. What is a likely architectural issue?",
+      "options": [
+        "Per-instance connection pools multiplied database demand beyond database capacity",
+        "Horizontal scaling always reduces database load",
+        "The load balancer changed the SQL schema",
+        "The application needs more client-side caching only"
+      ],
+      "answer": "Per-instance connection pools multiplied database demand beyond database capacity",
+      "explanation": "Application capacity and downstream capacity must be considered together.",
+      "topics": ["Autoscaling", "Connection pools", "Database"],
+      "id": "production-debugging-036"
+    },
+    {
+      "type": "single",
+      "question": "What is a common symptom of a database lock-contention problem?",
+      "options": [
+        "Queries spend increasing time waiting despite apparently adequate CPU",
+        "All reads become cache hits",
+        "Network throughput necessarily becomes zero",
+        "The database stops accepting SQL syntax"
+      ],
+      "answer": "Queries spend increasing time waiting despite apparently adequate CPU",
+      "explanation": "Lock waits can produce high latency and transaction backlogs without compute saturation.",
+      "topics": ["Database", "Locks", "Latency"],
+      "id": "production-debugging-037"
+    },
+    {
+      "type": "single",
+      "question": "A query suddenly becomes much slower after data volume grows significantly. What should you inspect?",
+      "options": [
+        "Execution plan, indexes, rows scanned, cardinality estimates, and I/O",
+        "Only application log formatting",
+        "Only HTTP headers",
+        "React component keys"
+      ],
+      "answer": "Execution plan, indexes, rows scanned, cardinality estimates, and I/O",
+      "explanation": "Data growth can expose poor access paths or plan changes that were previously cheap.",
+      "topics": ["Database", "SQL", "Performance"],
+      "id": "production-debugging-038"
+    },
+    {
+      "type": "single",
+      "question": "What does a cache hit-rate drop often imply?",
+      "options": [
+        "More requests are reaching the slower backing system, potentially increasing latency and load",
+        "The cache is definitely corrupted",
+        "Database traffic will necessarily decrease",
+        "CPU utilization must fall"
+      ],
+      "answer": "More requests are reaching the slower backing system, potentially increasing latency and load",
+      "explanation": "A cache effectiveness regression can shift substantial load to databases or APIs.",
+      "topics": ["Caching", "Latency", "Dependencies"],
+      "id": "production-debugging-039"
+    },
+    {
+      "type": "single",
+      "question": "What is a cache stampede?",
+      "options": [
+        "Many requests simultaneously miss or observe expired data and overload the backing system while recomputing it",
+        "A cache whose hit rate reaches 100%",
+        "A browser deleting localStorage",
+        "A CDN serving stale CSS"
+      ],
+      "answer": "Many requests simultaneously miss or observe expired data and overload the backing system while recomputing it",
+      "explanation": "Stampedes are commonly mitigated with request coalescing, jittered TTLs, stale-while-revalidate, or locking strategies.",
+      "topics": ["Caching", "Cache stampede", "Distributed systems"],
+      "id": "production-debugging-040"
+    },
+    {
+      "type": "single",
+      "question": "A dependency is slow and your service aggressively retries every failure immediately. What risk does this create?",
+      "options": [
+        "Retry amplification can increase load and worsen the dependency outage",
+        "Retries always reduce dependency traffic",
+        "Retries eliminate tail latency",
+        "The dependency becomes strongly consistent"
+      ],
+      "answer": "Retry amplification can increase load and worsen the dependency outage",
+      "explanation": "Retries need bounded attempts, timeouts, backoff, jitter, and appropriate retryable-error classification.",
+      "topics": ["Retries", "Cascading failures", "Dependencies"],
+      "id": "production-debugging-041"
+    },
+    {
+      "type": "single",
+      "question": "Why is exponential backoff commonly combined with jitter?",
+      "options": [
+        "To spread retries over time and reduce synchronized retry storms",
+        "To guarantee zero retries",
+        "To increase request concurrency",
+        "To remove the need for timeouts"
+      ],
+      "answer": "To spread retries over time and reduce synchronized retry storms",
+      "explanation": "Without jitter, clients can repeatedly synchronize and overload a recovering dependency.",
+      "topics": ["Retries", "Backoff", "Distributed systems"],
+      "id": "production-debugging-042"
+    },
+    {
+      "type": "single",
+      "question": "Why should requests to dependencies normally have explicit timeouts?",
+      "options": [
+        "To bound how long resources remain occupied by a dependency that is slow or unavailable",
+        "To guarantee successful responses",
+        "To prevent all partial failures",
+        "To make tracing unnecessary"
+      ],
+      "answer": "To bound how long resources remain occupied by a dependency that is slow or unavailable",
+      "explanation": "Unbounded waits can exhaust threads, sockets, connections, and request budgets.",
+      "topics": ["Timeouts", "Dependencies", "Resilience"],
+      "id": "production-debugging-043"
+    },
+    {
+      "type": "single",
+      "question": "What is a cascading failure?",
+      "options": [
+        "A failure in one component increases pressure or failure in other components until the problem spreads",
+        "A CSS layout shift",
+        "A successful multi-region failover",
+        "A database backup"
+      ],
+      "answer": "A failure in one component increases pressure or failure in other components until the problem spreads",
+      "explanation": "Retries, queues, resource exhaustion, and shared dependencies can propagate local failures into system-wide incidents.",
+      "topics": ["Cascading failures", "Distributed systems", "Resilience"],
+      "id": "production-debugging-044"
+    },
+    {
+      "type": "single",
+      "question": "A background queue depth is growing continuously while consumer throughput is flat. What does that indicate?",
+      "options": [
+        "Arrival rate exceeds effective processing capacity",
+        "Consumers are processing faster than producers",
+        "The queue is necessarily corrupted",
+        "Traffic is decreasing"
+      ],
+      "answer": "Arrival rate exceeds effective processing capacity",
+      "explanation": "Persistent queue growth is a saturation/backlog signal even when the service is not yet dropping work.",
+      "topics": ["Queues", "Saturation", "Backpressure"],
+      "id": "production-debugging-045"
+    },
+    {
+      "type": "single",
+      "question": "Why is queue age often more operationally meaningful than queue length alone?",
+      "options": [
+        "It directly indicates how long work is waiting and therefore user/business delay",
+        "Queue length cannot be measured",
+        "Queue age proves consumer correctness",
+        "Queue age is always equal to request latency"
+      ],
+      "answer": "It directly indicates how long work is waiting and therefore user/business delay",
+      "explanation": "A queue of 10,000 rapidly processed items may be healthy; a small queue containing hours-old work may not be.",
+      "topics": ["Queues", "Latency", "SLOs"],
+      "id": "production-debugging-046"
+    },
+    {
+      "type": "single",
+      "question": "A memory graph rises steadily over hours and drops only when the process restarts. What hypothesis deserves investigation?",
+      "options": [
+        "A memory leak or unbounded retained/cache state",
+        "A transient CPU spike",
+        "A DNS lookup issue",
+        "A healthy garbage-collection pattern is proven"
+      ],
+      "answer": "A memory leak or unbounded retained/cache state",
+      "explanation": "Monotonic retained memory across workload cycles is a classic signal for leakage or unbounded growth.",
+      "topics": ["Memory", "Leaks", "Resource saturation"],
+      "id": "production-debugging-047"
+    },
+    {
+      "type": "single",
+      "question": "CPU is pinned near 100% and request latency rises sharply. Which tool can help identify where CPU time is being spent?",
+      "options": [
+        "A CPU profiler",
+        "A schema migration tool",
+        "A DNS resolver",
+        "A static type checker"
+      ],
+      "answer": "A CPU profiler",
+      "explanation": "Profiles provide code-level samples that can expose hot functions and expensive call stacks.",
+      "topics": ["Profiling", "CPU", "Performance"],
+      "id": "production-debugging-048"
+    },
+    {
+      "type": "single",
+      "question": "What should you inspect when a service can resolve a dependency hostname intermittently but connections frequently fail?",
+      "options": [
+        "DNS resolution, network path, security/firewall rules, connection errors, and dependency health",
+        "Only SQL indexes",
+        "Only application memory",
+        "Only browser cache"
+      ],
+      "answer": "DNS resolution, network path, security/firewall rules, connection errors, and dependency health",
+      "explanation": "Connection failures can originate at several layers and should be isolated systematically.",
+      "topics": ["Networking", "DNS", "Dependencies"],
+      "id": "production-debugging-049"
+    },
+    {
+      "type": "single",
+      "question": "Why can packet loss cause unexpectedly high application latency even when bandwidth is not saturated?",
+      "options": [
+        "Retransmissions and connection-level recovery add delay",
+        "Packet loss always increases CPU to exactly 100%",
+        "HTTP ignores packet loss",
+        "Packet loss only affects UDP"
+      ],
+      "answer": "Retransmissions and connection-level recovery add delay",
+      "explanation": "Network health cannot be inferred from bandwidth alone.",
+      "topics": ["Networking", "Latency", "Packet loss"],
+      "id": "production-debugging-050"
+    },
+    {
+      "type": "single",
+      "question": "What is the safest interpretation of a single suspicious log line during an outage?",
+      "options": [
+        "It is evidence to correlate with scope, frequency, timing, and other telemetry before concluding causality",
+        "It is automatically the root cause",
+        "It should be ignored because logs are unreliable",
+        "It proves all requests failed for the same reason"
+      ],
+      "answer": "It is evidence to correlate with scope, frequency, timing, and other telemetry before concluding causality",
+      "explanation": "Individual logs are useful but can represent harmless retries, secondary errors, or unrelated events.",
+      "topics": ["Logs", "Causality", "Hypothesis testing"],
+      "id": "production-debugging-051"
+    },
+    {
+      "type": "single",
+      "question": "Why is preserving evidence important before performing destructive mitigation such as restarting every instance?",
+      "options": [
+        "Restarting may remove transient state, logs, dumps, or conditions needed to diagnose the incident later",
+        "Restarts never help production systems",
+        "Evidence is only needed for security incidents",
+        "Mitigation should always wait for evidence collection"
+      ],
+      "answer": "Restarting may remove transient state, logs, dumps, or conditions needed to diagnose the incident later",
+      "explanation": "Preserve useful evidence when feasible, but do not allow evidence collection to unnecessarily prolong severe user impact.",
+      "topics": ["Evidence preservation", "Incident response", "RCA"],
+      "id": "production-debugging-052"
+    },
+    {
+      "type": "single",
+      "question": "After applying a mitigation, what should you do before declaring the incident resolved?",
+      "options": [
+        "Verify user-facing symptoms and relevant telemetry have recovered and remain stable",
+        "Assume success because the command completed",
+        "Delete incident notes",
+        "Disable all alerts"
+      ],
+      "answer": "Verify user-facing symptoms and relevant telemetry have recovered and remain stable",
+      "explanation": "Mitigation is complete only when recovery is observed, not merely when an action is executed.",
+      "topics": ["Verification", "Mitigation", "Incident response"],
+      "id": "production-debugging-053"
+    },
+    {
+      "type": "single",
+      "question": "What should an incident timeline capture?",
+      "options": [
+        "Key symptoms, decisions, hypotheses, actions, results, and timestamps",
+        "Only the final root cause",
+        "Only chat messages from the incident commander",
+        "Only source-control commits"
+      ],
+      "answer": "Key symptoms, decisions, hypotheses, actions, results, and timestamps",
+      "explanation": "A factual timeline supports coordination during the incident and later causal analysis.",
+      "topics": ["Incident management", "Timeline", "RCA"],
+      "id": "production-debugging-054"
+    },
+    {
+      "type": "single",
+      "question": "During a large incident, why separate incident coordination from hands-on debugging when enough responders are available?",
+      "options": [
+        "It prevents coordination, communication, and prioritization from being lost while investigators focus deeply on technical work",
+        "Technical responders should never communicate",
+        "The coordinator must write the permanent fix",
+        "It reduces the number of telemetry signals"
+      ],
+      "answer": "It prevents coordination, communication, and prioritization from being lost while investigators focus deeply on technical work",
+      "explanation": "Explicit roles reduce duplicated work and maintain a coherent operational picture.",
+      "topics": ["Incident management", "Communication", "Coordination"],
+      "id": "production-debugging-055"
+    },
+    {
+      "type": "single",
+      "question": "What is the main purpose of a postmortem?",
+      "options": [
+        "Understand contributing factors and improve the system and response so similar incidents are less likely or less severe",
+        "Identify one person to blame",
+        "Prove the incident could never recur",
+        "Replace monitoring"
+      ],
+      "answer": "Understand contributing factors and improve the system and response so similar incidents are less likely or less severe",
+      "explanation": "Useful postmortems focus on learning, systemic conditions, and concrete follow-up actions.",
+      "topics": ["Postmortem", "RCA", "Reliability"],
+      "id": "production-debugging-056"
+    },
+    {
+      "type": "boolean",
+      "question": "A good RCA should stop as soon as it identifies the developer mistake that immediately triggered the incident.",
+      "answer": false,
+      "explanation": "Human error is rarely a sufficient systemic explanation. RCA should ask why the system allowed the mistake to cause the observed impact.",
+      "topics": ["RCA", "Postmortem", "Systems thinking"],
+      "id": "production-debugging-057"
+    },
+    {
+      "type": "single",
+      "question": "Which is a stronger postmortem action item?",
+      "options": [
+        "Add automated validation that prevents the invalid configuration from reaching production",
+        "Tell engineers to be more careful",
+        "Remember not to make the same mistake",
+        "Add a vague note to documentation"
+      ],
+      "answer": "Add automated validation that prevents the invalid configuration from reaching production",
+      "explanation": "High-value actions change the system, tooling, tests, safeguards, or detection mechanisms rather than relying solely on memory.",
+      "topics": ["Postmortem", "Prevention", "Automation"],
+      "id": "production-debugging-058"
+    },
+    {
+      "type": "single",
+      "question": "After an incident caused by a missing operational capability, when is the best time to build reusable mitigation tooling such as rollback, traffic drain, or feature-disable mechanisms?",
+      "options": [
+        "Before the next incident, based on lessons from the current one",
+        "Only during the next outage",
+        "Never; mitigation should always be manual",
+        "Only after the same incident happens three times"
+      ],
+      "answer": "Before the next incident, based on lessons from the current one",
+      "explanation": "Incident learnings should feed back into safer and faster future mitigation.",
+      "topics": ["Operational readiness", "Mitigation", "Postmortem"],
+      "id": "production-debugging-059"
+    },
+    {
+      "type": "multiple",
+      "question": "Which behaviors characterize strong senior-level production debugging?",
+      "options": [
+        "Quantify user impact before deep diagnosis",
+        "Use telemetry to test explicit hypotheses",
+        "Prefer reversible mitigations when possible",
+        "Correlate logs, metrics, traces, and recent changes",
+        "Make several undocumented production changes simultaneously"
+      ],
+      "answers": [
+        "Quantify user impact before deep diagnosis",
+        "Use telemetry to test explicit hypotheses",
+        "Prefer reversible mitigations when possible",
+        "Correlate logs, metrics, traces, and recent changes"
+      ],
+      "explanation": "Senior debugging combines technical diagnosis with impact management, safe mitigation, evidence, and disciplined reasoning.",
+      "topics": [
+        "Production debugging",
+        "Incident response",
+        "Observability",
+        "Senior engineering"
+      ],
+      "id": "production-debugging-060"
+    }
+  ]
+}

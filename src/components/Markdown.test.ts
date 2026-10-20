@@ -34,9 +34,45 @@ describe('study Markdown', () => {
           '<script>alert(1)</script>\n\n<img src="x" onerror="alert(1)">\n\n![tracking](https://example.com/pixel)\n\n[bad](javascript:alert%281%29) [good](https://example.com)',
       }),
     )
-    expect(html).not.toMatch(/<script|<img|onerror|javascript:/)
+    // No executable tags/attributes/URLs, but the source stays visible as escaped text.
+    expect(html).not.toMatch(/<script|<img/)
+    expect(html).not.toMatch(/\sonerror="|onerror='/)
+    expect(html).not.toContain('javascript:')
+    expect(html).toContain('&lt;script&gt;')
     expect(html).toContain('href="https://example.com"')
     expect(html).toContain('rel="noopener noreferrer"')
+  })
+  it('preserves angle-bracket content such as JSX and generics as literal text', () => {
+    const question = renderToStaticMarkup(
+      createElement(Markdown, {
+        children: 'When might `<Link prefetch={false}>` be reasonable?',
+        leadHeading: 2,
+      }),
+    )
+    expect(question).toContain('&lt;Link prefetch={false}&gt;')
+    expect(question).not.toMatch(/When might\s+be reasonable\?/)
+
+    const plain = renderToStaticMarkup(
+      createElement(Markdown, {
+        children: 'When might <Link prefetch={false}> be reasonable?',
+      }),
+    )
+    expect(plain).toContain('When might')
+    expect(plain).toContain('&lt;Link')
+    expect(plain).toContain('be reasonable?')
+
+    const generic = renderToStaticMarkup(
+      createElement(Markdown, { children: 'function identity<T>(value: T): T' }),
+    )
+    expect(generic).toContain('identity&lt;T&gt;')
+
+    const inline = renderToStaticMarkup(createElement(InlineMarkdown, { children: '<slug>' }))
+    expect(inline).toContain('&lt;slug&gt;')
+
+    const viewTransition = renderToStaticMarkup(
+      createElement(InlineMarkdown, { children: '<ViewTransition>' }),
+    )
+    expect(viewTransition).toContain('&lt;ViewTransition&gt;')
   })
   it('keeps answer labels inline and noninteractive', () => {
     const html = renderToStaticMarkup(

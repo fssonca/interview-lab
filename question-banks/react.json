@@ -1,0 +1,761 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "react",
+  "name": "React",
+  "description": "Senior React interview preparation aligned with React 19.3: rendering and reconciliation, state and props, refs, Effects, Strict Mode, Hooks, Context, reducers, controlled forms, memoization and React Compiler, Suspense, concurrency, Actions, optimistic UI, error handling, and modern React APIs.",
+  "questions": [
+    {
+      "type": "single",
+      "question": "What causes a React function component to render again?",
+      "options": [
+        "Only changes to props",
+        "Relevant state updates, parent renders, or consumed context changes",
+        "Only DOM mutations",
+        "Only useEffect calls"
+      ],
+      "answer": "Relevant state updates, parent renders, or consumed context changes",
+      "explanation": "A component can render because its own state updates, its parent renders, or a context it reads changes. Rendering does not necessarily mean the DOM will change.",
+      "topics": ["Rendering", "State", "Context"],
+      "id": "react-001"
+    },
+    {
+      "type": "boolean",
+      "question": "A React component re-render always implies that React will mutate the DOM.",
+      "answer": false,
+      "explanation": "Rendering computes the next UI. React may determine during reconciliation that no DOM mutation is required.",
+      "topics": ["Rendering", "Reconciliation"],
+      "id": "react-002"
+    },
+    {
+      "type": "single",
+      "question": "Why does React require components and Hooks to be pure during rendering?",
+      "options": [
+        "So the same inputs can be evaluated predictably and React can safely pause, restart, or repeat rendering",
+        "So components never use state",
+        "So every component renders only once",
+        "So Effects run synchronously"
+      ],
+      "answer": "So the same inputs can be evaluated predictably and React can safely pause, restart, or repeat rendering",
+      "explanation": "Purity makes rendering deterministic and enables React to optimize and repeat render work safely.",
+      "topics": ["Rendering", "Purity", "Rules of React"],
+      "id": "react-003"
+    },
+    {
+      "type": "single",
+      "question": "What does it mean that React state behaves like a snapshot?",
+      "options": [
+        "Calling a setter changes the current local variable immediately",
+        "Each render sees a fixed state value, and setters request a future render",
+        "State is copied into localStorage",
+        "State values are globally shared"
+      ],
+      "answer": "Each render sees a fixed state value, and setters request a future render",
+      "explanation": "Event handlers close over the state values from the render in which they were created.",
+      "topics": ["State", "Rendering", "Closures"],
+      "id": "react-004"
+    },
+    {
+      "type": "single",
+      "question": "Starting from count = 0, what is the result of calling setCount(count + 1) three times in the same event handler?",
+      "options": ["1", "2", "3", "It is undefined"],
+      "answer": "1",
+      "explanation": "All three calls read the same count snapshot and enqueue the same next value.",
+      "topics": ["State", "Batching", "State snapshot"],
+      "id": "react-005"
+    },
+    {
+      "type": "single",
+      "question": "Starting from count = 0, what is the result of calling setCount(c => c + 1) three times in the same event handler?",
+      "options": ["1", "2", "3", "The updates cancel each other"],
+      "answer": "3",
+      "explanation": "Updater functions are queued and applied sequentially to the previous queued result.",
+      "topics": ["State", "Functional updates", "Batching"],
+      "id": "react-006"
+    },
+    {
+      "type": "boolean",
+      "question": "React may batch multiple state updates before rendering the next UI.",
+      "answer": true,
+      "explanation": "React batches compatible updates to avoid unnecessary intermediate renders and half-updated UI.",
+      "topics": ["State", "Batching"],
+      "id": "react-007"
+    },
+    {
+      "type": "single",
+      "question": "When is the functional form of a state setter especially useful?",
+      "options": [
+        "When the next value depends on the previous state",
+        "Only when state is a string",
+        "Only inside useEffect",
+        "When you want to bypass rendering"
+      ],
+      "answer": "When the next value depends on the previous state",
+      "explanation": "Updater functions avoid relying on a stale render snapshot when computing from previous state.",
+      "topics": ["State", "Functional updates"],
+      "id": "react-008"
+    },
+    {
+      "type": "boolean",
+      "question": "It is safe to mutate an object stored in React state directly as long as you call the setter afterward with the same object.",
+      "answer": false,
+      "explanation": "React state should be treated as immutable. Reusing the same object reference can prevent React and memoization logic from detecting meaningful changes.",
+      "topics": ["State", "Immutability"],
+      "id": "react-009"
+    },
+    {
+      "type": "single",
+      "question": "What is the preferred way to update one property of an object stored in state?",
+      "options": [
+        "Mutate the existing object and reuse it",
+        "Create a new object that copies existing fields and replaces the changed field",
+        "Modify the DOM directly",
+        "Store the property in a ref instead"
+      ],
+      "answer": "Create a new object that copies existing fields and replaces the changed field",
+      "explanation": "Immutable updates preserve previous snapshots and provide a new reference for React.",
+      "topics": ["State", "Immutability", "Objects"],
+      "id": "react-010"
+    },
+    {
+      "type": "single",
+      "question": "What is a prop in React?",
+      "options": [
+        "Mutable local component storage",
+        "Read-only input passed to a component",
+        "A browser event queue",
+        "A ref alias"
+      ],
+      "answer": "Read-only input passed to a component",
+      "explanation": "A component should not mutate its props. Changes should flow from the owner through new props.",
+      "topics": ["Props", "Component model"],
+      "id": "react-011"
+    },
+    {
+      "type": "single",
+      "question": "What is the main reason to lift state up?",
+      "options": [
+        "To let multiple components coordinate around one authoritative value",
+        "To prevent every re-render",
+        "To make state global by default",
+        "To replace props with refs"
+      ],
+      "answer": "To let multiple components coordinate around one authoritative value",
+      "explanation": "Shared state should usually live in the closest common owner that needs to coordinate its consumers.",
+      "topics": ["State", "Lifting state", "Component architecture"],
+      "id": "react-012"
+    },
+    {
+      "type": "single",
+      "question": "What does React use to decide whether component state at a position should be preserved?",
+      "options": [
+        "Only the component's variable name",
+        "Its position, component type, and keys in the render tree",
+        "The component's CSS class",
+        "The number of Hooks it uses"
+      ],
+      "answer": "Its position, component type, and keys in the render tree",
+      "explanation": "State is associated with a component's identity in the rendered tree.",
+      "topics": ["State", "Keys", "Component identity"],
+      "id": "react-013"
+    },
+    {
+      "type": "single",
+      "question": "How can you intentionally reset a component's local state while rendering the same component type in the same place?",
+      "options": [
+        "Give it a different key",
+        "Call useMemo",
+        "Add React.memo",
+        "Wrap it in a Fragment"
+      ],
+      "answer": "Give it a different key",
+      "explanation": "Changing the key changes the component identity, causing React to recreate it and reset its state.",
+      "topics": ["State", "Keys", "Resetting state"],
+      "id": "react-014"
+    },
+    {
+      "type": "single",
+      "question": "Why should list keys be stable and derived from the data?",
+      "options": [
+        "They help React track item identity across insertions, removals, and reordering",
+        "They are passed to the child as a normal prop",
+        "They prevent all list re-renders",
+        "They make arrays immutable"
+      ],
+      "answer": "They help React track item identity across insertions, removals, and reordering",
+      "explanation": "Stable keys let React preserve the correct component/DOM identity when list order changes.",
+      "topics": ["Lists", "Keys", "Reconciliation"],
+      "id": "react-015"
+    },
+    {
+      "type": "boolean",
+      "question": "The special key value is automatically available inside the child component as props.key.",
+      "answer": false,
+      "explanation": "key is consumed by React for identity and is not forwarded as a normal prop.",
+      "topics": ["Keys", "Props"],
+      "id": "react-016"
+    },
+    {
+      "type": "single",
+      "question": "What is a controlled text input?",
+      "options": [
+        "An input whose current value comes from React state via value and is updated through onChange",
+        "An input that uses only defaultValue",
+        "An input that cannot be edited",
+        "An input stored in a ref"
+      ],
+      "answer": "An input whose current value comes from React state via value and is updated through onChange",
+      "explanation": "Controlled inputs use React state as the source of truth for the current value.",
+      "topics": ["Forms", "Controlled components", "State"],
+      "id": "react-017"
+    },
+    {
+      "type": "single",
+      "question": "What is an uncontrolled text input?",
+      "options": [
+        "An input whose current value is primarily maintained by the DOM, optionally initialized with defaultValue",
+        "An input with value and onChange",
+        "An input with no name",
+        "An input rendered outside React"
+      ],
+      "answer": "An input whose current value is primarily maintained by the DOM, optionally initialized with defaultValue",
+      "explanation": "defaultValue specifies the initial value but does not continuously control the input.",
+      "topics": ["Forms", "Uncontrolled components"],
+      "id": "react-018"
+    },
+    {
+      "type": "boolean",
+      "question": "A text input should switch freely between controlled and uncontrolled during its lifetime.",
+      "answer": false,
+      "explanation": "React expects an input to remain consistently controlled or uncontrolled.",
+      "topics": ["Forms", "Controlled components"],
+      "id": "react-019"
+    },
+    {
+      "type": "single",
+      "question": "Why does a controlled input with value={name} but no onChange appear read-only?",
+      "options": [
+        "React keeps forcing the DOM value to match the supplied value prop",
+        "useState is asynchronous",
+        "React disables keyboard events",
+        "The browser ignores value attributes"
+      ],
+      "answer": "React keeps forcing the DOM value to match the supplied value prop",
+      "explanation": "A controlled input needs an onChange handler that synchronously updates its backing value.",
+      "topics": ["Forms", "Controlled components"],
+      "id": "react-020"
+    },
+    {
+      "type": "single",
+      "question": "What is the primary difference between useRef and useState?",
+      "options": [
+        "Changing ref.current does not trigger a re-render; updating state does",
+        "Refs can only hold DOM nodes",
+        "State cannot hold objects",
+        "Refs are immutable"
+      ],
+      "answer": "Changing ref.current does not trigger a re-render; updating state does",
+      "explanation": "Refs are useful for mutable values that are not part of rendered output.",
+      "topics": ["Refs", "State"],
+      "id": "react-021"
+    },
+    {
+      "type": "single",
+      "question": "Which is a good use case for useRef?",
+      "options": [
+        "Holding a DOM node or mutable value that should not trigger rendering",
+        "Storing all visible UI state",
+        "Replacing every useState",
+        "Making Effects run before paint"
+      ],
+      "answer": "Holding a DOM node or mutable value that should not trigger rendering",
+      "explanation": "Refs are commonly used for DOM access, timers, previous values, or integration handles.",
+      "topics": ["Refs", "DOM"],
+      "id": "react-022"
+    },
+    {
+      "type": "single",
+      "question": "Starting in React 19, how can a function component receive a ref from its parent?",
+      "options": [
+        "As a ref prop directly",
+        "Only through forwardRef",
+        "Only through context",
+        "Function components still cannot receive refs"
+      ],
+      "answer": "As a ref prop directly",
+      "explanation": "React 19 supports ref as a normal prop for function components, reducing the need for forwardRef in new code.",
+      "topics": ["Refs", "React 19", "forwardRef"],
+      "id": "react-023"
+    },
+    {
+      "type": "single",
+      "question": "What is useImperativeHandle for?",
+      "options": [
+        "Customizing the imperative handle exposed through a ref",
+        "Running Effects before paint",
+        "Memoizing functions",
+        "Subscribing to context"
+      ],
+      "answer": "Customizing the imperative handle exposed through a ref",
+      "explanation": "It lets a component expose a controlled imperative API rather than necessarily exposing the raw DOM node.",
+      "topics": ["Refs", "useImperativeHandle"],
+      "id": "react-024"
+    },
+    {
+      "type": "single",
+      "question": "What is the primary purpose of useEffect?",
+      "options": [
+        "Synchronize a component with an external system",
+        "Compute every derived value",
+        "Replace event handlers",
+        "Memoize expensive calculations"
+      ],
+      "answer": "Synchronize a component with an external system",
+      "explanation": "Effects are an escape hatch for synchronization with things React does not control, such as network connections, browser APIs, or third-party widgets.",
+      "topics": ["Effects", "useEffect"],
+      "id": "react-025"
+    },
+    {
+      "type": "boolean",
+      "question": "If you can calculate a value directly from props and state during render, you usually need useEffect to keep that derived value synchronized.",
+      "answer": false,
+      "explanation": "Derived values usually belong in rendering logic. An Effect that merely copies derivable data into state often adds unnecessary renders and synchronization risk.",
+      "topics": ["Effects", "Derived state", "Component design"],
+      "id": "react-026"
+    },
+    {
+      "type": "single",
+      "question": "When does an Effect cleanup function run?",
+      "options": [
+        "Before the Effect re-runs with changed dependencies and when the component unmounts",
+        "Only when the browser closes",
+        "Only after every render",
+        "Before the component function renders"
+      ],
+      "answer": "Before the Effect re-runs with changed dependencies and when the component unmounts",
+      "explanation": "Cleanup mirrors setup: React cleans up the old synchronization before establishing the new one.",
+      "topics": ["Effects", "Cleanup"],
+      "id": "react-027"
+    },
+    {
+      "type": "single",
+      "question": "How does React compare dependency-array values for useEffect, useMemo, and useCallback?",
+      "options": [
+        "Object.is",
+        "Deep structural equality",
+        "JSON.stringify",
+        "Strictly by reference for every primitive and object"
+      ],
+      "answer": "Object.is",
+      "explanation": "React compares each dependency with its previous value using Object.is semantics.",
+      "topics": ["Effects", "Dependencies", "Memoization"],
+      "id": "react-028"
+    },
+    {
+      "type": "single",
+      "question": "What happens if useEffect is called without a dependency array?",
+      "options": [
+        "It runs after every committed render",
+        "It runs only once",
+        "It never runs",
+        "It runs only on unmount"
+      ],
+      "answer": "It runs after every committed render",
+      "explanation": "Omitting the dependency array means the Effect is reconsidered after each commit.",
+      "topics": ["Effects", "Dependencies"],
+      "id": "react-029"
+    },
+    {
+      "type": "single",
+      "question": "What does an empty dependency array [] mean for a normal Effect?",
+      "options": [
+        "The Effect does not depend on reactive render values and normally runs setup on mount and cleanup on unmount",
+        "The Effect runs after every render",
+        "The Effect cannot return cleanup",
+        "The Effect is disabled"
+      ],
+      "answer": "The Effect does not depend on reactive render values and normally runs setup on mount and cleanup on unmount",
+      "explanation": "In development Strict Mode, an extra setup/cleanup cycle may occur to verify cleanup correctness.",
+      "topics": ["Effects", "Dependencies", "Strict Mode"],
+      "id": "react-030"
+    },
+    {
+      "type": "single",
+      "question": "Why is suppressing the exhaustive-deps linter usually risky?",
+      "options": [
+        "It can hide stale-closure and synchronization bugs",
+        "It makes JavaScript slower",
+        "It disables batching",
+        "It converts Effects into layout Effects"
+      ],
+      "answer": "It can hide stale-closure and synchronization bugs",
+      "explanation": "Dependencies should reflect the reactive values read by the Effect; code should usually be restructured rather than lying to the linter.",
+      "topics": ["Effects", "Dependencies", "Stale closures"],
+      "id": "react-031"
+    },
+    {
+      "type": "single",
+      "question": "What is a stale closure bug in React?",
+      "options": [
+        "A callback or Effect keeps reading values captured from an older render",
+        "The DOM node has expired",
+        "A component has too many props",
+        "A Promise rejects after unmount"
+      ],
+      "answer": "A callback or Effect keeps reading values captured from an older render",
+      "explanation": "Every render creates closures over that render's props and state. Incorrect dependencies can keep logic attached to outdated values.",
+      "topics": ["Closures", "Effects", "State"],
+      "id": "react-032"
+    },
+    {
+      "type": "single",
+      "question": "What problem does useEffectEvent solve?",
+      "options": [
+        "It lets Effect logic read the latest committed values without making those values reactive dependencies of the Effect",
+        "It replaces normal click handlers",
+        "It memoizes event handlers passed to children",
+        "It lets Hooks be called conditionally"
+      ],
+      "answer": "It lets Effect logic read the latest committed values without making those values reactive dependencies of the Effect",
+      "explanation": "Effect Events separate non-reactive event-like logic from the synchronization trigger of the surrounding Effect.",
+      "topics": ["useEffectEvent", "Effects", "React 19"],
+      "id": "react-033"
+    },
+    {
+      "type": "boolean",
+      "question": "useEffectEvent should be used as a general way to hide missing dependencies from the exhaustive-deps linter.",
+      "answer": false,
+      "explanation": "Effect Events are for genuinely non-reactive logic inside Effects, not for bypassing the dependency model.",
+      "topics": ["useEffectEvent", "Effects", "Dependencies"],
+      "id": "react-034"
+    },
+    {
+      "type": "single",
+      "question": "When is useLayoutEffect appropriate?",
+      "options": [
+        "When work such as DOM measurement must happen before the browser paints",
+        "For all data fetching",
+        "Whenever an Effect has an empty dependency array",
+        "Only in Server Components"
+      ],
+      "answer": "When work such as DOM measurement must happen before the browser paints",
+      "explanation": "useLayoutEffect blocks painting and should be reserved for cases where post-paint useEffect would visibly flicker.",
+      "topics": ["useLayoutEffect", "DOM", "Performance"],
+      "id": "react-035"
+    },
+    {
+      "type": "single",
+      "question": "What does React Strict Mode intentionally do in development?",
+      "options": [
+        "Extra render/effect/ref checks to expose impurities and missing cleanup",
+        "Disable Hooks",
+        "Turn every update into a Transition",
+        "Run production builds twice"
+      ],
+      "answer": "Extra render/effect/ref checks to expose impurities and missing cleanup",
+      "explanation": "Strict Mode development checks can re-render pure functions and re-run setup/cleanup to reveal bugs.",
+      "topics": ["Strict Mode", "Effects", "Purity"],
+      "id": "react-036"
+    },
+    {
+      "type": "boolean",
+      "question": "The extra Effect setup/cleanup cycle caused by Strict Mode is a production behavior.",
+      "answer": false,
+      "explanation": "The extra cycle is a development-only stress test.",
+      "topics": ["Strict Mode", "Effects"],
+      "id": "react-037"
+    },
+    {
+      "type": "single",
+      "question": "Which rule describes valid Hook calls?",
+      "options": [
+        "Call Hooks at the top level of React components or custom Hooks",
+        "Call Hooks inside any loop as long as the loop count is stable",
+        "Call Hooks only inside useEffect",
+        "Call Hooks conditionally if the condition rarely changes"
+      ],
+      "answer": "Call Hooks at the top level of React components or custom Hooks",
+      "explanation": "React relies on stable Hook call ordering between renders.",
+      "topics": ["Hooks", "Rules of Hooks"],
+      "id": "react-038"
+    },
+    {
+      "type": "single",
+      "question": "What is the primary purpose of a custom Hook?",
+      "options": [
+        "Reuse stateful React logic between components",
+        "Share rendered JSX without components",
+        "Create a global singleton automatically",
+        "Prevent all re-renders"
+      ],
+      "answer": "Reuse stateful React logic between components",
+      "explanation": "Custom Hooks encapsulate reusable Hook-based behavior while each caller still owns its own state unless the Hook connects to shared external state.",
+      "topics": ["Custom Hooks", "Component architecture"],
+      "id": "react-039"
+    },
+    {
+      "type": "single",
+      "question": "When is useReducer often preferable to several related useState calls?",
+      "options": [
+        "When state transitions are complex and benefit from being centralized around explicit actions",
+        "Whenever state is a number",
+        "Only in class components",
+        "Whenever you use Context"
+      ],
+      "answer": "When state transitions are complex and benefit from being centralized around explicit actions",
+      "explanation": "Reducers can make complex state-transition logic easier to test and reason about.",
+      "topics": ["useReducer", "State", "Architecture"],
+      "id": "react-040"
+    },
+    {
+      "type": "boolean",
+      "question": "A reducer function should be pure and return the next state instead of mutating the current state.",
+      "answer": true,
+      "explanation": "Reducers participate in React's rendering model and should calculate next state from previous state and an action without side effects.",
+      "topics": ["useReducer", "Purity", "State"],
+      "id": "react-041"
+    },
+    {
+      "type": "single",
+      "question": "What happens when the value supplied by a Context provider changes?",
+      "options": [
+        "Components that read that context are eligible to re-render with the new value",
+        "Only the provider re-renders",
+        "React mutates every consumer's props object",
+        "Nothing until useEffect runs"
+      ],
+      "answer": "Components that read that context are eligible to re-render with the new value",
+      "explanation": "Context propagation updates consumers that read the context.",
+      "topics": ["Context", "Rendering"],
+      "id": "react-042"
+    },
+    {
+      "type": "single",
+      "question": "What does the default value passed to createContext represent?",
+      "options": [
+        "A fallback used when there is no matching provider above the consumer",
+        "The first provider value forever",
+        "A value that automatically updates consumers",
+        "A server-only value"
+      ],
+      "answer": "A fallback used when there is no matching provider above the consumer",
+      "explanation": "The default is not a global mutable store; it is the fallback when no provider supplies a value.",
+      "topics": ["Context", "createContext"],
+      "id": "react-043"
+    },
+    {
+      "type": "boolean",
+      "question": "Wrapping a component in React.memo prevents it from re-rendering when a context it consumes changes.",
+      "answer": false,
+      "explanation": "memo can skip parent-driven prop re-renders, but a component still updates when state it owns or context it consumes changes.",
+      "topics": ["memo", "Context", "Rendering"],
+      "id": "react-044"
+    },
+    {
+      "type": "single",
+      "question": "What does React.memo primarily do?",
+      "options": [
+        "Allow React to skip a component re-render when its props are unchanged",
+        "Cache network requests",
+        "Prevent state updates",
+        "Deep-clone props"
+      ],
+      "answer": "Allow React to skip a component re-render when its props are unchanged",
+      "explanation": "memo is a performance optimization, not a semantic guarantee.",
+      "topics": ["memo", "Memoization", "Performance"],
+      "id": "react-045"
+    },
+    {
+      "type": "single",
+      "question": "What does useMemo cache?",
+      "options": [
+        "The result of a calculation between renders until its dependencies change",
+        "A function's source code",
+        "Component state",
+        "DOM nodes"
+      ],
+      "answer": "The result of a calculation between renders until its dependencies change",
+      "explanation": "useMemo is intended as a performance optimization for computations or referential stability.",
+      "topics": ["useMemo", "Memoization", "Performance"],
+      "id": "react-046"
+    },
+    {
+      "type": "single",
+      "question": "What does useCallback cache?",
+      "options": [
+        "A function definition/reference between renders until dependencies change",
+        "The return value of calling the function",
+        "Every event fired by the function",
+        "The component's JSX"
+      ],
+      "answer": "A function definition/reference between renders until dependencies change",
+      "explanation": "useCallback is useful when stable function identity matters, such as with memoized children or Hook dependencies.",
+      "topics": ["useCallback", "Memoization", "Performance"],
+      "id": "react-047"
+    },
+    {
+      "type": "boolean",
+      "question": "useMemo and useCallback should be required everywhere because memoization is always faster than recalculation.",
+      "answer": false,
+      "explanation": "Manual memoization has complexity and comparison costs. It should solve a demonstrated problem or a referential-stability requirement.",
+      "topics": ["Memoization", "Performance"],
+      "id": "react-048"
+    },
+    {
+      "type": "single",
+      "question": "How does React Compiler change the guidance around memo, useMemo, and useCallback?",
+      "options": [
+        "It can automatically memoize components and values, reducing the need for routine manual memoization",
+        "It removes all three APIs from React",
+        "It makes every Effect synchronous",
+        "It only optimizes class components"
+      ],
+      "answer": "It can automatically memoize components and values, reducing the need for routine manual memoization",
+      "explanation": "React Compiler performs build-time automatic memoization. Manual APIs remain useful when precise control is required.",
+      "topics": ["React Compiler", "Memoization", "Performance"],
+      "id": "react-049"
+    },
+    {
+      "type": "single",
+      "question": "A memoized child still re-renders on every parent render. Which is a common cause?",
+      "options": [
+        "The child receives a newly created object, array, or function prop on every render",
+        "The child uses JSX",
+        "The parent has state",
+        "The child has a key"
+      ],
+      "answer": "The child receives a newly created object, array, or function prop on every render",
+      "explanation": "One always-new prop can defeat prop-based memoization because referential equality changes.",
+      "topics": ["memo", "Referential equality", "Performance"],
+      "id": "react-050"
+    },
+    {
+      "type": "single",
+      "question": "What is useTransition for?",
+      "options": [
+        "Marking non-urgent state updates so urgent interactions can remain responsive",
+        "Synchronously forcing DOM updates",
+        "Controlling text inputs",
+        "Running Effects on the server"
+      ],
+      "answer": "Marking non-urgent state updates so urgent interactions can remain responsive",
+      "explanation": "Transition work can be interrupted by higher-priority updates.",
+      "topics": ["useTransition", "Concurrency", "Performance"],
+      "id": "react-051"
+    },
+    {
+      "type": "boolean",
+      "question": "A Transition update is appropriate for controlling the state of a text input on each keystroke.",
+      "answer": false,
+      "explanation": "React documentation explicitly notes that Transition updates cannot be used to control text inputs; typing should remain urgent.",
+      "topics": ["useTransition", "Forms", "Concurrency"],
+      "id": "react-052"
+    },
+    {
+      "type": "single",
+      "question": "What does useDeferredValue do?",
+      "options": [
+        "Lets a non-critical value lag behind so urgent UI can update first",
+        "Debounces network requests by a fixed number of milliseconds",
+        "Makes a value immutable",
+        "Caches the value permanently"
+      ],
+      "answer": "Lets a non-critical value lag behind so urgent UI can update first",
+      "explanation": "It schedules background rendering of the deferred value rather than defining a fixed timer-based debounce.",
+      "topics": ["useDeferredValue", "Concurrency", "Performance"],
+      "id": "react-053"
+    },
+    {
+      "type": "single",
+      "question": "What does Suspense do when a supported child suspends?",
+      "options": [
+        "Shows the nearest fallback until the suspended work can continue",
+        "Catches every event-handler error",
+        "Automatically caches all fetched data",
+        "Stops all rendering in the application"
+      ],
+      "answer": "Shows the nearest fallback until the suspended work can continue",
+      "explanation": "Suspense coordinates loading boundaries for supported suspending resources and code.",
+      "topics": ["Suspense", "Loading states"],
+      "id": "react-054"
+    },
+    {
+      "type": "single",
+      "question": "What does React.lazy provide?",
+      "options": [
+        "Code splitting by loading a component module when it is first rendered",
+        "State persistence between sessions",
+        "Automatic data caching",
+        "A replacement for Suspense"
+      ],
+      "answer": "Code splitting by loading a component module when it is first rendered",
+      "explanation": "A lazy component typically renders under a Suspense boundary while its module loads.",
+      "topics": ["lazy", "Suspense", "Code splitting"],
+      "id": "react-055"
+    },
+    {
+      "type": "single",
+      "question": "What can an Error Boundary catch?",
+      "options": [
+        "Errors thrown while rendering descendant components",
+        "Every error in every event handler automatically",
+        "All rejected fetch promises anywhere in the browser",
+        "Errors in the Error Boundary itself"
+      ],
+      "answer": "Errors thrown while rendering descendant components",
+      "explanation": "Error Boundaries isolate render-time failures in descendants. Event-handler failures generally require normal imperative error handling.",
+      "topics": ["Error Boundaries", "Error handling"],
+      "id": "react-056"
+    },
+    {
+      "type": "single",
+      "question": "What is special about the React use(resource) API compared with Hooks such as useState?",
+      "options": [
+        "It can read resources such as Promises or context and may be called conditionally or in loops, while still being used inside a component or Hook",
+        "It replaces all state Hooks",
+        "It may be called from arbitrary non-React functions",
+        "It works only in event handlers"
+      ],
+      "answer": "It can read resources such as Promises or context and may be called conditionally or in loops, while still being used inside a component or Hook",
+      "explanation": "use integrates resources such as Promises with Suspense and has different placement rules from ordinary Hooks.",
+      "topics": ["use", "Suspense", "React 19"],
+      "id": "react-057"
+    },
+    {
+      "type": "single",
+      "question": "What is useOptimistic for?",
+      "options": [
+        "Temporarily showing an expected UI result while an Action is pending",
+        "Caching expensive calculations",
+        "Preventing failed requests",
+        "Replacing useState for every component"
+      ],
+      "answer": "Temporarily showing an expected UI result while an Action is pending",
+      "explanation": "Optimistic state provides immediate feedback and then converges to the authoritative value when the Action completes.",
+      "topics": ["useOptimistic", "Actions", "Optimistic UI"],
+      "id": "react-058"
+    },
+    {
+      "type": "single",
+      "question": "What does useActionState provide?",
+      "options": [
+        "State associated with an Action, an action dispatcher, and pending status",
+        "A global Redux-like store",
+        "A DOM ref and cleanup callback",
+        "Only form validation"
+      ],
+      "answer": "State associated with an Action, an action dispatcher, and pending status",
+      "explanation": "useActionState is designed for state transitions driven by Actions, including async work.",
+      "topics": ["useActionState", "Actions", "Forms"],
+      "id": "react-059"
+    },
+    {
+      "type": "single",
+      "question": "Which React 19.3 feature is now stable for animating UI changes associated with Transitions?",
+      "options": ["<ViewTransition>", "<Motion>", "<AnimatedFragment>", "<TransitionGroup>"],
+      "answer": "<ViewTransition>",
+      "explanation": "React 19.3 stabilized the ViewTransition component, integrating React Transitions with the browser View Transition API.",
+      "topics": ["React 19.3", "ViewTransition", "Transitions"],
+      "id": "react-060"
+    }
+  ]
+}

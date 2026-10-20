@@ -1,0 +1,1918 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "django-mid-senior",
+  "name": "Django Mid/Senior",
+  "description": "Mid- and senior-level Django backend interview preparation covering request lifecycle, ORM, QuerySets, migrations, authentication, permissions, middleware, Django REST Framework, serializers, transactions, testing, caching, async, background jobs, Celery, configuration, security, and production architecture.",
+  "questions": [
+    {
+      "id": "django-mid-senior-001",
+      "type": "single",
+      "question": "What is the primary responsibility of Django's URLconf?",
+      "options": [
+        "Map incoming URL patterns to views",
+        "Create database migrations",
+        "Authenticate every user",
+        "Serialize model instances"
+      ],
+      "answer": "Map incoming URL patterns to views",
+      "explanation": "Django resolves the incoming request path against URL patterns and selects the corresponding view along with captured arguments.",
+      "topics": ["URLconf", "Request lifecycle", "URL routing"]
+    },
+    {
+      "id": "django-mid-senior-002",
+      "type": "single",
+      "question": "After Django resolves a URL, what is normally invoked to produce the application response?",
+      "options": [
+        "The matched view",
+        "The model manager",
+        "The migration executor",
+        "The template loader only"
+      ],
+      "answer": "The matched view",
+      "explanation": "The resolved view receives the request and any URL parameters and returns an HttpResponse-compatible response.",
+      "topics": ["Views", "Request lifecycle", "HttpResponse"]
+    },
+    {
+      "id": "django-mid-senior-003",
+      "type": "boolean",
+      "question": "A Django view must always render an HTML template.",
+      "answer": false,
+      "explanation": "Views can return HTML, JSON, redirects, files, streaming responses, errors, or any other valid HttpResponse.",
+      "topics": ["Views", "HttpResponse", "Django fundamentals"]
+    },
+    {
+      "id": "django-mid-senior-004",
+      "type": "single",
+      "question": "What is the main distinction between a Django project and a Django app?",
+      "options": [
+        "A project is the overall configured site/application, while an app is a reusable functional component",
+        "An app contains settings while a project can contain only models",
+        "Projects cannot contain multiple apps",
+        "There is no distinction"
+      ],
+      "answer": "A project is the overall configured site/application, while an app is a reusable functional component",
+      "explanation": "A Django project provides overall configuration while apps encapsulate functional areas such as users, billing, or reporting.",
+      "topics": ["Django project", "Django app", "Architecture"]
+    },
+    {
+      "id": "django-mid-senior-005",
+      "type": "multiple",
+      "question": "Which components commonly participate in Django's request-response lifecycle?",
+      "options": ["URL resolver", "Middleware", "View", "Database migration generator"],
+      "answers": ["URL resolver", "Middleware", "View"],
+      "explanation": "Requests pass through configured middleware, URL resolution selects a view, and the view produces a response. Migration generation is a development-time operation.",
+      "topics": ["Request lifecycle", "Middleware", "Views"]
+    },
+    {
+      "id": "django-mid-senior-006",
+      "type": "single",
+      "question": "What does WSGI provide in a traditional Django deployment?",
+      "options": [
+        "A standard interface between synchronous Python web applications and web servers",
+        "A database replication protocol",
+        "An asynchronous message broker",
+        "A frontend JavaScript runtime"
+      ],
+      "answer": "A standard interface between synchronous Python web applications and web servers",
+      "explanation": "WSGI is the traditional synchronous Python web-server interface used by Django deployments.",
+      "topics": ["WSGI", "Deployment", "Request lifecycle"]
+    },
+    {
+      "id": "django-mid-senior-007",
+      "type": "single",
+      "question": "What capability is ASGI particularly intended to support beyond traditional WSGI?",
+      "options": [
+        "Asynchronous and long-lived connection handling",
+        "Automatic SQL optimization",
+        "Database migrations",
+        "Static type checking"
+      ],
+      "answer": "Asynchronous and long-lived connection handling",
+      "explanation": "ASGI supports asynchronous application execution and use cases such as long polling and other long-lived connections.",
+      "topics": ["ASGI", "Async Django", "Deployment"]
+    },
+    {
+      "id": "django-mid-senior-008",
+      "type": "boolean",
+      "question": "Django can run async views under WSGI, but doing so does not provide the full benefits of an asynchronous request stack.",
+      "answer": true,
+      "explanation": "Async views can execute under WSGI using an adapted event loop, but an ASGI deployment is required for the full benefits of an async request stack.",
+      "topics": ["WSGI", "ASGI", "Async views"]
+    },
+    {
+      "id": "django-mid-senior-009",
+      "type": "single",
+      "question": "What does `manage.py` primarily provide?",
+      "options": [
+        "A project-aware command-line interface for Django management commands",
+        "A production HTTP server",
+        "A Redis implementation",
+        "A JavaScript bundler"
+      ],
+      "answer": "A project-aware command-line interface for Django management commands",
+      "explanation": "manage.py configures the project's settings module and exposes commands such as runserver, migrate, test, shell, and createsuperuser.",
+      "topics": ["manage.py", "Management commands", "Django CLI"]
+    },
+    {
+      "id": "django-mid-senior-010",
+      "type": "boolean",
+      "question": "`django-admin runserver` is intended to be the production web server for a high-traffic Django application.",
+      "answer": false,
+      "explanation": "Django's development server is intended for development. Production deployments normally use a production WSGI or ASGI server.",
+      "topics": ["runserver", "Deployment", "Production"]
+    },
+    {
+      "id": "django-mid-senior-011",
+      "type": "single",
+      "question": "When is a Django QuerySet normally executed against the database?",
+      "options": [
+        "When it is evaluated",
+        "Immediately when filter() is called",
+        "When the Python module is imported",
+        "Only when save() is called"
+      ],
+      "answer": "When it is evaluated",
+      "explanation": "QuerySets are lazy. Chaining filters usually constructs a query without executing it until evaluation is required.",
+      "topics": ["QuerySets", "Lazy evaluation", "Django ORM"]
+    },
+    {
+      "id": "django-mid-senior-012",
+      "type": "multiple",
+      "question": "Which operations can cause a Django QuerySet to be evaluated?",
+      "options": [
+        "Iterating over it",
+        "Calling list() on it",
+        "Calling len() on it",
+        "Adding another filter()"
+      ],
+      "answers": ["Iterating over it", "Calling list() on it", "Calling len() on it"],
+      "explanation": "Iteration, list conversion, and len require results. Adding another filter normally returns another unevaluated QuerySet.",
+      "topics": ["QuerySet evaluation", "Lazy loading", "Django ORM"]
+    },
+    {
+      "id": "django-mid-senior-013",
+      "type": "single",
+      "question": "What does `Model.objects.get(...)` do when no matching row exists?",
+      "options": [
+        "Raises Model.DoesNotExist",
+        "Returns None",
+        "Returns an empty QuerySet",
+        "Creates the object"
+      ],
+      "answer": "Raises Model.DoesNotExist",
+      "explanation": "get() expects exactly one result. No result raises the model-specific DoesNotExist exception.",
+      "topics": ["get", "DoesNotExist", "QuerySets"]
+    },
+    {
+      "id": "django-mid-senior-014",
+      "type": "single",
+      "question": "What does `Model.objects.get(...)` do when multiple rows match?",
+      "options": [
+        "Raises MultipleObjectsReturned",
+        "Returns the first row",
+        "Returns a QuerySet",
+        "Deletes duplicates"
+      ],
+      "answer": "Raises MultipleObjectsReturned",
+      "explanation": "get() represents an exactly-one-result lookup and raises MultipleObjectsReturned when that assumption is violated.",
+      "topics": ["get", "MultipleObjectsReturned", "QuerySets"]
+    },
+    {
+      "id": "django-mid-senior-015",
+      "type": "single",
+      "question": "What does `filter()` return when no records match?",
+      "options": ["An empty QuerySet", "None", "Model.DoesNotExist", "False"],
+      "answer": "An empty QuerySet",
+      "explanation": "filter() always returns a QuerySet, which may contain zero rows.",
+      "topics": ["filter", "QuerySets", "Django ORM"]
+    },
+    {
+      "id": "django-mid-senior-016",
+      "type": "single",
+      "question": "What is an `F()` expression primarily useful for?",
+      "options": [
+        "Referring to database field values inside a query or update",
+        "Declaring a form field",
+        "Defining middleware",
+        "Formatting template strings"
+      ],
+      "answer": "Referring to database field values inside a query or update",
+      "explanation": "F expressions allow database-side operations such as incrementing a field without first loading its current value into Python.",
+      "topics": ["F expressions", "Atomic updates", "Django ORM"]
+    },
+    {
+      "id": "django-mid-senior-017",
+      "type": "single",
+      "question": "Why can `Counter.objects.filter(pk=id).update(value=F('value') + 1)` be safer under concurrency than reading, incrementing in Python, and saving?",
+      "options": [
+        "The increment occurs directly in the database without a read-modify-write race in Python",
+        "F expressions acquire a global table lock",
+        "Django disables concurrent requests",
+        "The ORM retries every failed transaction automatically"
+      ],
+      "answer": "The increment occurs directly in the database without a read-modify-write race in Python",
+      "explanation": "A database-side update avoids the classic lost-update pattern caused by independently reading and rewriting a stale value.",
+      "topics": ["F expressions", "Lost updates", "Concurrency"]
+    },
+    {
+      "id": "django-mid-senior-018",
+      "type": "single",
+      "question": "What are `Q()` objects used for?",
+      "options": [
+        "Constructing complex query conditions such as OR and NOT",
+        "Creating database queues",
+        "Caching QuerySets",
+        "Declaring migrations"
+      ],
+      "answer": "Constructing complex query conditions such as OR and NOT",
+      "explanation": "Q objects allow logical composition of query predicates using operators such as &, |, and ~.",
+      "topics": ["Q objects", "Complex queries", "Django ORM"]
+    },
+    {
+      "id": "django-mid-senior-019",
+      "type": "single",
+      "question": "For which relationships is `select_related()` primarily designed?",
+      "options": [
+        "ForeignKey and OneToOne relationships",
+        "ManyToMany relationships only",
+        "Arbitrary JSON fields",
+        "Generic cache keys"
+      ],
+      "answer": "ForeignKey and OneToOne relationships",
+      "explanation": "select_related() uses SQL joins to retrieve single-valued related objects in the same query.",
+      "topics": ["select_related", "ForeignKey", "Query optimization"]
+    },
+    {
+      "id": "django-mid-senior-020",
+      "type": "single",
+      "question": "For which case is `prefetch_related()` typically preferable to `select_related()`?",
+      "options": [
+        "ManyToMany or reverse ForeignKey collections",
+        "A single scalar integer field",
+        "Updating a row atomically",
+        "Running migrations"
+      ],
+      "answer": "ManyToMany or reverse ForeignKey collections",
+      "explanation": "prefetch_related() performs separate queries and combines related objects in Python, making it suitable for multi-valued relationships.",
+      "topics": ["prefetch_related", "ManyToMany", "Query optimization"]
+    },
+    {
+      "id": "django-mid-senior-021",
+      "type": "boolean",
+      "question": "`select_related()` normally retrieves related ForeignKey data using SQL joins.",
+      "answer": true,
+      "explanation": "It expands the primary query with joins so accessing the selected single-valued relation does not require another query.",
+      "topics": ["select_related", "SQL joins", "ORM performance"]
+    },
+    {
+      "id": "django-mid-senior-022",
+      "type": "boolean",
+      "question": "`prefetch_related()` normally performs the relation loading entirely as one large SQL JOIN.",
+      "answer": false,
+      "explanation": "prefetch_related() generally executes additional queries and joins the results together in Python.",
+      "topics": ["prefetch_related", "Query optimization", "ORM performance"]
+    },
+    {
+      "id": "django-mid-senior-023",
+      "type": "single",
+      "question": "What is the Django ORM N+1 query problem?",
+      "options": [
+        "Fetching a collection and then triggering another query for each object's related data",
+        "Creating N database replicas",
+        "Running N migrations at once",
+        "Using more than one model manager"
+      ],
+      "answer": "Fetching a collection and then triggering another query for each object's related data",
+      "explanation": "Repeated lazy relationship access inside a loop can turn one query into one plus N additional queries.",
+      "topics": ["N+1 queries", "select_related", "prefetch_related"]
+    },
+    {
+      "id": "django-mid-senior-024",
+      "type": "single",
+      "question": "What does `values()` return?",
+      "options": [
+        "A QuerySet yielding dictionaries rather than model instances",
+        "A single model instance",
+        "Only primary key integers",
+        "A Python set"
+      ],
+      "answer": "A QuerySet yielding dictionaries rather than model instances",
+      "explanation": "values() is useful when only selected database values are required and full model instances are unnecessary.",
+      "topics": ["values", "QuerySets", "Projection"]
+    },
+    {
+      "id": "django-mid-senior-025",
+      "type": "single",
+      "question": "What does `values_list(..., flat=True)` provide when exactly one field is selected?",
+      "options": [
+        "A QuerySet yielding scalar values",
+        "A dictionary for every row",
+        "A model instance for every row",
+        "A nested QuerySet"
+      ],
+      "answer": "A QuerySet yielding scalar values",
+      "explanation": "flat=True removes the single-element tuple wrapper when one selected field is returned.",
+      "topics": ["values_list", "QuerySets", "Projection"]
+    },
+    {
+      "id": "django-mid-senior-026",
+      "type": "single",
+      "question": "What is a key behavior of `QuerySet.update()`?",
+      "options": [
+        "It performs a SQL-level update without calling each model instance's save() method",
+        "It loads every model and calls save()",
+        "It works only on one record",
+        "It automatically invokes full_clean()"
+      ],
+      "answer": "It performs a SQL-level update without calling each model instance's save() method",
+      "explanation": "update() operates directly in SQL and therefore bypasses per-instance save() behavior.",
+      "topics": ["QuerySet.update", "Bulk updates", "Model save"]
+    },
+    {
+      "id": "django-mid-senior-027",
+      "type": "boolean",
+      "question": "`QuerySet.update()` normally triggers `pre_save` and `post_save` model signals for every updated row.",
+      "answer": false,
+      "explanation": "Because update() performs direct SQL rather than model save() calls, those save signals are not emitted per object.",
+      "topics": ["update", "Signals", "Bulk operations"]
+    },
+    {
+      "id": "django-mid-senior-028",
+      "type": "boolean",
+      "question": "`bulk_create()` is generally intended to reduce the number of INSERT round trips when inserting many model instances.",
+      "answer": true,
+      "explanation": "bulk_create() can insert many objects efficiently rather than issuing one save operation per object.",
+      "topics": ["bulk_create", "Bulk operations", "ORM performance"]
+    },
+    {
+      "id": "django-mid-senior-029",
+      "type": "boolean",
+      "question": "`bulk_create()` normally calls each object's custom `save()` method.",
+      "answer": false,
+      "explanation": "Bulk insertion bypasses normal per-object save() execution and associated save signals.",
+      "topics": ["bulk_create", "save", "Signals"]
+    },
+    {
+      "id": "django-mid-senior-030",
+      "type": "single",
+      "question": "When is `exists()` especially useful?",
+      "options": [
+        "When you only need to know whether at least one matching row exists",
+        "When you need all model instances and all related rows",
+        "When creating migrations",
+        "When locking every row in a table"
+      ],
+      "answer": "When you only need to know whether at least one matching row exists",
+      "explanation": "exists() performs an existence-oriented query without needing to materialize the entire QuerySet.",
+      "topics": ["exists", "QuerySet optimization", "Database queries"]
+    },
+    {
+      "id": "django-mid-senior-031",
+      "type": "boolean",
+      "question": "If you will immediately iterate over an unevaluated QuerySet anyway, calling `exists()` first can result in an additional database query.",
+      "answer": true,
+      "explanation": "exists() queries for existence, and later evaluation of the QuerySet will execute the main query separately.",
+      "topics": ["exists", "QuerySet evaluation", "Performance"]
+    },
+    {
+      "id": "django-mid-senior-032",
+      "type": "single",
+      "question": "What is `QuerySet.explain()` useful for?",
+      "options": [
+        "Inspecting the database's execution plan for a QuerySet",
+        "Generating serializer documentation",
+        "Creating migration files",
+        "Displaying middleware order"
+      ],
+      "answer": "Inspecting the database's execution plan for a QuerySet",
+      "explanation": "explain() exposes database query-plan information that can help diagnose expensive scans, joins, and index usage.",
+      "topics": ["QuerySet.explain", "Query plans", "ORM optimization"]
+    },
+    {
+      "id": "django-mid-senior-033",
+      "type": "single",
+      "question": "What does `only('name')` conceptually do?",
+      "options": [
+        "Loads the named fields immediately and defers other eligible model fields",
+        "Deletes all other fields",
+        "Creates a database constraint",
+        "Returns a dictionary instead of a model"
+      ],
+      "answer": "Loads the named fields immediately and defers other eligible model fields",
+      "explanation": "Accessing a deferred field later can cause an additional query, so only() should be used based on actual access patterns.",
+      "topics": ["only", "Deferred fields", "ORM optimization"]
+    },
+    {
+      "id": "django-mid-senior-034",
+      "type": "boolean",
+      "question": "Using `only()` or `defer()` carelessly can cause additional queries when deferred fields are later accessed.",
+      "answer": true,
+      "explanation": "Deferred model attributes can be lazily loaded from the database when accessed.",
+      "topics": ["defer", "only", "Lazy loading"]
+    },
+    {
+      "id": "django-mid-senior-035",
+      "type": "single",
+      "question": "What is a custom Django model Manager commonly used for?",
+      "options": [
+        "Providing reusable table-level query operations",
+        "Replacing middleware",
+        "Defining HTTP headers",
+        "Rendering templates"
+      ],
+      "answer": "Providing reusable table-level query operations",
+      "explanation": "Managers provide a natural location for reusable model-table query APIs and custom QuerySets.",
+      "topics": ["Managers", "Custom QuerySets", "Django ORM"]
+    },
+    {
+      "id": "django-mid-senior-036",
+      "type": "single",
+      "question": "What does `makemigrations` primarily create?",
+      "options": [
+        "Migration files describing detected model-state changes",
+        "Database backups",
+        "Production Docker images",
+        "Serialized API responses"
+      ],
+      "answer": "Migration files describing detected model-state changes",
+      "explanation": "makemigrations compares model state with recorded migration state and writes migration operations.",
+      "topics": ["makemigrations", "Migrations", "Schema changes"]
+    },
+    {
+      "id": "django-mid-senior-037",
+      "type": "single",
+      "question": "What does `migrate` primarily do?",
+      "options": [
+        "Applies or unapplies migration operations according to the migration graph",
+        "Edits models.py automatically",
+        "Starts the application server",
+        "Runs the unit test suite"
+      ],
+      "answer": "Applies or unapplies migration operations according to the migration graph",
+      "explanation": "migrate synchronizes the database schema and migration state with the project's migration graph.",
+      "topics": ["migrate", "Migrations", "Database schema"]
+    },
+    {
+      "id": "django-mid-senior-038",
+      "type": "boolean",
+      "question": "Django determines migration ordering only from the numeric prefix in migration filenames.",
+      "answer": false,
+      "explanation": "Migration ordering is determined by explicit dependency relationships in the migration graph, not simply filename numbering.",
+      "topics": ["Migration dependencies", "Migration graph", "Migrations"]
+    },
+    {
+      "id": "django-mid-senior-039",
+      "type": "single",
+      "question": "What is `RunPython` commonly used for in a migration?",
+      "options": [
+        "A data migration implemented with Python code",
+        "Starting a Python web server",
+        "Installing dependencies",
+        "Creating serializer classes"
+      ],
+      "answer": "A data migration implemented with Python code",
+      "explanation": "RunPython can transform or populate data as part of the migration graph.",
+      "topics": ["RunPython", "Data migrations", "Migrations"]
+    },
+    {
+      "id": "django-mid-senior-040",
+      "type": "single",
+      "question": "Inside a data migration, why should you usually obtain models through the migration `apps` registry rather than importing the current model class directly?",
+      "options": [
+        "The migration should operate on the historical model state corresponding to that migration",
+        "Normal Python imports are forbidden in migrations",
+        "It makes the migration asynchronous",
+        "It bypasses the database"
+      ],
+      "answer": "The migration should operate on the historical model state corresponding to that migration",
+      "explanation": "Directly importing today's model may break an old migration after the model evolves. Historical models reflect the state expected by the migration.",
+      "topics": ["Historical models", "RunPython", "Data migrations"]
+    },
+    {
+      "id": "django-mid-senior-041",
+      "type": "boolean",
+      "question": "On PostgreSQL, Django schema migrations are normally executed inside a transaction unless configured otherwise.",
+      "answer": true,
+      "explanation": "PostgreSQL supports transactional DDL, and Django migrations are atomic by default for databases that support it.",
+      "topics": ["Migration transactions", "PostgreSQL", "Atomic migrations"]
+    },
+    {
+      "id": "django-mid-senior-042",
+      "type": "single",
+      "question": "Why might a very large data migration be configured with `atomic = False`?",
+      "options": [
+        "To avoid holding one extremely long transaction and allow work to be performed in smaller batches",
+        "To disable SQL validation",
+        "To make all data immutable",
+        "To bypass migration dependencies"
+      ],
+      "answer": "To avoid holding one extremely long transaction and allow work to be performed in smaller batches",
+      "explanation": "Large backfills may benefit from controlled batching instead of one huge transaction that retains locks, WAL, and row versions for a long period.",
+      "topics": ["Non-atomic migrations", "Backfills", "Database operations"]
+    },
+    {
+      "id": "django-mid-senior-043",
+      "type": "multiple",
+      "question": "Which steps are typical of an expand-and-contract schema migration?",
+      "options": [
+        "Add a backward-compatible new field or table",
+        "Deploy code that can work with the new schema",
+        "Backfill or migrate data",
+        "Remove the old schema only after old code no longer depends on it"
+      ],
+      "answers": [
+        "Add a backward-compatible new field or table",
+        "Deploy code that can work with the new schema",
+        "Backfill or migrate data",
+        "Remove the old schema only after old code no longer depends on it"
+      ],
+      "explanation": "Expand-and-contract reduces deployment coupling and allows multiple application versions to coexist during rolling deployments.",
+      "topics": ["Zero-downtime migrations", "Expand and contract", "Deployment"]
+    },
+    {
+      "id": "django-mid-senior-044",
+      "type": "single",
+      "question": "What problem can arise from combining a large table rewrite and a production deployment into one blocking migration?",
+      "options": [
+        "Long locks or downtime can block production traffic",
+        "Django will automatically delete the table",
+        "The migration can never be rolled back",
+        "Python will stop supporting the model"
+      ],
+      "answer": "Long locks or downtime can block production traffic",
+      "explanation": "Senior-level migration design considers database locking, table size, rollout compatibility, and operational risk.",
+      "topics": ["Production migrations", "Database locking", "Zero downtime"]
+    },
+    {
+      "id": "django-mid-senior-045",
+      "type": "single",
+      "question": "In Django, what is the primary difference between authentication and authorization?",
+      "options": [
+        "Authentication identifies the user; authorization determines what the user may do",
+        "Authentication handles database indexes; authorization handles migrations",
+        "Authorization always happens before authentication",
+        "They are identical concepts"
+      ],
+      "answer": "Authentication identifies the user; authorization determines what the user may do",
+      "explanation": "Identity and access decisions are separate concerns, even though authorization commonly depends on authenticated identity.",
+      "topics": ["Authentication", "Authorization", "Security"]
+    },
+    {
+      "id": "django-mid-senior-046",
+      "type": "single",
+      "question": "What does `request.user` normally represent when Django's authentication middleware is active?",
+      "options": [
+        "The authenticated user or an AnonymousUser",
+        "The current database connection",
+        "The active serializer",
+        "The URL resolver"
+      ],
+      "answer": "The authenticated user or an AnonymousUser",
+      "explanation": "AuthenticationMiddleware associates the request with a user based on the configured authentication/session mechanisms.",
+      "topics": ["request.user", "AuthenticationMiddleware", "Authentication"]
+    },
+    {
+      "id": "django-mid-senior-047",
+      "type": "boolean",
+      "question": "`AuthenticationMiddleware` should normally appear after `SessionMiddleware` when it depends on session-based authentication.",
+      "answer": true,
+      "explanation": "AuthenticationMiddleware relies on session support, so middleware ordering matters.",
+      "topics": ["AuthenticationMiddleware", "SessionMiddleware", "Middleware order"]
+    },
+    {
+      "id": "django-mid-senior-048",
+      "type": "single",
+      "question": "Why is defining a custom user model early in a new Django project often recommended when custom user behavior is anticipated?",
+      "options": [
+        "Changing AUTH_USER_MODEL after many migrations and relationships exist can be difficult",
+        "Django requires every project to implement its own password hashing",
+        "The built-in user model cannot authenticate",
+        "Custom user models eliminate migrations"
+      ],
+      "answer": "Changing AUTH_USER_MODEL after many migrations and relationships exist can be difficult",
+      "explanation": "Swapping the user model after schema relationships and migrations have accumulated is significantly more complex than choosing it at project start.",
+      "topics": ["Custom user model", "AUTH_USER_MODEL", "Authentication"]
+    },
+    {
+      "id": "django-mid-senior-049",
+      "type": "single",
+      "question": "When defining a ForeignKey to the configured user model, what should reusable Django code usually reference?",
+      "options": [
+        "settings.AUTH_USER_MODEL",
+        "django.contrib.auth.models.User unconditionally",
+        "request.user.__class__ inside the model definition",
+        "A hard-coded database table name"
+      ],
+      "answer": "settings.AUTH_USER_MODEL",
+      "explanation": "Using AUTH_USER_MODEL keeps relationships compatible with projects that use a custom user model.",
+      "topics": ["AUTH_USER_MODEL", "ForeignKey", "Custom users"]
+    },
+    {
+      "id": "django-mid-senior-050",
+      "type": "boolean",
+      "question": "Django should store users' plaintext passwords so they can be compared during login.",
+      "answer": false,
+      "explanation": "Django stores password hashes using configured password hashers. Applications should use set_password(), check_password(), and authentication APIs rather than handling plaintext storage.",
+      "topics": ["Password hashing", "Authentication", "Security"]
+    },
+    {
+      "id": "django-mid-senior-051",
+      "type": "single",
+      "question": "What is CSRF protection primarily designed to prevent?",
+      "options": [
+        "A malicious site causing a user's browser to perform unintended authenticated state-changing requests",
+        "SQL injection in ORM filters",
+        "Password brute-force attacks",
+        "Server-side request forgery"
+      ],
+      "answer": "A malicious site causing a user's browser to perform unintended authenticated state-changing requests",
+      "explanation": "CSRF attacks exploit ambient browser credentials such as cookies to cause unauthorized actions on behalf of the victim.",
+      "topics": ["CSRF", "Web security", "Sessions"]
+    },
+    {
+      "id": "django-mid-senior-052",
+      "type": "boolean",
+      "question": "CORS and CSRF solve the same security problem.",
+      "answer": false,
+      "explanation": "CORS controls which origins may access responses through browser cross-origin APIs, while CSRF protection prevents unauthorized state-changing requests using a victim's credentials.",
+      "topics": ["CORS", "CSRF", "Web security"]
+    },
+    {
+      "id": "django-mid-senior-053",
+      "type": "single",
+      "question": "How is Django middleware applied during the request phase?",
+      "options": [
+        "In MIDDLEWARE order from top to bottom",
+        "In reverse alphabetical order",
+        "Randomly",
+        "Only after the view executes"
+      ],
+      "answer": "In MIDDLEWARE order from top to bottom",
+      "explanation": "Middleware forms an onion-like chain around the view during request processing.",
+      "topics": ["Middleware", "Middleware order", "Request lifecycle"]
+    },
+    {
+      "id": "django-mid-senior-054",
+      "type": "single",
+      "question": "How does the response normally pass back through middleware?",
+      "options": [
+        "In reverse middleware order",
+        "In the same direction only",
+        "Middleware does not process responses",
+        "According to model ordering"
+      ],
+      "answer": "In reverse middleware order",
+      "explanation": "A request travels inward through middleware layers and the response travels outward through them.",
+      "topics": ["Middleware", "Response lifecycle", "Middleware order"]
+    },
+    {
+      "id": "django-mid-senior-055",
+      "type": "boolean",
+      "question": "A middleware can return a response without calling `get_response`, thereby preventing inner middleware and the view from running.",
+      "answer": true,
+      "explanation": "Middleware can short-circuit processing, for example when rejecting a request before it reaches the view.",
+      "topics": ["Middleware", "Short-circuiting", "Request lifecycle"]
+    },
+    {
+      "id": "django-mid-senior-056",
+      "type": "single",
+      "question": "What is `process_view()` middleware used for?",
+      "options": [
+        "Running logic after URL resolution but before the selected view is called",
+        "Executing database migrations",
+        "Running only after the response has been sent",
+        "Serializing every model automatically"
+      ],
+      "answer": "Running logic after URL resolution but before the selected view is called",
+      "explanation": "process_view receives the request, resolved view function, and its arguments before Django invokes the view.",
+      "topics": ["process_view", "Middleware hooks", "Request lifecycle"]
+    },
+    {
+      "id": "django-mid-senior-057",
+      "type": "single",
+      "question": "What is `process_exception()` middleware used for?",
+      "options": [
+        "Handling exceptions raised during view processing",
+        "Handling only Python syntax errors at import time",
+        "Running migrations after exceptions",
+        "Creating HTTP sessions"
+      ],
+      "answer": "Handling exceptions raised during view processing",
+      "explanation": "Exception middleware can inspect an exception and optionally return an HTTP response.",
+      "topics": ["process_exception", "Middleware", "Exception handling"]
+    },
+    {
+      "id": "django-mid-senior-058",
+      "type": "single",
+      "question": "In Django REST Framework, what is the primary responsibility of authentication classes?",
+      "options": [
+        "Identify the credentials associated with the request",
+        "Decide every authorization rule",
+        "Serialize model instances",
+        "Optimize database joins"
+      ],
+      "answer": "Identify the credentials associated with the request",
+      "explanation": "DRF authentication sets request.user and request.auth where appropriate. Permission classes then make authorization decisions.",
+      "topics": ["DRF authentication", "request.user", "request.auth"]
+    },
+    {
+      "id": "django-mid-senior-059",
+      "type": "single",
+      "question": "In Django REST Framework, what is the primary responsibility of permission classes?",
+      "options": [
+        "Determine whether a request is authorized",
+        "Parse JSON syntax",
+        "Open database connections",
+        "Run migrations"
+      ],
+      "answer": "Determine whether a request is authorized",
+      "explanation": "Permission policies determine whether identified or anonymous callers are allowed to perform the requested operation.",
+      "topics": ["DRF permissions", "Authorization", "API security"]
+    },
+    {
+      "id": "django-mid-senior-060",
+      "type": "boolean",
+      "question": "Successfully authenticating a request in DRF automatically means the request is authorized to perform every action.",
+      "answer": false,
+      "explanation": "Authentication establishes identity or credentials; permissions determine whether that identity may perform the requested action.",
+      "topics": ["Authentication", "Permissions", "DRF"]
+    },
+    {
+      "id": "django-mid-senior-061",
+      "type": "single",
+      "question": "What does `IsAuthenticated` require in Django REST Framework?",
+      "options": [
+        "An authenticated user",
+        "A staff user specifically",
+        "A superuser specifically",
+        "A GET request only"
+      ],
+      "answer": "An authenticated user",
+      "explanation": "IsAuthenticated denies access to unauthenticated users without requiring staff or superuser status.",
+      "topics": ["IsAuthenticated", "DRF permissions", "Authentication"]
+    },
+    {
+      "id": "django-mid-senior-062",
+      "type": "single",
+      "question": "What does `IsAdminUser` check by default?",
+      "options": [
+        "Whether `request.user.is_staff` is true",
+        "Whether the username is admin",
+        "Whether the user is a database owner",
+        "Whether the request contains an API key"
+      ],
+      "answer": "Whether `request.user.is_staff` is true",
+      "explanation": "DRF's IsAdminUser permission is based on the Django user's is_staff property.",
+      "topics": ["IsAdminUser", "is_staff", "DRF permissions"]
+    },
+    {
+      "id": "django-mid-senior-063",
+      "type": "single",
+      "question": "What does a DRF Serializer primarily provide?",
+      "options": [
+        "Serialization, deserialization, and validation of structured data",
+        "Database connection pooling",
+        "URL routing",
+        "Static file serving"
+      ],
+      "answer": "Serialization, deserialization, and validation of structured data",
+      "explanation": "Serializers convert complex objects into primitive representations and validate incoming representations before creating or updating objects.",
+      "topics": ["DRF serializers", "Serialization", "Validation"]
+    },
+    {
+      "id": "django-mid-senior-064",
+      "type": "single",
+      "question": "What does `serializer.is_valid(raise_exception=True)` do when validation fails?",
+      "options": [
+        "Raises a DRF ValidationError",
+        "Returns the invalid model anyway",
+        "Automatically writes partial data",
+        "Raises SystemExit"
+      ],
+      "answer": "Raises a DRF ValidationError",
+      "explanation": "DRF's exception handling normally converts this ValidationError into an HTTP 400 response.",
+      "topics": ["is_valid", "ValidationError", "DRF serializers"]
+    },
+    {
+      "id": "django-mid-senior-065",
+      "type": "single",
+      "question": "Where is field-specific DRF serializer validation commonly implemented for a field named `email`?",
+      "options": [
+        "validate_email(self, value)",
+        "check_email(self, value)",
+        "clean_email(self, value)",
+        "verify_email(self, request)"
+      ],
+      "answer": "validate_email(self, value)",
+      "explanation": "A method named validate_<field_name> performs custom validation for that serializer field.",
+      "topics": ["Serializer validation", "validate_field", "DRF"]
+    },
+    {
+      "id": "django-mid-senior-066",
+      "type": "single",
+      "question": "Where is object-level validation across several serializer fields commonly implemented?",
+      "options": [
+        "validate(self, attrs)",
+        "save(self, attrs)",
+        "dispatch(self, attrs)",
+        "filter(self, attrs)"
+      ],
+      "answer": "validate(self, attrs)",
+      "explanation": "Serializer.validate() is used for invariants involving multiple fields.",
+      "topics": ["Object-level validation", "Serializer validate", "DRF"]
+    },
+    {
+      "id": "django-mid-senior-067",
+      "type": "boolean",
+      "question": "Calling `serializer.save()` before successfully calling `serializer.is_valid()` is the normal DRF validation workflow.",
+      "answer": false,
+      "explanation": "Incoming data should be validated first. save() then calls the serializer's create() or update() logic using validated_data.",
+      "topics": ["Serializer lifecycle", "is_valid", "save"]
+    },
+    {
+      "id": "django-mid-senior-068",
+      "type": "single",
+      "question": "What does `partial=True` primarily change when updating with a DRF serializer?",
+      "options": [
+        "Fields that would normally be required may be omitted from the input",
+        "Validation is completely disabled",
+        "Database transactions are disabled",
+        "The response automatically becomes HTTP 206"
+      ],
+      "answer": "Fields that would normally be required may be omitted from the input",
+      "explanation": "partial updates allow only a subset of writable fields to be supplied.",
+      "topics": ["Partial updates", "PATCH", "DRF serializers"]
+    },
+    {
+      "id": "django-mid-senior-069",
+      "type": "single",
+      "question": "What is a primary advantage of `ModelSerializer`?",
+      "options": [
+        "It can derive serializer fields and validators from a Django model",
+        "It makes database indexes unnecessary",
+        "It replaces the Django ORM",
+        "It guarantees every endpoint is secure"
+      ],
+      "answer": "It can derive serializer fields and validators from a Django model",
+      "explanation": "ModelSerializer provides convenient default mappings between model fields and serializer fields while remaining customizable.",
+      "topics": ["ModelSerializer", "DRF", "Models"]
+    },
+    {
+      "id": "django-mid-senior-070",
+      "type": "single",
+      "question": "What does a DRF `ModelViewSet` commonly provide?",
+      "options": [
+        "Standard CRUD-style actions such as list, retrieve, create, update, and destroy",
+        "Only HTML template rendering",
+        "Database replication",
+        "Background worker execution"
+      ],
+      "answer": "Standard CRUD-style actions such as list, retrieve, create, update, and destroy",
+      "explanation": "ModelViewSet combines common model-oriented mixins with viewset routing behavior.",
+      "topics": ["ModelViewSet", "ViewSets", "DRF"]
+    },
+    {
+      "id": "django-mid-senior-071",
+      "type": "single",
+      "question": "What do DRF routers primarily automate?",
+      "options": [
+        "URL configuration for ViewSets",
+        "Database schema migrations",
+        "Redis cache invalidation",
+        "Celery retries"
+      ],
+      "answer": "URL configuration for ViewSets",
+      "explanation": "Routers generate standard URL patterns and bind them to ViewSet actions.",
+      "topics": ["DRF routers", "ViewSets", "URL routing"]
+    },
+    {
+      "id": "django-mid-senior-072",
+      "type": "single",
+      "question": "Why is overriding `get_queryset()` often preferable to setting one static queryset for a user-specific DRF endpoint?",
+      "options": [
+        "It allows queryset filtering based on the current request or user",
+        "It bypasses permission checks",
+        "It prevents SQL from running",
+        "It disables pagination"
+      ],
+      "answer": "It allows queryset filtering based on the current request or user",
+      "explanation": "get_queryset() can enforce tenant, user, status, or action-specific visibility dynamically.",
+      "topics": ["get_queryset", "DRF", "Tenant isolation"]
+    },
+    {
+      "id": "django-mid-senior-073",
+      "type": "single",
+      "question": "A user may retrieve only documents belonging to their organization. Where is an important place to enforce that restriction?",
+      "options": [
+        "In the queryset used to retrieve visible documents",
+        "Only in the frontend",
+        "Only in serializer output formatting",
+        "Only in JavaScript"
+      ],
+      "answer": "In the queryset used to retrieve visible documents",
+      "explanation": "Filtering at the data-access boundary prevents unauthorized objects from being retrieved by list, retrieve, update, or delete paths.",
+      "topics": ["Authorization", "get_queryset", "Tenant isolation"]
+    },
+    {
+      "id": "django-mid-senior-074",
+      "type": "boolean",
+      "question": "DRF automatically applies object-level permission checks individually to every object returned by a list endpoint.",
+      "answer": false,
+      "explanation": "For list endpoints, object-level visibility normally needs to be enforced by filtering the queryset rather than relying on per-object permission checks.",
+      "topics": ["Object permissions", "List endpoints", "DRF authorization"]
+    },
+    {
+      "id": "django-mid-senior-075",
+      "type": "single",
+      "question": "What is `perform_create()` in DRF generic views commonly useful for?",
+      "options": [
+        "Adding request-derived information such as the current user when saving a serializer",
+        "Creating database tables",
+        "Defining middleware",
+        "Executing every GET request"
+      ],
+      "answer": "Adding request-derived information such as the current user when saving a serializer",
+      "explanation": "For example, perform_create can call `serializer.save(owner=self.request.user)` while keeping transport logic separate from serializer validation.",
+      "topics": ["perform_create", "Generic views", "DRF"]
+    },
+    {
+      "id": "django-mid-senior-076",
+      "type": "single",
+      "question": "What is Django's default transaction behavior for ordinary queries when no explicit transaction block is active?",
+      "options": [
+        "Autocommit",
+        "Every request is automatically one transaction",
+        "No writes are committed until the process exits",
+        "Serializable transactions"
+      ],
+      "answer": "Autocommit",
+      "explanation": "Django normally runs in autocommit mode, so each statement commits unless it is inside an explicit transaction.",
+      "topics": ["Autocommit", "Transactions", "Django ORM"]
+    },
+    {
+      "id": "django-mid-senior-077",
+      "type": "single",
+      "question": "What does `transaction.atomic()` provide?",
+      "options": [
+        "A transaction boundary that commits on success and rolls back on failure",
+        "A distributed lock across all application servers",
+        "Automatic background execution",
+        "A serializer validation context"
+      ],
+      "answer": "A transaction boundary that commits on success and rolls back on failure",
+      "explanation": "atomic() ensures the enclosed database work behaves transactionally, with nested blocks commonly implemented using savepoints.",
+      "topics": ["transaction.atomic", "Transactions", "Rollback"]
+    },
+    {
+      "id": "django-mid-senior-078",
+      "type": "boolean",
+      "question": "Nested `transaction.atomic()` blocks can use database savepoints.",
+      "answer": true,
+      "explanation": "The outer atomic block represents the transaction while nested atomic blocks normally establish savepoints that can roll back part of the transaction.",
+      "topics": ["Savepoints", "transaction.atomic", "Nested transactions"]
+    },
+    {
+      "id": "django-mid-senior-079",
+      "type": "single",
+      "question": "Why is catching an `IntegrityError` inside the same `atomic()` block that caused it potentially problematic?",
+      "options": [
+        "The transaction may be marked broken until Django exits and rolls back the atomic block",
+        "IntegrityError always shuts down PostgreSQL",
+        "Python forbids exceptions inside context managers",
+        "The exception automatically commits the transaction"
+      ],
+      "answer": "The transaction may be marked broken until Django exits and rolls back the atomic block",
+      "explanation": "A common pattern is to catch database exceptions outside the relevant atomic block so Django can first restore the transaction to a valid state.",
+      "topics": ["IntegrityError", "Broken transactions", "transaction.atomic"]
+    },
+    {
+      "id": "django-mid-senior-080",
+      "type": "single",
+      "question": "What is `transaction.on_commit()` primarily useful for?",
+      "options": [
+        "Running side effects only after the surrounding database transaction commits successfully",
+        "Running code immediately before every SQL query",
+        "Rolling back external HTTP requests",
+        "Making serializers immutable"
+      ],
+      "answer": "Running side effects only after the surrounding database transaction commits successfully",
+      "explanation": "It is useful for actions such as enqueueing a task only after the database state required by that task is committed.",
+      "topics": ["transaction.on_commit", "Side effects", "Transactions"]
+    },
+    {
+      "id": "django-mid-senior-081",
+      "type": "boolean",
+      "question": "An `on_commit()` callback registered inside a transaction that is subsequently rolled back should execute anyway.",
+      "answer": false,
+      "explanation": "Callbacks registered for committed work are discarded when the relevant transaction is rolled back.",
+      "topics": ["on_commit", "Rollback", "Transactions"]
+    },
+    {
+      "id": "django-mid-senior-082",
+      "type": "single",
+      "question": "Why is `select_for_update()` useful?",
+      "options": [
+        "It locks selected database rows for conflicting writes within a transaction",
+        "It creates a permanent index",
+        "It converts SELECT into an asynchronous query",
+        "It disables MVCC"
+      ],
+      "answer": "It locks selected database rows for conflicting writes within a transaction",
+      "explanation": "It is commonly used for pessimistic concurrency when a decision and subsequent update must be based on protected current state.",
+      "topics": ["select_for_update", "Row locking", "Concurrency"]
+    },
+    {
+      "id": "django-mid-senior-083",
+      "type": "single",
+      "question": "Two requests both read an order as `pending`, both perform a transition, and both save different results. Which problem is this an example of?",
+      "options": [
+        "A race condition caused by concurrent read-modify-write operations",
+        "A migration dependency",
+        "An N+1 query",
+        "A serializer rendering error"
+      ],
+      "answer": "A race condition caused by concurrent read-modify-write operations",
+      "explanation": "Transactions alone do not automatically serialize business decisions. Row locks, conditional updates, constraints, or optimistic concurrency may be required.",
+      "topics": ["Race conditions", "Concurrency", "Transactions"]
+    },
+    {
+      "id": "django-mid-senior-084",
+      "type": "single",
+      "question": "What does `ATOMIC_REQUESTS=True` conceptually do for a configured database?",
+      "options": [
+        "Wraps each view's database work in a transaction",
+        "Makes all HTTP requests execute serially",
+        "Makes all ORM queries read-only",
+        "Retries every failed request"
+      ],
+      "answer": "Wraps each view's database work in a transaction",
+      "explanation": "ATOMIC_REQUESTS can simplify some transaction handling but adds transaction overhead and does not mean every part of request processing occurs inside the transaction.",
+      "topics": ["ATOMIC_REQUESTS", "Transactions", "Request lifecycle"]
+    },
+    {
+      "id": "django-mid-senior-085",
+      "type": "boolean",
+      "question": "With `ATOMIC_REQUESTS`, all middleware execution is necessarily inside the per-request database transaction.",
+      "answer": false,
+      "explanation": "The transaction wraps the view. Middleware processing occurs outside that transaction boundary.",
+      "topics": ["ATOMIC_REQUESTS", "Middleware", "Transactions"]
+    },
+    {
+      "id": "django-mid-senior-086",
+      "type": "single",
+      "question": "Why should slow external API calls generally not be performed while holding a database transaction open unless necessary?",
+      "options": [
+        "They can unnecessarily prolong locks and transaction resources while waiting on the network",
+        "Django prohibits HTTP calls inside transactions",
+        "External APIs automatically commit the transaction",
+        "PostgreSQL cannot maintain transactions longer than one second"
+      ],
+      "answer": "They can unnecessarily prolong locks and transaction resources while waiting on the network",
+      "explanation": "Keeping transactions short reduces lock contention, stale snapshots, connection occupancy, and failure complexity.",
+      "topics": ["Transaction boundaries", "External APIs", "Performance"]
+    },
+    {
+      "id": "django-mid-senior-087",
+      "type": "single",
+      "question": "What important isolation behavior does `django.test.TestCase` provide for database tests?",
+      "options": [
+        "It uses transactional mechanisms to isolate test changes",
+        "It connects only to the production database",
+        "It prevents ORM queries",
+        "It requires every test to manually delete rows"
+      ],
+      "answer": "It uses transactional mechanisms to isolate test changes",
+      "explanation": "Django TestCase is optimized for typical database-backed tests and restores isolation between tests using transactional behavior.",
+      "topics": ["TestCase", "Database tests", "Test isolation"]
+    },
+    {
+      "id": "django-mid-senior-088",
+      "type": "single",
+      "question": "When is `TransactionTestCase` more appropriate than `TestCase`?",
+      "options": [
+        "When behavior involving real transaction commits, rollbacks, or transaction boundaries must be tested",
+        "Whenever no database is used",
+        "Only for serializer unit tests",
+        "Only for frontend testing"
+      ],
+      "answer": "When behavior involving real transaction commits, rollbacks, or transaction boundaries must be tested",
+      "explanation": "TestCase's wrapping behavior can hide or alter transaction semantics, while TransactionTestCase permits tests of actual transactional behavior.",
+      "topics": ["TransactionTestCase", "Transactions", "Testing"]
+    },
+    {
+      "id": "django-mid-senior-089",
+      "type": "single",
+      "question": "What is Django's test Client primarily used for?",
+      "options": [
+        "Simulating requests to Django views without running a real external web server",
+        "Connecting to Redis",
+        "Creating database indexes",
+        "Running Celery workers"
+      ],
+      "answer": "Simulating requests to Django views without running a real external web server",
+      "explanation": "The test client exercises Django's request handling and can inspect status codes, templates, redirects, and response content.",
+      "topics": ["Test Client", "View testing", "Django tests"]
+    },
+    {
+      "id": "django-mid-senior-090",
+      "type": "single",
+      "question": "When mocking an external HTTP API called from `myapp.services`, what should you usually patch?",
+      "options": [
+        "The dependency where `myapp.services` looks it up",
+        "Every function in the application",
+        "The Python interpreter",
+        "The database driver regardless of usage"
+      ],
+      "answer": "The dependency where `myapp.services` looks it up",
+      "explanation": "Python mocking normally needs to patch the name in the namespace where the code under test resolves it, not necessarily the library's original definition.",
+      "topics": ["Mocking", "External APIs", "Testing"]
+    },
+    {
+      "id": "django-mid-senior-091",
+      "type": "multiple",
+      "question": "Which behaviors should tests for a third-party API integration commonly cover?",
+      "options": [
+        "Successful responses",
+        "Timeouts",
+        "Rate limiting and transient errors",
+        "Malformed or unexpected provider payloads"
+      ],
+      "answers": [
+        "Successful responses",
+        "Timeouts",
+        "Rate limiting and transient errors",
+        "Malformed or unexpected provider payloads"
+      ],
+      "explanation": "Reliable integrations require testing not only the happy path but also failure, retry, parsing, and provider-behavior scenarios.",
+      "topics": ["External API testing", "Mocking", "Resilience"]
+    },
+    {
+      "id": "django-mid-senior-092",
+      "type": "boolean",
+      "question": "A unit test that mocks every internal function call is necessarily more robust than a behavior-oriented test.",
+      "answer": false,
+      "explanation": "Over-mocking internal implementation details creates brittle tests that often fail during harmless refactoring.",
+      "topics": ["Mocking", "Unit tests", "Test design"]
+    },
+    {
+      "id": "django-mid-senior-093",
+      "type": "single",
+      "question": "What is a useful purpose of `assertNumQueries()` in Django tests?",
+      "options": [
+        "Detect unexpected increases in database query count",
+        "Check HTTP status codes",
+        "Validate migration filenames",
+        "Count Celery workers"
+      ],
+      "answer": "Detect unexpected increases in database query count",
+      "explanation": "Query-count assertions can protect against regressions such as newly introduced N+1 queries.",
+      "topics": ["assertNumQueries", "N+1 queries", "Performance testing"]
+    },
+    {
+      "id": "django-mid-senior-094",
+      "type": "single",
+      "question": "What is the cache-aside pattern?",
+      "options": [
+        "Read from cache first, load from the database on miss, then populate the cache",
+        "Write everything only to cache and never to the database",
+        "Clear the entire cache before every read",
+        "Use browser cookies as the database"
+      ],
+      "answer": "Read from cache first, load from the database on miss, then populate the cache",
+      "explanation": "Cache-aside is a common application-controlled strategy for caching expensive reads.",
+      "topics": ["Cache-aside", "Caching", "Redis"]
+    },
+    {
+      "id": "django-mid-senior-095",
+      "type": "single",
+      "question": "Why can Django's local-memory cache be unsuitable for sharing cached state across several production worker processes?",
+      "options": [
+        "Each process has its own private local-memory cache",
+        "It requires PostgreSQL row locks",
+        "It supports only strings",
+        "It automatically writes data to every worker"
+      ],
+      "answer": "Each process has its own private local-memory cache",
+      "explanation": "LocMemCache is process-local, so separate application workers do not share one cache namespace in memory.",
+      "topics": ["LocMemCache", "Caching", "Multi-process deployment"]
+    },
+    {
+      "id": "django-mid-senior-096",
+      "type": "single",
+      "question": "What is a major reason Redis is commonly used as a Django cache backend?",
+      "options": [
+        "Multiple application processes and hosts can share the same cache service",
+        "Redis automatically fixes inefficient SQL",
+        "Redis replaces Django models",
+        "Redis eliminates cache invalidation"
+      ],
+      "answer": "Multiple application processes and hosts can share the same cache service",
+      "explanation": "A shared network cache allows application instances to reuse cached values consistently across a distributed deployment.",
+      "topics": ["Redis", "Django cache", "Distributed caching"]
+    },
+    {
+      "id": "django-mid-senior-097",
+      "type": "boolean",
+      "question": "Caching removes the need to think about invalidation when underlying data changes.",
+      "answer": false,
+      "explanation": "Cache invalidation remains a central correctness problem. Systems need TTLs, explicit invalidation, versioned keys, or another consistency strategy.",
+      "topics": ["Cache invalidation", "Caching", "Consistency"]
+    },
+    {
+      "id": "django-mid-senior-098",
+      "type": "single",
+      "question": "What is a cache stampede?",
+      "options": [
+        "Many requests simultaneously recompute the same expensive value after a cache miss or expiration",
+        "A Redis server storing too few keys",
+        "A database migration that adds a cache field",
+        "A browser refusing cookies"
+      ],
+      "answer": "Many requests simultaneously recompute the same expensive value after a cache miss or expiration",
+      "explanation": "Mitigations can include locking/single-flight mechanisms, stale-while-revalidate approaches, or TTL jitter.",
+      "topics": ["Cache stampede", "Caching", "Concurrency"]
+    },
+    {
+      "id": "django-mid-senior-099",
+      "type": "single",
+      "question": "Why is adding randomized jitter to cache TTLs sometimes useful?",
+      "options": [
+        "It reduces the chance that many related keys expire simultaneously",
+        "It encrypts cache values",
+        "It guarantees zero cache misses",
+        "It makes Redis persistent"
+      ],
+      "answer": "It reduces the chance that many related keys expire simultaneously",
+      "explanation": "Jitter spreads expiration times and can reduce synchronized recomputation spikes.",
+      "topics": ["TTL jitter", "Cache stampede", "Caching"]
+    },
+    {
+      "id": "django-mid-senior-100",
+      "type": "single",
+      "question": "Where should production secrets such as database passwords and API credentials normally be kept?",
+      "options": [
+        "Outside source control using environment configuration or a secrets manager",
+        "Committed directly in settings.py",
+        "Inside migration filenames",
+        "In public static files"
+      ],
+      "answer": "Outside source control using environment configuration or a secrets manager",
+      "explanation": "Secrets should be supplied securely at deployment/runtime rather than embedded in repository source code.",
+      "topics": ["Secrets", "Configuration", "Security"]
+    },
+    {
+      "id": "django-mid-senior-101",
+      "type": "boolean",
+      "question": "`DEBUG=True` is appropriate as a normal production configuration.",
+      "answer": false,
+      "explanation": "Production deployments should disable DEBUG because debug pages can expose sensitive application and configuration information.",
+      "topics": ["DEBUG", "Production settings", "Security"]
+    },
+    {
+      "id": "django-mid-senior-102",
+      "type": "single",
+      "question": "What is `ALLOWED_HOSTS` primarily used to restrict?",
+      "options": [
+        "Which HTTP Host header values Django accepts",
+        "Which database tables can be queried",
+        "Which users can log in",
+        "Which Celery workers can execute jobs"
+      ],
+      "answer": "Which HTTP Host header values Django accepts",
+      "explanation": "Host validation helps protect applications from attacks involving untrusted Host headers.",
+      "topics": ["ALLOWED_HOSTS", "Host header", "Security"]
+    },
+    {
+      "id": "django-mid-senior-103",
+      "type": "boolean",
+      "question": "A Django SECRET_KEY should be unique, unpredictable, and protected from disclosure.",
+      "answer": true,
+      "explanation": "Django uses the secret key for cryptographic signing and related security-sensitive functions.",
+      "topics": ["SECRET_KEY", "Configuration", "Security"]
+    },
+    {
+      "id": "django-mid-senior-104",
+      "type": "single",
+      "question": "What does raising `Http404` from a Django view normally indicate?",
+      "options": [
+        "The requested resource should produce an HTTP 404 response",
+        "The database must be restarted",
+        "Authentication succeeded",
+        "The request should be retried indefinitely"
+      ],
+      "answer": "The requested resource should produce an HTTP 404 response",
+      "explanation": "Django converts Http404 through its exception handling into the configured not-found response.",
+      "topics": ["Http404", "Exception handling", "HTTP errors"]
+    },
+    {
+      "id": "django-mid-senior-105",
+      "type": "single",
+      "question": "What does `get_object_or_404(Model, ...)` conceptually do?",
+      "options": [
+        "Fetches an object and raises Http404 if it does not exist",
+        "Returns None on every failure",
+        "Creates an object if missing",
+        "Retries the database query four times"
+      ],
+      "answer": "Fetches an object and raises Http404 if it does not exist",
+      "explanation": "It is a convenience shortcut for a common view-level lookup pattern.",
+      "topics": ["get_object_or_404", "Http404", "Views"]
+    },
+    {
+      "id": "django-mid-senior-106",
+      "type": "single",
+      "question": "What should a backend generally do with unexpected exceptions?",
+      "options": [
+        "Log sufficient diagnostic context and return a controlled error response without leaking sensitive internals",
+        "Expose the full traceback and secrets to API clients",
+        "Silently ignore every exception",
+        "Always return HTTP 200"
+      ],
+      "answer": "Log sufficient diagnostic context and return a controlled error response without leaking sensitive internals",
+      "explanation": "Production exception handling should balance observability with security and stable API behavior.",
+      "topics": ["Exception handling", "Logging", "Production"]
+    },
+    {
+      "id": "django-mid-senior-107",
+      "type": "single",
+      "question": "When would an async Django view provide the clearest advantage?",
+      "options": [
+        "When it performs several independent async I/O operations or serves long-lived requests",
+        "When it performs only CPU-intensive pure-Python computation",
+        "When it performs no I/O and returns a constant",
+        "When the database does not exist"
+      ],
+      "answer": "When it performs several independent async I/O operations or serves long-lived requests",
+      "explanation": "Async execution is especially useful when work spends substantial time awaiting network or other asynchronous I/O.",
+      "topics": ["Async views", "I/O concurrency", "ASGI"]
+    },
+    {
+      "id": "django-mid-senior-108",
+      "type": "boolean",
+      "question": "Declaring a Django view with `async def` automatically makes synchronous blocking code inside that view non-blocking.",
+      "answer": false,
+      "explanation": "Calling blocking synchronous code directly can still block the execution context. Async benefits require async-compatible operations or appropriate sync-to-async adaptation.",
+      "topics": ["Async views", "Blocking I/O", "Event loop"]
+    },
+    {
+      "id": "django-mid-senior-109",
+      "type": "single",
+      "question": "In async Django code, what is the asynchronous counterpart of a QuerySet operation such as `get()` that executes a query?",
+      "options": ["aget()", "get_async_thread()", "await_get_now()", "parallel_get()"],
+      "answer": "aget()",
+      "explanation": "QuerySet methods that execute database queries generally have asynchronous variants prefixed with `a`, such as aget() and acreate().",
+      "topics": ["Async ORM", "aget", "Django async"]
+    },
+    {
+      "id": "django-mid-senior-110",
+      "type": "boolean",
+      "question": "Django QuerySets can be iterated asynchronously with `async for`.",
+      "answer": true,
+      "explanation": "Django's asynchronous ORM support includes asynchronous iteration over QuerySets.",
+      "topics": ["Async ORM", "async for", "QuerySets"]
+    },
+    {
+      "id": "django-mid-senior-111",
+      "type": "boolean",
+      "question": "In Django 6.0, ordinary Django database transactions are fully supported directly inside asynchronous ORM transaction blocks.",
+      "answer": false,
+      "explanation": "Django 6.0 documentation states that transactions do not yet work in async mode. Transactional database work should be placed in synchronous code and adapted when necessary.",
+      "topics": ["Async ORM", "Transactions", "Django 6.0"]
+    },
+    {
+      "id": "django-mid-senior-112",
+      "type": "single",
+      "question": "Why can synchronous middleware reduce the benefit of an otherwise asynchronous Django stack?",
+      "options": [
+        "Django may need to adapt between synchronous and asynchronous execution modes",
+        "Sync middleware deletes coroutine objects",
+        "ASGI prohibits middleware",
+        "It forces PostgreSQL into autocommit"
+      ],
+      "answer": "Django may need to adapt between synchronous and asynchronous execution modes",
+      "explanation": "A fully asynchronous request stack benefits from async-compatible middleware; mixed sync/async layers can require execution-mode transitions.",
+      "topics": ["Async middleware", "ASGI", "Performance"]
+    },
+    {
+      "id": "django-mid-senior-113",
+      "type": "single",
+      "question": "Which workload should generally be moved out of the HTTP request-response cycle?",
+      "options": [
+        "A long-running report generation task that may take minutes",
+        "A simple serializer validation",
+        "Reading request.method",
+        "Resolving a short URL"
+      ],
+      "answer": "A long-running report generation task that may take minutes",
+      "explanation": "Background workers prevent slow work from tying up HTTP request capacity and allow independent retry and execution policies.",
+      "topics": ["Background jobs", "Workers", "Architecture"]
+    },
+    {
+      "id": "django-mid-senior-114",
+      "type": "single",
+      "question": "What is Celery commonly used for in Django systems?",
+      "options": [
+        "Executing asynchronous and scheduled background jobs through worker processes",
+        "Replacing the Django ORM",
+        "Rendering templates",
+        "Defining database migrations"
+      ],
+      "answer": "Executing asynchronous and scheduled background jobs through worker processes",
+      "explanation": "Celery applications commonly enqueue work through brokers such as Redis or RabbitMQ and execute it in separate worker processes.",
+      "topics": ["Celery", "Background jobs", "Workers"]
+    },
+    {
+      "id": "django-mid-senior-115",
+      "type": "single",
+      "question": "A view creates an Order inside a transaction and immediately calls `process_order.delay(order.id)`. What race can occur?",
+      "options": [
+        "The worker may execute before the Order transaction has committed",
+        "Celery automatically deletes the order",
+        "Django commits every transaction before calling Python functions",
+        "The task ID becomes the order primary key"
+      ],
+      "answer": "The worker may execute before the Order transaction has committed",
+      "explanation": "The background worker uses a separate database connection and may attempt to fetch state that is not committed yet.",
+      "topics": ["Celery", "Transactions", "Race conditions"]
+    },
+    {
+      "id": "django-mid-senior-116",
+      "type": "single",
+      "question": "What is a common solution to enqueueing a task only after its required database changes commit?",
+      "options": [
+        "Use `transaction.on_commit()` to enqueue it",
+        "Add `time.sleep()` before enqueueing",
+        "Disable transactions",
+        "Retry every task forever"
+      ],
+      "answer": "Use `transaction.on_commit()` to enqueue it",
+      "explanation": "Deferring task publication until commit prevents workers from observing uncommitted application state.",
+      "topics": ["transaction.on_commit", "Celery", "Background jobs"]
+    },
+    {
+      "id": "django-mid-senior-117",
+      "type": "boolean",
+      "question": "A production background task should generally be designed under the assumption that it may execute more than once.",
+      "answer": true,
+      "explanation": "Message delivery and failure recovery commonly provide at-least-once semantics, so idempotent task processing is an important reliability property.",
+      "topics": ["Idempotency", "Celery", "At-least-once delivery"]
+    },
+    {
+      "id": "django-mid-senior-118",
+      "type": "single",
+      "question": "What is the best application-level defense when the same background task can be delivered twice?",
+      "options": [
+        "Make the operation idempotent or deduplicate using a stable business identifier",
+        "Assume duplicate delivery never happens",
+        "Use a random sleep",
+        "Disable logging"
+      ],
+      "answer": "Make the operation idempotent or deduplicate using a stable business identifier",
+      "explanation": "Reliable background processing treats duplicate execution as an expected failure mode rather than an impossible condition.",
+      "topics": ["Idempotency", "Deduplication", "Background workers"]
+    },
+    {
+      "id": "django-mid-senior-119",
+      "type": "multiple",
+      "question": "Which are reasonable properties of a robust Celery-style task?",
+      "options": [
+        "Bounded retries",
+        "Exponential backoff for transient failures",
+        "Idempotent side effects",
+        "Clear failure observability"
+      ],
+      "answers": [
+        "Bounded retries",
+        "Exponential backoff for transient failures",
+        "Idempotent side effects",
+        "Clear failure observability"
+      ],
+      "explanation": "Tasks should distinguish transient from permanent failures, avoid duplicate effects, and expose enough state for operators to diagnose failures.",
+      "topics": ["Celery retries", "Idempotency", "Observability"]
+    },
+    {
+      "id": "django-mid-senior-120",
+      "type": "single",
+      "question": "Which failure should normally NOT be retried indefinitely by a background worker?",
+      "options": [
+        "A deterministic validation error caused by permanently invalid input",
+        "A temporary network timeout",
+        "A temporary 503 response",
+        "A transient database connection failure"
+      ],
+      "answer": "A deterministic validation error caused by permanently invalid input",
+      "explanation": "Permanent failures should normally fail or move to a dead-letter/manual-review path rather than consume resources through repeated retries.",
+      "topics": ["Retries", "Permanent failures", "Background jobs"]
+    },
+    {
+      "id": "django-mid-senior-121",
+      "type": "single",
+      "question": "What new background-work feature was introduced in Django 6.0?",
+      "options": [
+        "The Django Tasks framework",
+        "Celery built directly into the ORM",
+        "A built-in Kafka broker",
+        "Automatic distributed cron"
+      ],
+      "answer": "The Django Tasks framework",
+      "explanation": "Django 6.0 introduced a Tasks API for defining, enqueueing, and tracking background work.",
+      "topics": ["Django Tasks", "Django 6.0", "Background jobs"]
+    },
+    {
+      "id": "django-mid-senior-122",
+      "type": "boolean",
+      "question": "Django 6.0's Tasks framework includes a complete production worker engine that eliminates the need for external task-execution infrastructure.",
+      "answer": false,
+      "explanation": "The Tasks framework provides task definition and queueing contracts, but production execution still requires an appropriate external backend and worker infrastructure.",
+      "topics": ["Django Tasks", "Workers", "Django 6.0"]
+    },
+    {
+      "id": "django-mid-senior-123",
+      "type": "single",
+      "question": "A Django API endpoint performs 100 ORM queries because each serializer accesses `obj.customer.company.name`. What should be investigated first?",
+      "options": [
+        "Whether `select_related()` can preload the single-valued relationships",
+        "Whether Python recursion is enabled",
+        "Whether migrations should be deleted",
+        "Whether Redis should replace PostgreSQL"
+      ],
+      "answer": "Whether `select_related()` can preload the single-valued relationships",
+      "explanation": "Nested ForeignKey/OneToOne traversal is a classic source of N+1 database queries.",
+      "topics": ["N+1 queries", "select_related", "Serializer performance"]
+    },
+    {
+      "id": "django-mid-senior-124",
+      "type": "single",
+      "question": "A serializer exposes `order.items` for 100 orders. Which optimization should be investigated for the reverse/multi-valued relation?",
+      "options": [
+        "prefetch_related('items')",
+        "select_for_update('items')",
+        "transaction.atomic('items')",
+        "defer('items')"
+      ],
+      "answer": "prefetch_related('items')",
+      "explanation": "Prefetching is designed for retrieving multi-valued relationships efficiently in batches.",
+      "topics": ["prefetch_related", "Serializer performance", "N+1 queries"]
+    },
+    {
+      "id": "django-mid-senior-125",
+      "type": "single",
+      "question": "A multi-tenant API retrieves an object by globally unique UUID and only checks whether the caller is authenticated. What security control is still necessary?",
+      "options": [
+        "Ensure the object belongs to a tenant or scope the caller is authorized to access",
+        "Use a shorter UUID",
+        "Cache the object globally",
+        "Disable serializer validation"
+      ],
+      "answer": "Ensure the object belongs to a tenant or scope the caller is authorized to access",
+      "explanation": "Knowing or guessing an object identifier must not bypass tenant-level authorization. Object visibility should be constrained independently of identifier secrecy.",
+      "topics": ["Tenant isolation", "Object authorization", "IDOR"]
+    },
+    {
+      "id": "django-mid-senior-126",
+      "type": "boolean",
+      "question": "Using UUID primary keys by itself is sufficient authorization protection against users accessing other tenants' records.",
+      "answer": false,
+      "explanation": "Unpredictable identifiers can reduce enumeration but do not replace authorization checks.",
+      "topics": ["UUID", "Authorization", "Tenant isolation"]
+    },
+    {
+      "id": "django-mid-senior-127",
+      "type": "single",
+      "question": "A Django service calls a third-party API from inside a model's `save()` override. What is an important design concern?",
+      "options": [
+        "The persistence operation now has hidden network side effects, making transactions, retries, and testing harder to reason about",
+        "Model save methods cannot call Python functions",
+        "HTTP clients work only from views",
+        "save() automatically runs in another process"
+      ],
+      "answer": "The persistence operation now has hidden network side effects, making transactions, retries, and testing harder to reason about",
+      "explanation": "External side effects are usually easier to manage explicitly in a service/workflow layer rather than hiding them inside persistence hooks.",
+      "topics": ["Service layer", "Model save", "Side effects"]
+    },
+    {
+      "id": "django-mid-senior-128",
+      "type": "boolean",
+      "question": "Django signals are always preferable to explicit service calls because they reduce coupling.",
+      "answer": false,
+      "explanation": "Signals can be useful for decoupled notifications, but excessive use can create implicit control flow and make behavior harder to trace and test.",
+      "topics": ["Signals", "Coupling", "Architecture"]
+    },
+    {
+      "id": "django-mid-senior-129",
+      "type": "single",
+      "question": "What is a common architectural reason to introduce a service layer in a Django application?",
+      "options": [
+        "To coordinate business workflows that span models, external services, and transactions without overloading views or models",
+        "To eliminate the ORM",
+        "To replace URL routing",
+        "To make every method static"
+      ],
+      "answer": "To coordinate business workflows that span models, external services, and transactions without overloading views or models",
+      "explanation": "A service layer can make use cases and transaction boundaries explicit when business workflows become too complex for thin views and isolated model methods.",
+      "topics": ["Service layer", "Architecture", "Business logic"]
+    },
+    {
+      "id": "django-mid-senior-130",
+      "type": "multiple",
+      "question": "A senior engineer investigating a slow Django endpoint should consider which sources of latency?",
+      "options": [
+        "Database query count and execution plans",
+        "External API latency",
+        "Serialization cost",
+        "Cache hit rate"
+      ],
+      "answers": [
+        "Database query count and execution plans",
+        "External API latency",
+        "Serialization cost",
+        "Cache hit rate"
+      ],
+      "explanation": "Endpoint performance is end-to-end. Profiling should identify whether time is spent in SQL, network I/O, application processing, serialization, or cache behavior.",
+      "topics": ["Performance", "Observability", "Profiling"]
+    },
+    {
+      "id": "django-mid-senior-131",
+      "type": "single",
+      "question": "What is preferable when optimizing an ORM-heavy endpoint?",
+      "options": [
+        "Measure query behavior and profile before making targeted optimizations",
+        "Add `select_related()` for every relationship in the project",
+        "Cache every model indefinitely",
+        "Replace every QuerySet with raw SQL immediately"
+      ],
+      "answer": "Measure query behavior and profile before making targeted optimizations",
+      "explanation": "Optimization should be driven by measured bottlenecks. Loading unnecessary related data or adding caches can make performance worse.",
+      "topics": ["Profiling", "ORM optimization", "Performance"]
+    },
+    {
+      "id": "django-mid-senior-132",
+      "type": "single",
+      "question": "When can raw SQL be reasonable in a Django application?",
+      "options": [
+        "When a measured query cannot be expressed efficiently or clearly enough through the ORM and the trade-off is justified",
+        "For every CRUD operation",
+        "Because the ORM does not support transactions",
+        "Only in migrations"
+      ],
+      "answer": "When a measured query cannot be expressed efficiently or clearly enough through the ORM and the trade-off is justified",
+      "explanation": "The ORM is usually preferable for maintainability, but senior engineers should recognize cases where database-specific SQL provides a meaningful benefit.",
+      "topics": ["Raw SQL", "Django ORM", "Performance trade-offs"]
+    },
+    {
+      "id": "django-mid-senior-133",
+      "type": "single",
+      "question": "A client submits the same POST request twice because the first response timed out after the server committed the operation. What backend property is most useful?",
+      "options": [
+        "Application-level idempotency",
+        "Template caching",
+        "A longer URL",
+        "A global Python lock"
+      ],
+      "answer": "Application-level idempotency",
+      "explanation": "A timeout does not imply the original operation failed. Stable idempotency keys or unique business constraints can prevent duplicate side effects.",
+      "topics": ["Idempotency", "REST APIs", "Retries"]
+    },
+    {
+      "id": "django-mid-senior-134",
+      "type": "multiple",
+      "question": "Which mechanisms can help enforce idempotency in a Django/PostgreSQL backend?",
+      "options": [
+        "Unique database constraints",
+        "Stable idempotency keys",
+        "Atomic upserts or conflict handling",
+        "Checking only an in-process Python dictionary across multiple servers"
+      ],
+      "answers": [
+        "Unique database constraints",
+        "Stable idempotency keys",
+        "Atomic upserts or conflict handling"
+      ],
+      "explanation": "Reliable idempotency should be enforced at a shared durable boundary rather than depending only on process-local state.",
+      "topics": ["Idempotency", "Unique constraints", "Distributed systems"]
+    },
+    {
+      "id": "django-mid-senior-135",
+      "type": "single",
+      "question": "Why is `if not Model.objects.filter(key=x).exists(): Model.objects.create(key=x)` insufficient for uniqueness under concurrency?",
+      "options": [
+        "Two concurrent requests can both observe that no row exists before either creates it",
+        "exists() always returns false",
+        "create() cannot execute inside a view",
+        "Django serializes all queries automatically"
+      ],
+      "answer": "Two concurrent requests can both observe that no row exists before either creates it",
+      "explanation": "Check-then-create is race-prone without an appropriate database uniqueness constraint and conflict-handling strategy.",
+      "topics": ["Race conditions", "Unique constraints", "Concurrency"]
+    },
+    {
+      "id": "django-mid-senior-136",
+      "type": "single",
+      "question": "What is the strongest place to enforce an invariant such as `external_provider_id` being unique?",
+      "options": [
+        "A database UNIQUE constraint, with application validation as an additional convenience",
+        "Frontend JavaScript only",
+        "A serializer error message only",
+        "A comment in models.py"
+      ],
+      "answer": "A database UNIQUE constraint, with application validation as an additional convenience",
+      "explanation": "Only the database has authoritative visibility over concurrent writes and can enforce uniqueness atomically.",
+      "topics": ["Database constraints", "Uniqueness", "Concurrency"]
+    },
+    {
+      "id": "django-mid-senior-137",
+      "type": "single",
+      "question": "A background job writes to the database and then sends an event to Kafka. The process crashes after commit but before publishing. What consistency problem is this?",
+      "options": ["The dual-write problem", "An N+1 query", "CSRF", "A migration conflict"],
+      "answer": "The dual-write problem",
+      "explanation": "Two independent systems cannot be atomically updated by a normal Django database transaction. Patterns such as a transactional outbox can address this gap.",
+      "topics": ["Dual writes", "Transactional outbox", "Distributed systems"]
+    },
+    {
+      "id": "django-mid-senior-138",
+      "type": "single",
+      "question": "How does a transactional outbox improve reliability?",
+      "options": [
+        "Business data and an outbox event are committed in the same database transaction, then a separate publisher delivers the event",
+        "It performs HTTP and Kafka writes inside one PostgreSQL transaction",
+        "It eliminates duplicate events automatically in every downstream system",
+        "It disables worker retries"
+      ],
+      "answer": "Business data and an outbox event are committed in the same database transaction, then a separate publisher delivers the event",
+      "explanation": "This closes the commit-versus-publish gap, while consumers should still be prepared for duplicate delivery.",
+      "topics": ["Transactional outbox", "Event-driven architecture", "Reliability"]
+    },
+    {
+      "id": "django-mid-senior-139",
+      "type": "single",
+      "question": "What is a good reason to use pagination on a DRF collection endpoint?",
+      "options": [
+        "Bound response size, database work, serialization cost, and network transfer",
+        "Guarantee database uniqueness",
+        "Avoid authentication",
+        "Replace indexes"
+      ],
+      "answer": "Bound response size, database work, serialization cost, and network transfer",
+      "explanation": "Returning unbounded collections can create significant memory, database, serialization, and latency problems.",
+      "topics": ["Pagination", "DRF", "API performance"]
+    },
+    {
+      "id": "django-mid-senior-140",
+      "type": "single",
+      "question": "Why can large OFFSET-based pagination become expensive?",
+      "options": [
+        "The database may still need to find and discard many preceding rows",
+        "OFFSET disables HTTP",
+        "Django creates one connection for every skipped row",
+        "OFFSET requires Redis"
+      ],
+      "answer": "The database may still need to find and discard many preceding rows",
+      "explanation": "Cursor or keyset pagination can be more efficient for large ordered datasets when sequential navigation is appropriate.",
+      "topics": ["Pagination", "Keyset pagination", "Database performance"]
+    },
+    {
+      "id": "django-mid-senior-141",
+      "type": "multiple",
+      "question": "Which metrics would be useful for operating a production Django API?",
+      "options": [
+        "Request rate and latency",
+        "Error rate",
+        "Database query latency",
+        "Background queue depth"
+      ],
+      "answers": [
+        "Request rate and latency",
+        "Error rate",
+        "Database query latency",
+        "Background queue depth"
+      ],
+      "explanation": "Application, database, external-dependency, and worker signals are all necessary to understand production health.",
+      "topics": ["Observability", "Metrics", "Production operations"]
+    },
+    {
+      "id": "django-mid-senior-142",
+      "type": "single",
+      "question": "Why are correlation or request IDs useful in Django services?",
+      "options": [
+        "They help connect logs and traces belonging to the same request or workflow",
+        "They guarantee authentication",
+        "They replace database primary keys",
+        "They prevent SQL injection"
+      ],
+      "answer": "They help connect logs and traces belonging to the same request or workflow",
+      "explanation": "Correlation IDs are especially useful when one user request fans out to external APIs, background jobs, and multiple services.",
+      "topics": ["Correlation IDs", "Logging", "Distributed tracing"]
+    },
+    {
+      "id": "django-mid-senior-143",
+      "type": "single",
+      "question": "What should a health-check endpoint generally avoid?",
+      "options": [
+        "Performing expensive application work on every probe",
+        "Returning a simple status",
+        "Providing readiness information",
+        "Being monitored"
+      ],
+      "answer": "Performing expensive application work on every probe",
+      "explanation": "Health probes may execute frequently, so they should be inexpensive and designed around the distinction between process liveness and service readiness.",
+      "topics": ["Health checks", "Liveness", "Readiness"]
+    },
+    {
+      "id": "django-mid-senior-144",
+      "type": "single",
+      "question": "What is the difference between liveness and readiness in a containerized Django deployment?",
+      "options": [
+        "Liveness asks whether the process should be restarted; readiness asks whether it should currently receive traffic",
+        "They are identical",
+        "Liveness tests authentication while readiness tests authorization",
+        "Readiness always restarts PostgreSQL"
+      ],
+      "answer": "Liveness asks whether the process should be restarted; readiness asks whether it should currently receive traffic",
+      "explanation": "A process can be alive but temporarily unready to serve traffic, for example during startup or dependency initialization.",
+      "topics": ["Liveness", "Readiness", "Deployment"]
+    },
+    {
+      "id": "django-mid-senior-145",
+      "type": "single",
+      "question": "A DRF serializer performs an external HTTP call inside `validate()` for every item in a bulk request. What concern should a senior engineer raise?",
+      "options": [
+        "Validation latency and availability are now tightly coupled to an external dependency, potentially producing many network calls",
+        "DRF serializers cannot call functions",
+        "Validation must always run in Celery",
+        "HTTP calls automatically bypass serializer errors"
+      ],
+      "answer": "Validation latency and availability are now tightly coupled to an external dependency, potentially producing many network calls",
+      "explanation": "External validation may sometimes be necessary, but its placement, batching, timeout behavior, retries, and failure semantics should be deliberate.",
+      "topics": ["Serializer validation", "External APIs", "Architecture"]
+    },
+    {
+      "id": "django-mid-senior-146",
+      "type": "single",
+      "question": "A serializer accesses the current authenticated user. How is the request commonly made available to the serializer?",
+      "options": [
+        "Through the serializer context",
+        "Through a global request variable",
+        "Through the database connection",
+        "Through the migration executor"
+      ],
+      "answer": "Through the serializer context",
+      "explanation": "DRF generic views normally include the request in serializer context, allowing controlled access through `self.context['request']`.",
+      "topics": ["Serializer context", "request.user", "DRF"]
+    },
+    {
+      "id": "django-mid-senior-147",
+      "type": "single",
+      "question": "Why can deeply nested writable serializers become difficult to maintain?",
+      "options": [
+        "Creation, update, validation, partial failure, and transaction semantics become increasingly complex",
+        "Nested serializers cannot represent JSON",
+        "Django prohibits nested data",
+        "They automatically create database deadlocks"
+      ],
+      "answer": "Creation, update, validation, partial failure, and transaction semantics become increasingly complex",
+      "explanation": "Complex aggregate mutations often benefit from explicit service-layer operations rather than hiding large workflows behind serializer magic.",
+      "topics": ["Nested serializers", "Service layer", "Transactions"]
+    },
+    {
+      "id": "django-mid-senior-148",
+      "type": "boolean",
+      "question": "Serializer validation alone is sufficient to protect a database invariant from concurrent writes.",
+      "answer": false,
+      "explanation": "Two requests can independently pass application validation before either commits. Critical invariants should also be represented with database constraints or concurrency control.",
+      "topics": ["Validation", "Database constraints", "Concurrency"]
+    },
+    {
+      "id": "django-mid-senior-149",
+      "type": "single",
+      "question": "When an endpoint returns data from multiple tables and external services, what is a useful architecture principle?",
+      "options": [
+        "Keep transport concerns, business orchestration, and persistence responsibilities clearly separated",
+        "Put all logic in the serializer's to_representation() method",
+        "Put all logic in middleware",
+        "Use global mutable variables for coordination"
+      ],
+      "answer": "Keep transport concerns, business orchestration, and persistence responsibilities clearly separated",
+      "explanation": "Explicit boundaries improve testing, error handling, transaction design, and the ability to change infrastructure independently.",
+      "topics": ["Separation of concerns", "Service layer", "Architecture"]
+    },
+    {
+      "id": "django-mid-senior-150",
+      "type": "multiple",
+      "question": "A senior engineer designing a reliable Django integration with a third-party API should explicitly consider which concerns?",
+      "options": [
+        "Timeouts and connection pooling",
+        "Retries with backoff and jitter",
+        "Rate limits and idempotency",
+        "Observability and reconciliation"
+      ],
+      "answers": [
+        "Timeouts and connection pooling",
+        "Retries with backoff and jitter",
+        "Rate limits and idempotency",
+        "Observability and reconciliation"
+      ],
+      "explanation": "Third-party integrations fail in partial and ambiguous ways. Reliability requires treating network failure, duplicate execution, quotas, stale data, and silent divergence as normal design concerns.",
+      "topics": ["Third-party APIs", "Reliability", "System design"]
+    }
+  ]
+}

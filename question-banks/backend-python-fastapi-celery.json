@@ -1,0 +1,819 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "backend-python-fastapi-celery",
+  "name": "Backend Development — Python, FastAPI & Celery",
+  "description": "Senior backend interview preparation focused on Python and FastAPI, with essential Celery task-queue knowledge. Covers Python resource management and asyncio, API and database design, idempotency and resilience, Pydantic validation, FastAPI dependency injection, lifespan, security, testing, background work, and Celery brokers, result backends, acknowledgements, retries, workers, monitoring, and periodic tasks.",
+  "questions": [
+    {
+      "type": "single",
+      "question": "What is the main difference between an iterator and an iterable in Python?",
+      "options": [
+        "An iterable can produce an iterator; an iterator additionally implements stateful next-item retrieval",
+        "They are always identical objects",
+        "Only iterators can be used in for loops",
+        "Iterables must be lists"
+      ],
+      "answer": "An iterable can produce an iterator; an iterator additionally implements stateful next-item retrieval",
+      "explanation": "Iterable objects can provide an iterator via iter(); iterators also implement __next__() and retain iteration state.",
+      "topics": ["Python", "Iterators", "Data model"],
+      "id": "backend-python-001"
+    },
+    {
+      "type": "single",
+      "question": "What is a key benefit of a generator for backend data processing?",
+      "options": [
+        "It can produce values lazily without materializing the entire sequence in memory",
+        "It automatically parallelizes CPU work",
+        "It guarantees thread safety",
+        "It persists results to disk"
+      ],
+      "answer": "It can produce values lazily without materializing the entire sequence in memory",
+      "explanation": "Generators are useful for streaming or processing large datasets incrementally.",
+      "topics": ["Python", "Generators", "Memory"],
+      "id": "backend-python-002"
+    },
+    {
+      "type": "boolean",
+      "question": "A generator function begins executing its body immediately when you call it.",
+      "answer": false,
+      "explanation": "Calling a generator function returns a generator object; execution begins when iteration requests the first value.",
+      "topics": ["Python", "Generators"],
+      "id": "backend-python-003"
+    },
+    {
+      "type": "single",
+      "question": "Why are context managers useful in backend code?",
+      "options": [
+        "They provide deterministic setup and cleanup around resources such as files, locks, and database sessions",
+        "They make every function asynchronous",
+        "They cache function results",
+        "They prevent exceptions"
+      ],
+      "answer": "They provide deterministic setup and cleanup around resources such as files, locks, and database sessions",
+      "explanation": "The with statement ensures cleanup logic runs when leaving the context, including exceptional exits.",
+      "topics": ["Python", "Context managers", "Resource management"],
+      "id": "backend-python-004"
+    },
+    {
+      "type": "single",
+      "question": "What does the finally block guarantee in normal Python exception handling?",
+      "options": [
+        "Its code is attempted whether or not an exception was raised in the try block",
+        "It runs only when no exception occurs",
+        "It catches every exception",
+        "It suppresses exceptions automatically"
+      ],
+      "answer": "Its code is attempted whether or not an exception was raised in the try block",
+      "explanation": "finally is commonly used for cleanup that must occur on both success and failure paths.",
+      "topics": ["Python", "Exceptions", "Cleanup"],
+      "id": "backend-python-005"
+    },
+    {
+      "type": "single",
+      "question": "When should you generally catch an exception in backend code?",
+      "options": [
+        "When you can add meaningful handling, translation, recovery, cleanup, or context",
+        "At every function boundary regardless of purpose",
+        "Only at process startup",
+        "Never; exceptions should always terminate the process"
+      ],
+      "answer": "When you can add meaningful handling, translation, recovery, cleanup, or context",
+      "explanation": "Catching exceptions without a clear action can hide failures or destroy useful diagnostic information.",
+      "topics": ["Python", "Exceptions", "Backend design"],
+      "id": "backend-python-006"
+    },
+    {
+      "type": "single",
+      "question": "What is the main danger of using except Exception: pass?",
+      "options": [
+        "It silently hides failures and can leave the system in an incorrect state",
+        "It converts the exception into a warning",
+        "It makes Python retry the operation",
+        "It prevents logging only in development"
+      ],
+      "answer": "It silently hides failures and can leave the system in an incorrect state",
+      "explanation": "Broad exception suppression removes evidence and can allow invalid state to propagate.",
+      "topics": ["Python", "Exceptions", "Reliability"],
+      "id": "backend-python-007"
+    },
+    {
+      "type": "single",
+      "question": "What does async def create when called?",
+      "options": [
+        "A coroutine object",
+        "A new operating-system thread",
+        "A process",
+        "A completed Future"
+      ],
+      "answer": "A coroutine object",
+      "explanation": "Calling an async function does not run it to completion immediately; the returned coroutine must be awaited or scheduled.",
+      "topics": ["Python", "asyncio", "Coroutines"],
+      "id": "backend-python-008"
+    },
+    {
+      "type": "single",
+      "question": "What happens while an asyncio task awaits non-blocking I/O?",
+      "options": [
+        "The event loop can run other ready tasks",
+        "The entire process must remain idle",
+        "Python automatically starts another process",
+        "The coroutine becomes a Celery task"
+      ],
+      "answer": "The event loop can run other ready tasks",
+      "explanation": "asyncio uses cooperative scheduling: other tasks can run while one task awaits an asynchronous operation.",
+      "topics": ["Python", "asyncio", "Concurrency"],
+      "id": "backend-python-009"
+    },
+    {
+      "type": "single",
+      "question": "Why is calling a long blocking I/O function directly inside an async endpoint dangerous?",
+      "options": [
+        "It can block the event-loop thread and delay unrelated requests",
+        "It automatically creates too many threads",
+        "It invalidates type annotations",
+        "It disables garbage collection"
+      ],
+      "answer": "It can block the event-loop thread and delay unrelated requests",
+      "explanation": "An async event loop only gains concurrency when tasks yield control instead of performing blocking work on its thread.",
+      "topics": ["Python", "asyncio", "Blocking I/O"],
+      "id": "backend-python-010"
+    },
+    {
+      "type": "single",
+      "question": "What is asyncio.to_thread() primarily intended for?",
+      "options": [
+        "Running blocking I/O-bound synchronous functions without blocking the event loop",
+        "Parallelizing arbitrary CPU-bound Python code across all cores with no trade-offs",
+        "Starting Celery workers",
+        "Creating a new event loop"
+      ],
+      "answer": "Running blocking I/O-bound synchronous functions without blocking the event loop",
+      "explanation": "to_thread runs a blocking callable in a thread and returns an awaitable result.",
+      "topics": ["Python", "asyncio", "Threads"],
+      "id": "backend-python-011"
+    },
+    {
+      "type": "single",
+      "question": "What does asyncio.create_task(coro) do?",
+      "options": [
+        "Schedules the coroutine to run as a Task on the current event loop",
+        "Runs the coroutine in another process",
+        "Blocks until the coroutine finishes",
+        "Serializes the coroutine to a queue"
+      ],
+      "answer": "Schedules the coroutine to run as a Task on the current event loop",
+      "explanation": "create_task wraps a coroutine in a Task so it can make progress concurrently with other event-loop work.",
+      "topics": ["Python", "asyncio", "Tasks"],
+      "id": "backend-python-012"
+    },
+    {
+      "type": "single",
+      "question": "Why is asyncio.TaskGroup useful for related concurrent operations?",
+      "options": [
+        "It provides structured concurrency, waits for the group, and propagates failures with coordinated cancellation",
+        "It persists tasks across process restarts",
+        "It guarantees distributed execution",
+        "It replaces database transactions"
+      ],
+      "answer": "It provides structured concurrency, waits for the group, and propagates failures with coordinated cancellation",
+      "explanation": "TaskGroup gives related child tasks a clear lifecycle and stronger failure semantics than ad hoc fire-and-forget task creation.",
+      "topics": ["Python", "asyncio", "TaskGroup"],
+      "id": "backend-python-013"
+    },
+    {
+      "type": "boolean",
+      "question": "asyncio concurrency and CPU parallelism are the same concept.",
+      "answer": false,
+      "explanation": "asyncio is primarily cooperative concurrency. CPU parallelism requires separate execution resources such as processes or free-threaded/native code where applicable.",
+      "topics": ["Python", "Concurrency", "Parallelism"],
+      "id": "backend-python-014"
+    },
+    {
+      "type": "single",
+      "question": "What is an important property of asyncio cancellation?",
+      "options": [
+        "Cancellation is cooperative and usually surfaces as asyncio.CancelledError at an await point",
+        "It forcefully kills the Python process",
+        "It cannot be caught",
+        "It rolls back database transactions automatically"
+      ],
+      "answer": "Cancellation is cooperative and usually surfaces as asyncio.CancelledError at an await point",
+      "explanation": "Async code should clean up correctly when cancellation interrupts awaited work.",
+      "topics": ["Python", "asyncio", "Cancellation"],
+      "id": "backend-python-015"
+    },
+    {
+      "type": "single",
+      "question": "Why should backend network calls generally have explicit timeouts?",
+      "options": [
+        "To bound resource occupancy when a dependency is slow or unavailable",
+        "To guarantee successful responses",
+        "To avoid using exception handling",
+        "To disable retries"
+      ],
+      "answer": "To bound resource occupancy when a dependency is slow or unavailable",
+      "explanation": "Without timeouts, stalled dependencies can tie up workers, connections, and request budgets indefinitely.",
+      "topics": ["Backend", "Timeouts", "Resilience"],
+      "id": "backend-python-016"
+    },
+    {
+      "type": "single",
+      "question": "What is idempotency in an API or background job?",
+      "options": [
+        "Repeating the same logical operation does not create additional unintended side effects",
+        "The operation always completes in one millisecond",
+        "The operation cannot fail",
+        "The operation is read-only"
+      ],
+      "answer": "Repeating the same logical operation does not create additional unintended side effects",
+      "explanation": "Idempotency is critical when requests or tasks may be retried or delivered more than once.",
+      "topics": ["Backend", "Idempotency", "Reliability"],
+      "id": "backend-python-017"
+    },
+    {
+      "type": "single",
+      "question": "A POST endpoint creates a payment and the client may retry after a timeout. What is a strong design?",
+      "options": [
+        "Accept an idempotency key and make repeated requests return/reuse the same logical result",
+        "Create a new payment on every retry",
+        "Disable all client retries",
+        "Use GET instead of POST"
+      ],
+      "answer": "Accept an idempotency key and make repeated requests return/reuse the same logical result",
+      "explanation": "Idempotency keys prevent duplicate side effects when the client cannot know whether the first attempt succeeded.",
+      "topics": ["Backend", "Idempotency", "API design"],
+      "id": "backend-python-018"
+    },
+    {
+      "type": "single",
+      "question": "Why should a database transaction usually be kept as short as practical?",
+      "options": [
+        "Long transactions hold resources and locks longer and can increase contention",
+        "Transactions prevent indexes from being used",
+        "Transactions disable connection pooling",
+        "Short transactions are always read-only"
+      ],
+      "answer": "Long transactions hold resources and locks longer and can increase contention",
+      "explanation": "Minimizing transaction scope reduces contention and failure blast radius.",
+      "topics": ["Backend", "Transactions", "Database"],
+      "id": "backend-python-019"
+    },
+    {
+      "type": "single",
+      "question": "What HTTP status is commonly appropriate when a request has been accepted for asynchronous processing but is not complete yet?",
+      "options": ["202 Accepted", "200 OK only", "301 Moved Permanently", "418 I'm a teapot"],
+      "answer": "202 Accepted",
+      "explanation": "202 communicates that processing has been accepted but has not yet completed.",
+      "topics": ["Backend", "HTTP", "Async jobs"],
+      "id": "backend-python-020"
+    },
+    {
+      "type": "single",
+      "question": "What is the main purpose of cursor-based pagination over offset pagination for a frequently changing large dataset?",
+      "options": [
+        "More stable traversal and often better performance because it avoids scanning/skipping increasingly large offsets",
+        "It guarantees total-count queries are free",
+        "It removes the need for ordering",
+        "It works only with in-memory lists"
+      ],
+      "answer": "More stable traversal and often better performance because it avoids scanning/skipping increasingly large offsets",
+      "explanation": "Cursor pagination is often preferable for high-volume feeds where rows can be inserted while the client paginates.",
+      "topics": ["Backend", "Pagination", "Database"],
+      "id": "backend-python-021"
+    },
+    {
+      "type": "single",
+      "question": "What does FastAPI primarily use Python type annotations for?",
+      "options": [
+        "Request parsing/validation, dependency metadata, response schemas, and OpenAPI generation",
+        "Compiling Python to machine code",
+        "Creating database indexes automatically",
+        "Starting Celery workers"
+      ],
+      "answer": "Request parsing/validation, dependency metadata, response schemas, and OpenAPI generation",
+      "explanation": "FastAPI builds request and API-schema behavior around standard Python typing plus Pydantic.",
+      "topics": ["FastAPI", "Type annotations", "OpenAPI"],
+      "id": "backend-python-022"
+    },
+    {
+      "type": "single",
+      "question": "What does a Pydantic request model give a FastAPI endpoint?",
+      "options": [
+        "Parsed and validated structured input based on the model schema",
+        "A database transaction",
+        "A background worker",
+        "Automatic authorization"
+      ],
+      "answer": "Parsed and validated structured input based on the model schema",
+      "explanation": "Pydantic models define the expected data shape and validation rules for structured request bodies.",
+      "topics": ["FastAPI", "Pydantic", "Validation"],
+      "id": "backend-python-023"
+    },
+    {
+      "type": "single",
+      "question": "Why is runtime validation still needed even when your Python code is fully type-annotated?",
+      "options": [
+        "External HTTP data exists at runtime and may not match static type annotations",
+        "Type annotations automatically validate JSON",
+        "Python types are persisted in HTTP headers",
+        "Static typing guarantees client correctness"
+      ],
+      "answer": "External HTTP data exists at runtime and may not match static type annotations",
+      "explanation": "Static annotations do not validate arbitrary bytes received over the network; Pydantic performs runtime parsing and validation.",
+      "topics": ["FastAPI", "Pydantic", "Runtime validation"],
+      "id": "backend-python-024"
+    },
+    {
+      "type": "single",
+      "question": "What is a major purpose of a FastAPI response model or annotated return type?",
+      "options": [
+        "Validate and serialize outgoing data according to the declared API contract",
+        "Prevent the endpoint from raising exceptions",
+        "Make every response cacheable",
+        "Create a database model automatically"
+      ],
+      "answer": "Validate and serialize outgoing data according to the declared API contract",
+      "explanation": "Response models also help filter output fields and generate accurate OpenAPI documentation.",
+      "topics": ["FastAPI", "Response model", "Validation"],
+      "id": "backend-python-025"
+    },
+    {
+      "type": "boolean",
+      "question": "If returned data violates the declared FastAPI response model, that is treated as a client validation error.",
+      "answer": false,
+      "explanation": "Invalid output means the application violated its own contract, so it is considered a server-side problem rather than bad client input.",
+      "topics": ["FastAPI", "Response model", "Errors"],
+      "id": "backend-python-026"
+    },
+    {
+      "type": "single",
+      "question": "What does FastAPI's Depends() provide?",
+      "options": [
+        "Dependency injection for reusable request-time logic and resources",
+        "Automatic distributed task execution",
+        "ORM model inheritance",
+        "A replacement for async/await"
+      ],
+      "answer": "Dependency injection for reusable request-time logic and resources",
+      "explanation": "Dependencies can encapsulate authentication, parameter parsing, resource acquisition, shared logic, and sub-dependencies.",
+      "topics": ["FastAPI", "Dependency injection", "Depends"],
+      "id": "backend-python-027"
+    },
+    {
+      "type": "single",
+      "question": "What is a common use for a dependency that uses yield?",
+      "options": [
+        "Acquire a resource before yielding it and run cleanup logic afterward",
+        "Generate infinite API responses",
+        "Start a new process per request",
+        "Disable exception propagation"
+      ],
+      "answer": "Acquire a resource before yielding it and run cleanup logic afterward",
+      "explanation": "Database sessions and other scoped resources are common examples.",
+      "topics": ["FastAPI", "Dependencies", "Resource management"],
+      "id": "backend-python-028"
+    },
+    {
+      "type": "single",
+      "question": "A FastAPI dependency opens a database session and yields it. Where should session cleanup normally occur?",
+      "options": [
+        "In the dependency's code after yield, typically via try/finally or context management",
+        "Inside every endpoint manually",
+        "In the client",
+        "Only during application shutdown"
+      ],
+      "answer": "In the dependency's code after yield, typically via try/finally or context management",
+      "explanation": "The dependency owns the lifecycle of the resource it creates.",
+      "topics": ["FastAPI", "Dependencies", "Database sessions"],
+      "id": "backend-python-029"
+    },
+    {
+      "type": "single",
+      "question": "What is FastAPI's recommended modern mechanism for application startup and shutdown resource management?",
+      "options": [
+        "The app lifespan context manager",
+        "A global while loop",
+        "Only @app.on_event handlers",
+        "A Celery beat process"
+      ],
+      "answer": "The app lifespan context manager",
+      "explanation": "The lifespan parameter is the recommended mechanism for application-wide setup and teardown such as shared pools or models.",
+      "topics": ["FastAPI", "Lifespan", "Resource management"],
+      "id": "backend-python-030"
+    },
+    {
+      "type": "single",
+      "question": "What belongs naturally in application lifespan rather than a per-request dependency?",
+      "options": [
+        "A shared resource initialized once for the application process, such as a connection pool or large model",
+        "The authenticated user for one request",
+        "A path parameter",
+        "A request-specific transaction"
+      ],
+      "answer": "A shared resource initialized once for the application process, such as a connection pool or large model",
+      "explanation": "Lifespan spans the whole application process; dependencies are generally request-scoped or dependency-call-scoped.",
+      "topics": ["FastAPI", "Lifespan", "Architecture"],
+      "id": "backend-python-031"
+    },
+    {
+      "type": "single",
+      "question": "When should a FastAPI path operation normally be declared async def?",
+      "options": [
+        "When it calls libraries that expose awaitable non-blocking APIs",
+        "Always, regardless of what the code does",
+        "Only when returning JSON",
+        "Only when using Pydantic"
+      ],
+      "answer": "When it calls libraries that expose awaitable non-blocking APIs",
+      "explanation": "async def is appropriate when the endpoint awaits async database, HTTP, file, or other I/O libraries.",
+      "topics": ["FastAPI", "asyncio", "Concurrency"],
+      "id": "backend-python-032"
+    },
+    {
+      "type": "single",
+      "question": "When can a normal def path operation be appropriate in FastAPI?",
+      "options": [
+        "When its main dependencies are synchronous/blocking libraries and should not run directly on the event loop",
+        "Never; FastAPI accepts only async def",
+        "Only for health checks",
+        "Only for POST requests"
+      ],
+      "answer": "When its main dependencies are synchronous/blocking libraries and should not run directly on the event loop",
+      "explanation": "FastAPI can execute normal synchronous path operations without treating their blocking work as event-loop coroutine code.",
+      "topics": ["FastAPI", "Concurrency", "Blocking I/O"],
+      "id": "backend-python-033"
+    },
+    {
+      "type": "single",
+      "question": "What is wrong with calling requests.get() directly inside a busy async def FastAPI endpoint?",
+      "options": [
+        "requests is blocking, so the call can block the event-loop thread",
+        "requests can only be called from Celery",
+        "FastAPI forbids outbound HTTP",
+        "It causes Pydantic validation to stop"
+      ],
+      "answer": "requests is blocking, so the call can block the event-loop thread",
+      "explanation": "Use an async HTTP client in async code or move blocking I/O out of the event-loop thread.",
+      "topics": ["FastAPI", "asyncio", "HTTP clients"],
+      "id": "backend-python-034"
+    },
+    {
+      "type": "single",
+      "question": "What does HTTPException do in FastAPI?",
+      "options": [
+        "Abort request handling with a controlled HTTP error response",
+        "Terminate the server process",
+        "Retry the request automatically",
+        "Rollback every database automatically"
+      ],
+      "answer": "Abort request handling with a controlled HTTP error response",
+      "explanation": "HTTPException is used for expected HTTP-level failures such as not found, unauthorized, or forbidden conditions.",
+      "topics": ["FastAPI", "HTTPException", "Error handling"],
+      "id": "backend-python-035"
+    },
+    {
+      "type": "single",
+      "question": "Why might you define a custom exception handler in FastAPI?",
+      "options": [
+        "To translate domain/application exceptions into a consistent HTTP response format",
+        "To suppress all server errors",
+        "To make Python exceptions checked exceptions",
+        "To bypass logging"
+      ],
+      "answer": "To translate domain/application exceptions into a consistent HTTP response format",
+      "explanation": "Centralized handlers keep transport-specific error formatting out of domain logic.",
+      "topics": ["FastAPI", "Exception handlers", "Architecture"],
+      "id": "backend-python-036"
+    },
+    {
+      "type": "single",
+      "question": "What is middleware best suited for?",
+      "options": [
+        "Cross-cutting request/response behavior such as correlation IDs, timing, CORS, or headers",
+        "Every piece of domain business logic",
+        "Database schema definitions",
+        "Celery task scheduling only"
+      ],
+      "answer": "Cross-cutting request/response behavior such as correlation IDs, timing, CORS, or headers",
+      "explanation": "Middleware wraps broad request/response processing and is useful when behavior applies across routes.",
+      "topics": ["FastAPI", "Middleware", "Architecture"],
+      "id": "backend-python-037"
+    },
+    {
+      "type": "single",
+      "question": "What is an important distinction between authentication and authorization?",
+      "options": [
+        "Authentication establishes who the caller is; authorization decides what that caller may do",
+        "They are synonyms",
+        "Authorization happens only before authentication",
+        "Authentication applies only to administrators"
+      ],
+      "answer": "Authentication establishes who the caller is; authorization decides what that caller may do",
+      "explanation": "A valid identity does not imply permission for every operation or resource.",
+      "topics": ["FastAPI", "Security", "Authorization"],
+      "id": "backend-python-038"
+    },
+    {
+      "type": "boolean",
+      "question": "A signed JWT is automatically encrypted, so its claims are safe for storing secrets.",
+      "answer": false,
+      "explanation": "A normal signed JWT protects integrity but its payload can be decoded; sensitive secrets should not be placed in it.",
+      "topics": ["FastAPI", "JWT", "Security"],
+      "id": "backend-python-039"
+    },
+    {
+      "type": "single",
+      "question": "What should an API verify when accepting a JWT access token?",
+      "options": [
+        "Signature and relevant claims such as expiration, issuer/audience where applicable, and authorization context",
+        "Only that the token contains three dot-separated sections",
+        "Only the username claim",
+        "Nothing if HTTPS is used"
+      ],
+      "answer": "Signature and relevant claims such as expiration, issuer/audience where applicable, and authorization context",
+      "explanation": "Token verification must establish authenticity and whether the token is valid for the intended context.",
+      "topics": ["FastAPI", "JWT", "Security"],
+      "id": "backend-python-040"
+    },
+    {
+      "type": "single",
+      "question": "What is the benefit of using FastAPI dependencies for authentication/authorization?",
+      "options": [
+        "Security logic can be reused and composed consistently across endpoints and represented in API metadata",
+        "It removes the need for server-side checks",
+        "It stores passwords automatically",
+        "It turns JWT into encrypted data"
+      ],
+      "answer": "Security logic can be reused and composed consistently across endpoints and represented in API metadata",
+      "explanation": "Dependency injection fits authentication and authorization because they are reusable request-time policies.",
+      "topics": ["FastAPI", "Security", "Dependencies"],
+      "id": "backend-python-041"
+    },
+    {
+      "type": "single",
+      "question": "What are OAuth2 scopes used for conceptually?",
+      "options": [
+        "Represent permissions a token is allowed to exercise",
+        "Encrypt JWT payloads",
+        "Identify database tables",
+        "Control worker concurrency"
+      ],
+      "answer": "Represent permissions a token is allowed to exercise",
+      "explanation": "Scopes provide a standardized way to express delegated authorization capabilities.",
+      "topics": ["FastAPI", "OAuth2", "Authorization"],
+      "id": "backend-python-042"
+    },
+    {
+      "type": "single",
+      "question": "When is FastAPI BackgroundTasks a good fit?",
+      "options": [
+        "Small in-process work that can run after the response and does not need distributed durability",
+        "Hours-long CPU-heavy jobs requiring independent workers",
+        "Jobs that must survive web-process crashes reliably",
+        "A large distributed task-processing cluster"
+      ],
+      "answer": "Small in-process work that can run after the response and does not need distributed durability",
+      "explanation": "BackgroundTasks is convenient for lightweight post-response work tied to the application process.",
+      "topics": ["FastAPI", "BackgroundTasks", "Async jobs"],
+      "id": "backend-python-043"
+    },
+    {
+      "type": "single",
+      "question": "When is Celery a stronger fit than FastAPI BackgroundTasks?",
+      "options": [
+        "When work should run in separate worker processes/servers with queue-based distribution and retry/durability controls",
+        "When returning a small JSON response",
+        "When validating a request body",
+        "When declaring a query parameter"
+      ],
+      "answer": "When work should run in separate worker processes/servers with queue-based distribution and retry/durability controls",
+      "explanation": "A distributed task queue decouples execution from the web process and scales workers independently.",
+      "topics": ["FastAPI", "Celery", "Architecture"],
+      "id": "backend-python-044"
+    },
+    {
+      "type": "single",
+      "question": "A background job needs data from a database row after the request is over. What is a safer pattern than passing the request-scoped ORM session/object into the job?",
+      "options": [
+        "Pass a stable identifier and let the job open its own database session and reload the data",
+        "Keep the request database transaction open until the job finishes",
+        "Serialize the live database connection",
+        "Store the ORM session in a global variable"
+      ],
+      "answer": "Pass a stable identifier and let the job open its own database session and reload the data",
+      "explanation": "Background work should own its resources rather than depend on a request-scoped session that has already been cleaned up.",
+      "topics": ["FastAPI", "Background tasks", "Database sessions"],
+      "id": "backend-python-045"
+    },
+    {
+      "type": "single",
+      "question": "What does FastAPI TestClient provide?",
+      "options": [
+        "A convenient HTTP client for exercising the ASGI application in tests",
+        "A production load balancer",
+        "A Celery worker",
+        "A Pydantic validator generator"
+      ],
+      "answer": "A convenient HTTP client for exercising the ASGI application in tests",
+      "explanation": "FastAPI's TestClient is based on Starlette/HTTPX and integrates naturally with pytest.",
+      "topics": ["FastAPI", "Testing", "TestClient"],
+      "id": "backend-python-046"
+    },
+    {
+      "type": "single",
+      "question": "Why use app.dependency_overrides in FastAPI tests?",
+      "options": [
+        "To replace selected dependencies with test doubles or controlled implementations",
+        "To modify Python built-ins",
+        "To disable routing",
+        "To compile the application faster"
+      ],
+      "answer": "To replace selected dependencies with test doubles or controlled implementations",
+      "explanation": "Overrides are useful for external auth providers, databases, services, or other dependencies that should be isolated in a test.",
+      "topics": ["FastAPI", "Testing", "Dependency injection"],
+      "id": "backend-python-047"
+    },
+    {
+      "type": "single",
+      "question": "If your test needs FastAPI lifespan startup/shutdown logic to run, what is the recommended TestClient usage?",
+      "options": [
+        "Use TestClient(app) as a context manager with a with statement",
+        "Instantiate TestClient once without closing it",
+        "Call lifespan() manually from every endpoint test",
+        "Start a Celery worker"
+      ],
+      "answer": "Use TestClient(app) as a context manager with a with statement",
+      "explanation": "Using the context manager ensures lifespan setup and teardown execute around the test client session.",
+      "topics": ["FastAPI", "Testing", "Lifespan"],
+      "id": "backend-python-048"
+    },
+    {
+      "type": "single",
+      "question": "Why should API schemas usually distinguish an input model from an output model when fields differ?",
+      "options": [
+        "To avoid accidentally exposing internal or sensitive fields and to make contracts explicit",
+        "Because FastAPI cannot reuse Pydantic models",
+        "Because GET endpoints cannot use Pydantic",
+        "To make JSON smaller at runtime only"
+      ],
+      "answer": "To avoid accidentally exposing internal or sensitive fields and to make contracts explicit",
+      "explanation": "Separating request and response contracts is especially valuable when internal models contain secrets or persistence-only fields.",
+      "topics": ["FastAPI", "Pydantic", "API design"],
+      "id": "backend-python-049"
+    },
+    {
+      "type": "single",
+      "question": "What is the most appropriate place to enforce a business rule such as 'a user may modify only resources they own'?",
+      "options": [
+        "On the server, in authorization/domain logic reached by the endpoint",
+        "Only in the frontend",
+        "Only in OpenAPI documentation",
+        "Only in the Pydantic field type"
+      ],
+      "answer": "On the server, in authorization/domain logic reached by the endpoint",
+      "explanation": "Client-side checks improve UX but cannot be trusted as an authorization boundary.",
+      "topics": ["FastAPI", "Authorization", "Backend design"],
+      "id": "backend-python-050"
+    },
+    {
+      "type": "single",
+      "question": "An endpoint returns thousands of database rows and serializes them all into one response. What is the strongest first API-design improvement?",
+      "options": [
+        "Introduce bounded pagination or streaming where appropriate",
+        "Increase the Python recursion limit",
+        "Convert all models to dataclasses",
+        "Move the endpoint to Celery"
+      ],
+      "answer": "Introduce bounded pagination or streaming where appropriate",
+      "explanation": "Bounded responses protect database, application memory, serialization cost, network usage, and client latency.",
+      "topics": ["FastAPI", "Pagination", "Performance"],
+      "id": "backend-python-051"
+    },
+    {
+      "type": "single",
+      "question": "What is the broker in a Celery architecture?",
+      "options": [
+        "The message transport that carries queued task messages between producers and workers",
+        "The database that stores application users",
+        "The FastAPI process itself",
+        "The Python event loop"
+      ],
+      "answer": "The message transport that carries queued task messages between producers and workers",
+      "explanation": "Common Celery brokers include RabbitMQ, Redis, and SQS.",
+      "topics": ["Celery", "Broker", "Task queues"],
+      "id": "backend-python-052"
+    },
+    {
+      "type": "single",
+      "question": "What is the result backend in Celery?",
+      "options": [
+        "Optional storage/transport for task states and return values",
+        "The queue that workers consume tasks from",
+        "The HTTP server that creates tasks",
+        "The scheduler used by Celery beat"
+      ],
+      "answer": "Optional storage/transport for task states and return values",
+      "explanation": "A result backend is not required if the application does not need task results or persisted states.",
+      "topics": ["Celery", "Result backend", "Task queues"],
+      "id": "backend-python-053"
+    },
+    {
+      "type": "boolean",
+      "question": "Celery requires a result backend for every application even if task results are never read.",
+      "answer": false,
+      "explanation": "Celery can operate without a configured result backend when return values/state tracking are unnecessary.",
+      "topics": ["Celery", "Result backend"],
+      "id": "backend-python-054"
+    },
+    {
+      "type": "single",
+      "question": "Why should a Celery task generally be idempotent?",
+      "options": [
+        "Task delivery or retry scenarios can cause the same logical task to execute more than once",
+        "Celery guarantees exactly-once execution",
+        "Idempotency makes the worker single-threaded",
+        "Idempotency disables acknowledgements"
+      ],
+      "answer": "Task delivery or retry scenarios can cause the same logical task to execute more than once",
+      "explanation": "Distributed task processing should assume duplicate execution is possible and protect side effects accordingly.",
+      "topics": ["Celery", "Idempotency", "Reliability"],
+      "id": "backend-python-055"
+    },
+    {
+      "type": "single",
+      "question": "What does task_acks_late change?",
+      "options": [
+        "The worker acknowledges the message after task execution rather than before execution",
+        "The producer waits longer before publishing",
+        "The result backend stores results later",
+        "Celery beat schedules tasks later"
+      ],
+      "answer": "The worker acknowledges the message after task execution rather than before execution",
+      "explanation": "Late acknowledgment can allow redelivery after some worker failures, which increases the importance of idempotency.",
+      "topics": ["Celery", "Acknowledgements", "Delivery semantics"],
+      "id": "backend-python-056"
+    },
+    {
+      "type": "single",
+      "question": "A Celery task calls an unreliable external API. What is a sensible retry strategy?",
+      "options": [
+        "Retry only appropriate transient failures with bounded attempts and exponential backoff/jitter",
+        "Retry every exception forever with no delay",
+        "Never use timeouts because retries exist",
+        "Retry validation errors indefinitely"
+      ],
+      "answer": "Retry only appropriate transient failures with bounded attempts and exponential backoff/jitter",
+      "explanation": "Retries should distinguish transient from permanent failures and should not amplify an outage.",
+      "topics": ["Celery", "Retries", "Resilience"],
+      "id": "backend-python-057"
+    },
+    {
+      "type": "single",
+      "question": "Why can worker prefetch be problematic when a queue contains long-running tasks?",
+      "options": [
+        "One worker can reserve multiple tasks that then wait behind its current work instead of being available to idle workers",
+        "Prefetch deletes tasks before execution",
+        "Prefetch disables concurrency",
+        "Prefetch stores results in the broker"
+      ],
+      "answer": "One worker can reserve multiple tasks that then wait behind its current work instead of being available to idle workers",
+      "explanation": "Prefetch tuning can improve fairness for long-running jobs.",
+      "topics": ["Celery", "Prefetch", "Workers"],
+      "id": "backend-python-058"
+    },
+    {
+      "type": "single",
+      "question": "What is Celery beat?",
+      "options": [
+        "A scheduler that periodically publishes tasks for workers to execute",
+        "A worker pool implementation",
+        "A result backend",
+        "A FastAPI middleware"
+      ],
+      "answer": "A scheduler that periodically publishes tasks for workers to execute",
+      "explanation": "Only one scheduler should own a given schedule unless the design explicitly prevents duplicate scheduling.",
+      "topics": ["Celery", "Celery beat", "Periodic tasks"],
+      "id": "backend-python-059"
+    },
+    {
+      "type": "multiple",
+      "question": "Which signals are important for operating a Celery-backed task system?",
+      "options": [
+        "Queue depth or oldest-task age",
+        "Task success/failure/retry rates",
+        "Task execution latency/duration",
+        "Worker availability and utilization",
+        "Only the FastAPI HTTP 200 rate"
+      ],
+      "answers": [
+        "Queue depth or oldest-task age",
+        "Task success/failure/retry rates",
+        "Task execution latency/duration",
+        "Worker availability and utilization"
+      ],
+      "explanation": "A task queue needs visibility into backlog, processing health, failures, retries, latency, and worker capacity.",
+      "topics": ["Celery", "Monitoring", "Task queues"],
+      "id": "backend-python-060"
+    }
+  ]
+}

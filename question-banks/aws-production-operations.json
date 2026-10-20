@@ -1,0 +1,847 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "aws-production-operations",
+  "name": "AWS Production Operations",
+  "description": "Prepare for senior full-stack and backend interviews involving ECS, Fargate, EKS, autoscaling, ALB, RDS, CloudWatch, deployments, rollbacks, networking, IAM, and production incident diagnosis.",
+  "questions": [
+    {
+      "type": "single",
+      "question": "In Amazon ECS, what does a task definition primarily describe?",
+      "options": [
+        "The desired number of running tasks in a service",
+        "How one or more containers should run, including image, CPU, memory, ports, roles, and environment",
+        "The ALB listener rules used by a service",
+        "The number of Availability Zones used by the cluster"
+      ],
+      "answer": "How one or more containers should run, including image, CPU, memory, ports, roles, and environment",
+      "explanation": "A task definition is the runtime blueprint for an ECS task. An ECS service separately manages the desired number and lifecycle of tasks.",
+      "topics": ["ECS", "Task definitions"],
+      "id": "aws-prod-001"
+    },
+    {
+      "type": "single",
+      "question": "What is the main responsibility of an ECS service?",
+      "options": [
+        "Build container images",
+        "Keep a desired number of tasks running and coordinate deployments",
+        "Create IAM users for containers",
+        "Store application logs"
+      ],
+      "answer": "Keep a desired number of tasks running and coordinate deployments",
+      "explanation": "An ECS service maintains the requested task count, replaces failed tasks, and manages service deployments.",
+      "topics": ["ECS", "Services"],
+      "id": "aws-prod-002"
+    },
+    {
+      "type": "single",
+      "question": "What is the key operational difference between ECS on Fargate and ECS on EC2?",
+      "options": [
+        "Fargate cannot run containers",
+        "With Fargate, AWS manages the underlying compute capacity; with EC2, you manage the worker instances or their capacity",
+        "ECS on EC2 cannot use an ALB",
+        "Fargate requires Kubernetes"
+      ],
+      "answer": "With Fargate, AWS manages the underlying compute capacity; with EC2, you manage the worker instances or their capacity",
+      "explanation": "Fargate removes host provisioning and patching from the application team's responsibilities. ECS on EC2 gives more host-level control but also requires capacity management.",
+      "topics": ["ECS", "Fargate", "EC2"],
+      "id": "aws-prod-003"
+    },
+    {
+      "type": "single",
+      "question": "Which statement best distinguishes Amazon EKS from Amazon ECS?",
+      "options": [
+        "EKS is AWS-managed Kubernetes, while ECS uses AWS's native container orchestration model",
+        "EKS only runs serverless functions",
+        "ECS requires Kubernetes manifests",
+        "EKS cannot run containers on EC2"
+      ],
+      "answer": "EKS is AWS-managed Kubernetes, while ECS uses AWS's native container orchestration model",
+      "explanation": "EKS exposes Kubernetes APIs and concepts such as Pods, Deployments, and Services. ECS uses AWS-native task definitions, tasks, and services.",
+      "topics": ["EKS", "ECS", "Containers"],
+      "id": "aws-prod-004"
+    },
+    {
+      "type": "boolean",
+      "question": "Using Fargate means the application no longer needs VPC networking, subnets, or security groups.",
+      "answer": false,
+      "explanation": "Fargate removes server management, not networking. Fargate tasks still run in a VPC and use subnet and security-group configuration.",
+      "topics": ["Fargate", "VPC", "Networking"],
+      "id": "aws-prod-005"
+    },
+    {
+      "type": "single",
+      "question": "For an ECS service running Fargate tasks with awsvpc networking behind an ALB, which target type is normally used by the target group?",
+      "options": ["instance", "ip", "lambda", "hostname"],
+      "answer": "ip",
+      "explanation": "Fargate tasks using awsvpc receive their own elastic network interfaces and IP addresses, so the ALB target group registers task IPs rather than EC2 instance IDs.",
+      "topics": ["Fargate", "ALB", "awsvpc"],
+      "id": "aws-prod-006"
+    },
+    {
+      "type": "single",
+      "question": "What is the difference between an ECS task role and an ECS task execution role?",
+      "options": [
+        "There is no difference",
+        "The task role is assumed by application code; the execution role is used by ECS/Fargate for actions such as pulling images and publishing logs",
+        "The execution role is assumed only by developers",
+        "The task role controls ALB listener rules"
+      ],
+      "answer": "The task role is assumed by application code; the execution role is used by ECS/Fargate for actions such as pulling images and publishing logs",
+      "explanation": "Separate roles support least privilege: the application receives only its runtime permissions, while the ECS agent or Fargate infrastructure receives permissions needed to start and operate the task.",
+      "topics": ["ECS", "IAM", "Security"],
+      "id": "aws-prod-007"
+    },
+    {
+      "type": "multiple",
+      "question": "An ECS task in a private subnet cannot pull its image from ECR. Which are plausible networking causes?",
+      "options": [
+        "The subnet has no NAT path and the required VPC endpoints are not configured",
+        "Security groups or network ACLs block required traffic",
+        "The task definition has too many environment variables",
+        "DNS resolution or routing is misconfigured"
+      ],
+      "answers": [
+        "The subnet has no NAT path and the required VPC endpoints are not configured",
+        "Security groups or network ACLs block required traffic",
+        "DNS resolution or routing is misconfigured"
+      ],
+      "explanation": "Private tasks still need network paths to ECR and related services, either through NAT or appropriate VPC endpoints. Routing, DNS, security groups, and NACLs can all prevent image pulls.",
+      "topics": ["ECS", "ECR", "VPC", "Networking"],
+      "id": "aws-prod-008"
+    },
+    {
+      "type": "single",
+      "question": "An ECS service has desiredCount=6 but only 4 tasks remain running because two crashed. What should the service scheduler normally do?",
+      "options": [
+        "Leave the service at 4 until a developer redeploys",
+        "Launch replacement tasks to return toward the desired count",
+        "Reduce desiredCount to 4 automatically",
+        "Terminate all remaining tasks"
+      ],
+      "answer": "Launch replacement tasks to return toward the desired count",
+      "explanation": "The service scheduler continuously attempts to maintain the desired number of healthy tasks.",
+      "topics": ["ECS", "Scheduling", "Reliability"],
+      "id": "aws-prod-009"
+    },
+    {
+      "type": "single",
+      "question": "During an ECS rolling deployment, what does minimumHealthyPercent control?",
+      "options": [
+        "The minimum percentage of desired tasks that must remain healthy/running during the deployment",
+        "The minimum CPU reservation per task",
+        "The minimum ALB health-check interval",
+        "The minimum number of Availability Zones"
+      ],
+      "answer": "The minimum percentage of desired tasks that must remain healthy/running during the deployment",
+      "explanation": "minimumHealthyPercent constrains how far the scheduler can reduce healthy capacity while replacing tasks during a rolling deployment.",
+      "topics": ["ECS", "Deployments", "Rolling updates"],
+      "id": "aws-prod-010"
+    },
+    {
+      "type": "single",
+      "question": "During an ECS rolling deployment, what does maximumPercent control?",
+      "options": [
+        "The maximum task CPU utilization",
+        "The upper limit on running/pending task count relative to desiredCount during the deployment",
+        "The maximum percentage of failed health checks",
+        "The maximum percentage of traffic an ALB can route to one target"
+      ],
+      "answer": "The upper limit on running/pending task count relative to desiredCount during the deployment",
+      "explanation": "maximumPercent determines how much temporary capacity the scheduler may use while starting the new revision before stopping older tasks.",
+      "topics": ["ECS", "Deployments", "Rolling updates"],
+      "id": "aws-prod-011"
+    },
+    {
+      "type": "single",
+      "question": "An ECS service has desiredCount=4, minimumHealthyPercent=100, and maximumPercent=200. Assuming enough capacity, what can ECS do during a rolling deployment?",
+      "options": [
+        "Stop all 4 old tasks before starting new ones",
+        "Start up to 4 new tasks before stopping the 4 old tasks",
+        "Run at most 4 total tasks",
+        "Scale the service permanently to 8 tasks"
+      ],
+      "answer": "Start up to 4 new tasks before stopping the 4 old tasks",
+      "explanation": "With 100% minimum healthy capacity and 200% maximum capacity, ECS can keep all four old tasks while launching four replacement tasks.",
+      "topics": ["ECS", "Deployments", "Capacity"],
+      "id": "aws-prod-012"
+    },
+    {
+      "type": "single",
+      "question": "What does the ECS deployment circuit breaker help with?",
+      "options": [
+        "Encrypting container traffic",
+        "Detecting a deployment that cannot reach steady state and optionally rolling it back",
+        "Scaling an RDS database",
+        "Caching Docker layers"
+      ],
+      "answer": "Detecting a deployment that cannot reach steady state and optionally rolling it back",
+      "explanation": "The circuit breaker can mark a failed deployment and, when rollback is enabled, return the service to the last successfully completed deployment.",
+      "topics": ["ECS", "Deployments", "Rollback"],
+      "id": "aws-prod-013"
+    },
+    {
+      "type": "single",
+      "question": "Why is an ECS healthCheckGracePeriodSeconds setting useful for services behind a load balancer?",
+      "options": [
+        "It gives newly started tasks time to initialize before load-balancer health failures cause replacement",
+        "It disables all health checks permanently",
+        "It increases the ALB timeout for every client request",
+        "It prevents autoscaling"
+      ],
+      "answer": "It gives newly started tasks time to initialize before load-balancer health failures cause replacement",
+      "explanation": "Applications with non-trivial startup time can otherwise be killed repeatedly before they become ready.",
+      "topics": ["ECS", "ALB", "Health checks"],
+      "id": "aws-prod-014"
+    },
+    {
+      "type": "multiple",
+      "question": "A new ECS deployment repeatedly starts tasks and then replaces them. Which checks are high value early in the investigation?",
+      "options": [
+        "ECS service events and stopped-task reasons",
+        "ALB target health and health-check reason codes",
+        "Container logs in CloudWatch",
+        "The color of the AWS console theme"
+      ],
+      "answers": [
+        "ECS service events and stopped-task reasons",
+        "ALB target health and health-check reason codes",
+        "Container logs in CloudWatch"
+      ],
+      "explanation": "These three sources quickly distinguish application startup crashes, load-balancer health-check problems, image/configuration failures, and scheduler-level failures.",
+      "topics": ["ECS", "Debugging", "CloudWatch", "ALB"],
+      "id": "aws-prod-015"
+    },
+    {
+      "type": "single",
+      "question": "Which AWS component typically performs Layer 7 host- and path-based routing for HTTP/HTTPS services?",
+      "options": [
+        "Application Load Balancer",
+        "Network Load Balancer",
+        "NAT Gateway",
+        "Internet Gateway"
+      ],
+      "answer": "Application Load Balancer",
+      "explanation": "An ALB understands HTTP/HTTPS semantics and supports listener rules based on properties such as host and path.",
+      "topics": ["ALB", "Load balancing"],
+      "id": "aws-prod-016"
+    },
+    {
+      "type": "single",
+      "question": "What is a target group in an ALB architecture?",
+      "options": [
+        "A set of backend targets plus routing and health-check configuration",
+        "A group of IAM users",
+        "A CloudWatch dashboard",
+        "A collection of DNS records"
+      ],
+      "answer": "A set of backend targets plus routing and health-check configuration",
+      "explanation": "Listener rules forward requests to target groups, which contain registered targets and health settings.",
+      "topics": ["ALB", "Target groups"],
+      "id": "aws-prod-017"
+    },
+    {
+      "type": "single",
+      "question": "An ALB target is marked unhealthy with Target.ResponseCodeMismatch. What should you investigate first?",
+      "options": [
+        "Whether the health-check endpoint is returning an HTTP status code accepted by the target group's matcher",
+        "Whether the RDS snapshot retention period is too short",
+        "Whether the ECS cluster name is too long",
+        "Whether the client supports HTTP/2"
+      ],
+      "answer": "Whether the health-check endpoint is returning an HTTP status code accepted by the target group's matcher",
+      "explanation": "ResponseCodeMismatch means the target responded, but its HTTP status code did not match what the target group considers healthy.",
+      "topics": ["ALB", "Health checks", "Debugging"],
+      "id": "aws-prod-018"
+    },
+    {
+      "type": "single",
+      "question": "What is the purpose of ALB deregistration delay?",
+      "options": [
+        "Allow in-flight requests to finish while a target is draining",
+        "Delay DNS resolution",
+        "Delay container image pulls",
+        "Keep unhealthy targets receiving new requests"
+      ],
+      "answer": "Allow in-flight requests to finish while a target is draining",
+      "explanation": "When a target is deregistered, it enters draining. The delay helps existing requests finish before the target becomes unused.",
+      "topics": ["ALB", "Deployments", "Connection draining"],
+      "id": "aws-prod-019"
+    },
+    {
+      "type": "multiple",
+      "question": "An ALB returns 503 responses immediately after a deployment. Which conditions are plausible causes?",
+      "options": [
+        "The target group has no healthy targets",
+        "Listener/routing configuration forwards to the wrong or empty target group",
+        "New targets have not become healthy yet",
+        "CloudWatch Logs retention is set to 30 days"
+      ],
+      "answers": [
+        "The target group has no healthy targets",
+        "Listener/routing configuration forwards to the wrong or empty target group",
+        "New targets have not become healthy yet"
+      ],
+      "explanation": "A 503 from the load balancer commonly means it cannot route the request to an available healthy target. Target health and listener rules are high-value checks.",
+      "topics": ["ALB", "Debugging", "Deployments"],
+      "id": "aws-prod-020"
+    },
+    {
+      "type": "single",
+      "question": "When would a Network Load Balancer be a more natural choice than an Application Load Balancer?",
+      "options": [
+        "When you need Layer 4 TCP/UDP handling, very high throughput, or static IP-related capabilities",
+        "When you need path-based HTTP routing",
+        "When you need React Server Components",
+        "When you need to execute SQL joins"
+      ],
+      "answer": "When you need Layer 4 TCP/UDP handling, very high throughput, or static IP-related capabilities",
+      "explanation": "NLB operates primarily at Layer 4. ALB is usually preferred when HTTP-aware routing features are needed.",
+      "topics": ["ALB", "NLB", "Load balancing"],
+      "id": "aws-prod-021"
+    },
+    {
+      "type": "single",
+      "question": "What does target-tracking autoscaling attempt to do?",
+      "options": [
+        "Maintain a selected metric near a configured target value by adjusting capacity",
+        "Keep exactly one task per Availability Zone",
+        "Scale only at fixed clock times",
+        "Restart every task whenever CPU rises"
+      ],
+      "answer": "Maintain a selected metric near a configured target value by adjusting capacity",
+      "explanation": "A target-tracking policy continuously adjusts scalable capacity so the selected metric stays around the configured target.",
+      "topics": ["Autoscaling", "ECS"],
+      "id": "aws-prod-022"
+    },
+    {
+      "type": "multiple",
+      "question": "Which metrics can be reasonable signals for scaling a stateless HTTP ECS service, depending on workload characteristics?",
+      "options": [
+        "Average CPU utilization",
+        "Average memory utilization",
+        "ALB request count per target",
+        "The number of developers in the repository"
+      ],
+      "answers": [
+        "Average CPU utilization",
+        "Average memory utilization",
+        "ALB request count per target"
+      ],
+      "explanation": "CPU, memory, and request rate are common signals. The correct metric is the one that best correlates with saturation and user-visible load.",
+      "topics": ["Autoscaling", "Metrics", "ECS"],
+      "id": "aws-prod-023"
+    },
+    {
+      "type": "single",
+      "question": "Why can CPU-only autoscaling be insufficient for a web service?",
+      "options": [
+        "The service may saturate on memory, connections, request concurrency, or an external dependency before CPU becomes high",
+        "ECS cannot publish CPU metrics",
+        "CPU metrics are available only on EKS",
+        "ALBs ignore CPU-based services"
+      ],
+      "answer": "The service may saturate on memory, connections, request concurrency, or an external dependency before CPU becomes high",
+      "explanation": "A useful scaling metric should track the real bottleneck. CPU is not always the limiting resource.",
+      "topics": ["Autoscaling", "Capacity planning", "Observability"],
+      "id": "aws-prod-024"
+    },
+    {
+      "type": "single",
+      "question": "What is the operational purpose of setting minimum and maximum capacity for ECS Service Auto Scaling?",
+      "options": [
+        "Bound the number of tasks autoscaling is allowed to request",
+        "Set the minimum and maximum Docker image sizes",
+        "Choose the number of ALB listeners",
+        "Control RDS transaction isolation"
+      ],
+      "answer": "Bound the number of tasks autoscaling is allowed to request",
+      "explanation": "Minimum capacity preserves a baseline while maximum capacity protects cost, quotas, and downstream systems from unbounded scale-out.",
+      "topics": ["Autoscaling", "ECS", "Capacity planning"],
+      "id": "aws-prod-025"
+    },
+    {
+      "type": "single",
+      "question": "An ECS service scales from 10 to 30 tasks, but latency remains high because every task is waiting on the same overloaded database. What does this indicate?",
+      "options": [
+        "The service tier is not the only bottleneck and scaling it cannot remove a downstream saturation point",
+        "Autoscaling always reduces latency",
+        "The ALB must be replaced with an Internet Gateway",
+        "The task definition should use latest as its image tag"
+      ],
+      "answer": "The service tier is not the only bottleneck and scaling it cannot remove a downstream saturation point",
+      "explanation": "Scaling one layer can move or amplify pressure on another. Database connections, IOPS, locks, and query latency should be checked before further scale-out.",
+      "topics": ["Autoscaling", "RDS", "System design"],
+      "id": "aws-prod-026"
+    },
+    {
+      "type": "single",
+      "question": "What is the main purpose of an RDS Multi-AZ deployment?",
+      "options": [
+        "High availability and failover",
+        "Horizontal read scaling",
+        "Static website hosting",
+        "Replacing database backups"
+      ],
+      "answer": "High availability and failover",
+      "explanation": "Multi-AZ configurations are primarily for availability. Read scaling is a separate concern typically addressed with read replicas or other read-scaling architectures.",
+      "topics": ["RDS", "High availability"],
+      "id": "aws-prod-027"
+    },
+    {
+      "type": "single",
+      "question": "What is the main purpose of an RDS read replica?",
+      "options": [
+        "Offload eligible read workloads and improve read scalability",
+        "Provide the application's only automated backup",
+        "Replace IAM",
+        "Route HTTP requests"
+      ],
+      "answer": "Offload eligible read workloads and improve read scalability",
+      "explanation": "Read replicas are commonly used to move read traffic away from the writer. They should not be confused with a Multi-AZ standby used primarily for availability.",
+      "topics": ["RDS", "Read replicas", "Scaling"],
+      "id": "aws-prod-028"
+    },
+    {
+      "type": "boolean",
+      "question": "An application should assume every read from an asynchronous RDS read replica immediately reflects the latest committed write on the primary.",
+      "answer": false,
+      "explanation": "Replication lag can make replicas temporarily stale. Workflows requiring read-after-write consistency need an appropriate routing strategy.",
+      "topics": ["RDS", "Read replicas", "Consistency"],
+      "id": "aws-prod-029"
+    },
+    {
+      "type": "single",
+      "question": "During an RDS failover, why should applications normally connect through the database endpoint rather than hard-code an instance IP address?",
+      "options": [
+        "The endpoint can resolve to the active database after failover, whereas a hard-coded IP can become invalid",
+        "RDS does not use DNS",
+        "IP addresses are required only for read replicas",
+        "The endpoint automatically retries failed SQL transactions"
+      ],
+      "answer": "The endpoint can resolve to the active database after failover, whereas a hard-coded IP can become invalid",
+      "explanation": "Applications should tolerate reconnection and DNS changes around failover rather than bind themselves to a specific database host address.",
+      "topics": ["RDS", "Failover", "Networking"],
+      "id": "aws-prod-030"
+    },
+    {
+      "type": "single",
+      "question": "A sudden ECS scale-out causes 'too many connections' errors from PostgreSQL on RDS. What is the core failure mode?",
+      "options": [
+        "Application capacity increased faster than database connection capacity",
+        "ALB health checks changed the SQL schema",
+        "CloudWatch disabled PostgreSQL",
+        "The VPC created duplicate database rows"
+      ],
+      "answer": "Application capacity increased faster than database connection capacity",
+      "explanation": "Each additional task may create its own connection pool. Without pool sizing or a connection proxy, horizontal application scaling can exhaust database connections.",
+      "topics": ["RDS", "PostgreSQL", "Connection pooling", "Autoscaling"],
+      "id": "aws-prod-031"
+    },
+    {
+      "type": "single",
+      "question": "What problem can Amazon RDS Proxy help mitigate?",
+      "options": [
+        "Large numbers of application database connections and connection churn",
+        "Missing ALB path rules",
+        "Container image vulnerabilities",
+        "JavaScript bundle size"
+      ],
+      "answer": "Large numbers of application database connections and connection churn",
+      "explanation": "RDS Proxy pools and multiplexes database connections, which can improve resilience for bursty or highly scaled application fleets.",
+      "topics": ["RDS", "RDS Proxy", "Connection pooling"],
+      "id": "aws-prod-032"
+    },
+    {
+      "type": "multiple",
+      "question": "Database latency rises sharply in production. Which signals are useful to correlate before scaling the instance?",
+      "options": [
+        "CPU and memory pressure",
+        "Database connections",
+        "Query latency, waits, locks, and slow SQL",
+        "Storage IOPS/throughput and queueing"
+      ],
+      "answers": [
+        "CPU and memory pressure",
+        "Database connections",
+        "Query latency, waits, locks, and slow SQL",
+        "Storage IOPS/throughput and queueing"
+      ],
+      "explanation": "Database latency can come from compute, storage, connection pressure, lock contention, or inefficient queries. Scaling blindly can hide rather than solve the root cause.",
+      "topics": ["RDS", "PostgreSQL", "Observability", "Debugging"],
+      "id": "aws-prod-033"
+    },
+    {
+      "type": "boolean",
+      "question": "A larger RDS instance is always the correct fix for slow database queries.",
+      "answer": false,
+      "explanation": "Slow queries can be caused by missing indexes, poor plans, lock contention, excessive rows scanned, application behavior, or storage bottlenecks. Diagnose before scaling.",
+      "topics": ["RDS", "PostgreSQL", "Performance"],
+      "id": "aws-prod-034"
+    },
+    {
+      "type": "single",
+      "question": "Which practice best reduces the risk of exposing an RDS database directly to the public internet?",
+      "options": [
+        "Place it in private subnets and restrict inbound access to the application tier using security groups",
+        "Use a public subnet but rename the database",
+        "Disable database authentication",
+        "Allow 0.0.0.0/0 on the database port"
+      ],
+      "answer": "Place it in private subnets and restrict inbound access to the application tier using security groups",
+      "explanation": "Production databases are typically private and reachable only from explicitly authorized application or administration paths.",
+      "topics": ["RDS", "VPC", "Security groups", "Security"],
+      "id": "aws-prod-035"
+    },
+    {
+      "type": "single",
+      "question": "What is CloudWatch Logs primarily used for?",
+      "options": [
+        "Collecting, retaining, searching, and analyzing log events",
+        "Running Kubernetes control planes",
+        "Storing container images",
+        "Creating SQL indexes"
+      ],
+      "answer": "Collecting, retaining, searching, and analyzing log events",
+      "explanation": "CloudWatch Logs is the standard AWS log aggregation service used by many application and infrastructure components.",
+      "topics": ["CloudWatch", "Logging"],
+      "id": "aws-prod-036"
+    },
+    {
+      "type": "single",
+      "question": "What is the difference between a CloudWatch metric and a log event?",
+      "options": [
+        "A metric is a numeric time series; a log event is a textual or structured event record",
+        "Metrics are stored only in S3",
+        "Logs cannot have timestamps",
+        "There is no difference"
+      ],
+      "answer": "A metric is a numeric time series; a log event is a textual or structured event record",
+      "explanation": "Metrics are optimized for aggregation, dashboards, and alarms, while logs retain richer event details for investigation.",
+      "topics": ["CloudWatch", "Metrics", "Logging"],
+      "id": "aws-prod-037"
+    },
+    {
+      "type": "single",
+      "question": "What is the purpose of a CloudWatch alarm?",
+      "options": [
+        "Evaluate a metric or expression against conditions and trigger state changes/actions",
+        "Replace application logs",
+        "Deploy new ECS task definitions",
+        "Run SQL migrations"
+      ],
+      "answer": "Evaluate a metric or expression against conditions and trigger state changes/actions",
+      "explanation": "Alarms convert telemetry into operational signals and can integrate with notification or automated response mechanisms.",
+      "topics": ["CloudWatch", "Alarms", "Monitoring"],
+      "id": "aws-prod-038"
+    },
+    {
+      "type": "single",
+      "question": "Which CloudWatch feature is useful for interactively querying structured application logs during an incident?",
+      "options": [
+        "CloudWatch Logs Insights",
+        "Route 53 Resolver",
+        "ECR lifecycle policies",
+        "IAM Access Analyzer"
+      ],
+      "answer": "CloudWatch Logs Insights",
+      "explanation": "Logs Insights supports ad hoc queries over log groups and is useful for filtering, aggregating, and correlating log events during investigations.",
+      "topics": ["CloudWatch", "Logs Insights", "Debugging"],
+      "id": "aws-prod-039"
+    },
+    {
+      "type": "multiple",
+      "question": "What makes production application logs substantially more useful for debugging distributed requests?",
+      "options": [
+        "Structured fields",
+        "Request or correlation IDs",
+        "Service/version/task identifiers",
+        "Only generic messages such as 'something failed'"
+      ],
+      "answers": [
+        "Structured fields",
+        "Request or correlation IDs",
+        "Service/version/task identifiers"
+      ],
+      "explanation": "Structured, correlated logs make it possible to follow a request across components and distinguish behavior by deployment or task.",
+      "topics": ["CloudWatch", "Observability", "Logging"],
+      "id": "aws-prod-040"
+    },
+    {
+      "type": "single",
+      "question": "A latency alarm fires, but average CPU is normal. What is the best next step?",
+      "options": [
+        "Correlate request latency with errors, saturation, downstream latency, connection pools, logs, and dependency metrics",
+        "Assume the alarm is wrong",
+        "Immediately double every resource in the account",
+        "Delete the alarm"
+      ],
+      "answer": "Correlate request latency with errors, saturation, downstream latency, connection pools, logs, and dependency metrics",
+      "explanation": "Latency can come from I/O, database waits, downstream APIs, queueing, connection exhaustion, lock contention, or networking even when CPU is healthy.",
+      "topics": ["CloudWatch", "Debugging", "Observability"],
+      "id": "aws-prod-041"
+    },
+    {
+      "type": "single",
+      "question": "What is the main value of Container Insights for ECS/EKS operations?",
+      "options": [
+        "Additional container- and workload-level telemetry for monitoring and troubleshooting",
+        "Automatic SQL schema migration",
+        "Replacing IAM roles",
+        "Compiling Dockerfiles"
+      ],
+      "answer": "Additional container- and workload-level telemetry for monitoring and troubleshooting",
+      "explanation": "Container Insights adds operational visibility into containerized workloads beyond a minimal host-level view.",
+      "topics": ["CloudWatch", "Container Insights", "ECS", "EKS"],
+      "id": "aws-prod-042"
+    },
+    {
+      "type": "single",
+      "question": "Which sequence is strongest for handling a production incident?",
+      "options": [
+        "Observe symptoms and scope -> inspect telemetry -> form/test hypotheses -> mitigate impact -> confirm recovery -> perform RCA and prevention",
+        "Restart everything -> wait -> close the incident",
+        "Read source code only -> deploy a rewrite",
+        "Change several unrelated settings at once"
+      ],
+      "answer": "Observe symptoms and scope -> inspect telemetry -> form/test hypotheses -> mitigate impact -> confirm recovery -> perform RCA and prevention",
+      "explanation": "A disciplined incident process separates evidence gathering, mitigation, verification, and root-cause work while limiting untracked changes.",
+      "topics": ["Production debugging", "Incident response", "Observability"],
+      "id": "aws-prod-043"
+    },
+    {
+      "type": "single",
+      "question": "A deployment caused a sharp increase in 5xx responses. What is usually the safest first mitigation when a known-good previous revision exists?",
+      "options": [
+        "Roll back or shift traffic to the known-good revision while preserving evidence for investigation",
+        "Delete all CloudWatch logs",
+        "Increase the database timeout to several minutes",
+        "Disable every health check"
+      ],
+      "answer": "Roll back or shift traffic to the known-good revision while preserving evidence for investigation",
+      "explanation": "During an active regression, restoring service is normally more important than debugging in place, provided rollback is operationally safe.",
+      "topics": ["Deployments", "Rollback", "Incident response"],
+      "id": "aws-prod-044"
+    },
+    {
+      "type": "single",
+      "question": "Why can an application rollback be unsafe after a database migration?",
+      "options": [
+        "The previous application version may be incompatible with the new schema or data transformation",
+        "ECS does not support older task definitions",
+        "ALBs cannot route to older versions",
+        "CloudWatch blocks rollback after a migration"
+      ],
+      "answer": "The previous application version may be incompatible with the new schema or data transformation",
+      "explanation": "Backward-compatible migrations and expand/contract techniques reduce coupling between code rollback and database rollback.",
+      "topics": ["Deployments", "Rollback", "Database migrations"],
+      "id": "aws-prod-045"
+    },
+    {
+      "type": "multiple",
+      "question": "Which practices reduce deployment risk for an ECS application?",
+      "options": [
+        "Use immutable image identifiers or digests",
+        "Use health checks and automated rollback criteria",
+        "Make database changes backward compatible across adjacent versions",
+        "Deploy untested changes directly to every task at once"
+      ],
+      "answers": [
+        "Use immutable image identifiers or digests",
+        "Use health checks and automated rollback criteria",
+        "Make database changes backward compatible across adjacent versions"
+      ],
+      "explanation": "Reproducible artifacts, reliable health signals, rollback automation, and compatible migrations make deployments more predictable and reversible.",
+      "topics": ["Deployments", "ECS", "Reliability"],
+      "id": "aws-prod-046"
+    },
+    {
+      "type": "boolean",
+      "question": "Using the Docker image tag 'latest' is ideal for reproducible production deployments.",
+      "answer": false,
+      "explanation": "Mutable tags make it harder to prove exactly which image is running or to reproduce a deployment. Versioned immutable tags or digests are safer.",
+      "topics": ["ECS", "ECR", "Deployments"],
+      "id": "aws-prod-047"
+    },
+    {
+      "type": "single",
+      "question": "What is the core idea of a blue/green deployment?",
+      "options": [
+        "Run old and new environments side by side, validate the new version, then shift traffic",
+        "Deploy only at night",
+        "Restart one random task per hour",
+        "Use two AWS accounts but only one application version"
+      ],
+      "answer": "Run old and new environments side by side, validate the new version, then shift traffic",
+      "explanation": "Blue/green reduces replacement-in-place risk because the previous environment can remain available while the new revision is validated.",
+      "topics": ["Deployments", "Blue-green", "Rollback"],
+      "id": "aws-prod-048"
+    },
+    {
+      "type": "single",
+      "question": "What advantage does a canary-style rollout provide?",
+      "options": [
+        "Expose a small portion of real traffic to the new version before broader rollout",
+        "Guarantee a bug-free release",
+        "Remove the need for monitoring",
+        "Avoid all duplicate infrastructure"
+      ],
+      "answer": "Expose a small portion of real traffic to the new version before broader rollout",
+      "explanation": "A canary limits blast radius while giving you production evidence before full traffic is moved.",
+      "topics": ["Deployments", "Canary", "Risk management"],
+      "id": "aws-prod-049"
+    },
+    {
+      "type": "single",
+      "question": "An ECS deployment is stuck because new tasks cannot be placed. Which category should you inspect first?",
+      "options": [
+        "Capacity, resource requirements, subnet/IP availability, placement constraints, and service events",
+        "The frontend CSS bundle",
+        "RDS backup retention",
+        "S3 object versioning"
+      ],
+      "answer": "Capacity, resource requirements, subnet/IP availability, placement constraints, and service events",
+      "explanation": "Placement failures are generally explained by scheduler events and capacity/network constraints rather than application request handling.",
+      "topics": ["ECS", "Deployments", "Debugging"],
+      "id": "aws-prod-050"
+    },
+    {
+      "type": "multiple",
+      "question": "A Fargate task immediately exits after launch. Which sources can reveal the cause?",
+      "options": [
+        "Stopped task reason and container exit code",
+        "Application/container logs",
+        "ECS service events",
+        "The account billing address"
+      ],
+      "answers": [
+        "Stopped task reason and container exit code",
+        "Application/container logs",
+        "ECS service events"
+      ],
+      "explanation": "Exit codes, stopped reasons, events, and startup logs usually distinguish application crashes from platform, secret, image, or configuration failures.",
+      "topics": ["Fargate", "ECS", "Debugging"],
+      "id": "aws-prod-051"
+    },
+    {
+      "type": "single",
+      "question": "What is the strongest default pattern for granting an ECS application access to an AWS service such as S3?",
+      "options": [
+        "Attach least-privilege permissions to the task role",
+        "Hard-code an IAM access key in the Docker image",
+        "Give the task AdministratorAccess",
+        "Store a root account key in an environment variable"
+      ],
+      "answer": "Attach least-privilege permissions to the task role",
+      "explanation": "Task roles provide temporary credentials through the AWS runtime and avoid long-lived static credentials in images or configuration.",
+      "topics": ["IAM", "ECS", "Security"],
+      "id": "aws-prod-052"
+    },
+    {
+      "type": "single",
+      "question": "Where should a production ECS service normally obtain a database password rather than hard-coding it in the image?",
+      "options": [
+        "A managed secret store such as AWS Secrets Manager, with access controlled by IAM",
+        "A public GitHub repository",
+        "The Docker image label",
+        "An ALB listener description"
+      ],
+      "answer": "A managed secret store such as AWS Secrets Manager, with access controlled by IAM",
+      "explanation": "Managed secrets reduce credential exposure and support controlled access and rotation workflows.",
+      "topics": ["Secrets Manager", "ECS", "Security"],
+      "id": "aws-prod-053"
+    },
+    {
+      "type": "single",
+      "question": "What does a security group primarily provide?",
+      "options": [
+        "Stateful network access control for attached AWS resources",
+        "Application-level user authentication",
+        "Container image signing",
+        "Database query optimization"
+      ],
+      "answer": "Stateful network access control for attached AWS resources",
+      "explanation": "Security groups control allowed inbound and outbound network flows at the resource interface level and are stateful.",
+      "topics": ["VPC", "Security groups", "Networking"],
+      "id": "aws-prod-054"
+    },
+    {
+      "type": "single",
+      "question": "A public ALB fronts ECS tasks that should not be directly reachable from the internet. Which security-group relationship is strongest?",
+      "options": [
+        "Allow task inbound traffic only from the ALB security group on the application port",
+        "Allow task inbound from 0.0.0.0/0 on every port",
+        "Remove the task security group",
+        "Put every task in a public subnet and assign a public IP"
+      ],
+      "answer": "Allow task inbound traffic only from the ALB security group on the application port",
+      "explanation": "Referencing the ALB security group as the task inbound source restricts application access to traffic that passed through the load balancer.",
+      "topics": ["ALB", "ECS", "Security groups", "Security"],
+      "id": "aws-prod-055"
+    },
+    {
+      "type": "single",
+      "question": "What does an Internet Gateway provide to a VPC?",
+      "options": [
+        "A route target that enables communication between the VPC and the internet for appropriately addressed and routed resources",
+        "Automatic database connection pooling",
+        "Container orchestration",
+        "Application-level authentication"
+      ],
+      "answer": "A route target that enables communication between the VPC and the internet for appropriately addressed and routed resources",
+      "explanation": "A subnet is not public merely because an Internet Gateway exists; its route table and resource addressing also matter.",
+      "topics": ["VPC", "Networking", "Internet Gateway"],
+      "id": "aws-prod-056"
+    },
+    {
+      "type": "single",
+      "question": "Why is a NAT Gateway commonly used by application tasks in private subnets?",
+      "options": [
+        "To let them initiate outbound internet access without accepting unsolicited inbound internet connections",
+        "To terminate HTTPS for the ALB",
+        "To create PostgreSQL indexes",
+        "To store container images"
+      ],
+      "answer": "To let them initiate outbound internet access without accepting unsolicited inbound internet connections",
+      "explanation": "Private workloads often need outbound access for external APIs or package/service endpoints while remaining unreachable directly from the public internet.",
+      "topics": ["VPC", "NAT Gateway", "Networking"],
+      "id": "aws-prod-057"
+    },
+    {
+      "type": "single",
+      "question": "What is one major operational difference between EKS worker nodes on EC2 and EKS on Fargate?",
+      "options": [
+        "EC2 worker nodes require node capacity management, while Fargate can run eligible pods without managing worker servers",
+        "Fargate removes Kubernetes APIs",
+        "EC2 worker nodes cannot run Pods",
+        "EKS on Fargate cannot use VPC networking"
+      ],
+      "answer": "EC2 worker nodes require node capacity management, while Fargate can run eligible pods without managing worker servers",
+      "explanation": "EKS remains Kubernetes in both cases; the difference is who manages the underlying compute capacity and which workload constraints apply.",
+      "topics": ["EKS", "Fargate", "EC2"],
+      "id": "aws-prod-058"
+    },
+    {
+      "type": "single",
+      "question": "In Kubernetes/EKS terms, which object most closely represents one or more tightly coupled containers scheduled together?",
+      "options": ["Pod", "Ingress rule", "Namespace", "ConfigMap"],
+      "answer": "Pod",
+      "explanation": "The Pod is Kubernetes' basic scheduling unit. This differs from ECS terminology, where the comparable runtime unit is an ECS task.",
+      "topics": ["EKS", "Kubernetes", "Containers"],
+      "id": "aws-prod-059"
+    },
+    {
+      "type": "single",
+      "question": "You are choosing ECS versus EKS for a new service. Which factor most strongly favors EKS?",
+      "options": [
+        "The organization specifically needs Kubernetes APIs/ecosystem portability and already operates Kubernetes effectively",
+        "You want the fewest orchestration concepts possible",
+        "You need an ALB",
+        "You need PostgreSQL"
+      ],
+      "answer": "The organization specifically needs Kubernetes APIs/ecosystem portability and already operates Kubernetes effectively",
+      "explanation": "EKS is valuable when Kubernetes itself is a requirement or organizational platform. Otherwise ECS can provide a simpler AWS-native operational model.",
+      "topics": ["EKS", "ECS", "Architecture trade-offs"],
+      "id": "aws-prod-060"
+    }
+  ]
+}

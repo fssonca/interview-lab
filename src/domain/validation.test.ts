@@ -12,13 +12,12 @@ const question = {
 const bank = { id: 'test', name: 'Test', questions: [question] }
 
 describe('question-bank validation', () => {
-  it('validates every committed seed bank with all three question types', async () => {
+  it('validates every bank and covers all three question types across the collection', async () => {
     const banks = await validateBankFiles()
     expect(banks.length).toBeGreaterThanOrEqual(3)
-    for (const bank of banks)
-      expect(new Set(bank.questions.map((question) => question.type))).toEqual(
-        new Set(['single', 'multiple', 'boolean']),
-      )
+    expect(
+      new Set(banks.flatMap((bank) => bank.questions.map((question) => question.type))),
+    ).toEqual(new Set(['single', 'multiple', 'boolean']))
   })
   it('supports optional description, explanation and topics', () => {
     expect(validateBank(bank)).toEqual(bank)

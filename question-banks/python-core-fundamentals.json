@@ -1,0 +1,608 @@
+{
+  "$schema": "../schemas/question-bank.schema.json",
+  "id": "python-core-fundamentals",
+  "name": "Python Core Fundamentals",
+  "description": "48 questions on Python gotchas, memory, built-ins, scope, typing, the object model, and concurrency. Assume Python 3.11+ unless stated; GIL questions explicitly distinguish CPython builds. Topic selection includes an anecdotal [candidate report](https://leetcode.com/discuss/post/7303754/), not a statistical frequency ranking. Answers reference primary documentation. No SQL or Django patterns.",
+  "questions": [
+    {
+      "id": "python-core-fundamentals-001",
+      "type": "single",
+      "question": "What is printed?\n\n```python\ndef add(x, items=[]):\n    items.append(x)\n    return items\n\na = add(1)\nb = add(2)\nprint(a, a is b)\n```",
+      "options": ["`[1] False`", "`[1, 2] True`", "`[1] True`", "`[1, 2] False`"],
+      "answer": "`[1, 2] True`",
+      "explanation": "The default list is created once when `def` executes. Both calls return that same list; the second call also changes what `a` references. [Source](https://docs.python.org/3/tutorial/controlflow.html).",
+      "topics": ["Mutable defaults", "Aliasing"]
+    },
+    {
+      "id": "python-core-fundamentals-002",
+      "type": "single",
+      "question": "What is printed?\n\n```python\ndef change(items):\n    items.append(2)\n    items = [9]\n\na = [1]\nchange(a)\nprint(a)\n```",
+      "options": ["`[9]`", "`[1]`", "`[1, 2]`", "`[1, 2, 9]`"],
+      "answer": "`[1, 2]`",
+      "explanation": "Arguments bind local names to objects. Mutation affects the shared list; rebinding the local name does not rebind `a` in the caller. [Source](https://docs.python.org/3/faq/programming.html).",
+      "topics": ["Pass-by-assignment", "Mutation", "Rebinding"]
+    },
+    {
+      "id": "python-core-fundamentals-003",
+      "type": "single",
+      "question": "What is printed?\n\n```python\na = [[1], [2]]\nb = a.copy()\nb[0].append(3)\nb.append([4])\nprint(a)\n```",
+      "options": ["`[[1, 3], [2]]`", "`[[1], [2]]`", "`[[1, 3], [2], [4]]`", "`[[1], [2], [4]]`"],
+      "answer": "`[[1, 3], [2]]`",
+      "explanation": "The outer lists are independent, but the shallow copy shares their existing inner lists. Appending to `b` itself does not change `a`. [Source](https://docs.python.org/3/library/copy.html).",
+      "topics": ["Shallow copy", "Object graphs"]
+    },
+    {
+      "id": "python-core-fundamentals-004",
+      "type": "single",
+      "question": "What is printed?\n\n```python\nrows = [[0] * 2] * 3\nrows[0][1] = 7\nprint(rows)\n```",
+      "options": [
+        "`[[0, 7], [0, 0], [0, 0]]`",
+        "`[[0, 7], [7, 0], [7, 0]]`",
+        "`[[0, 0], [0, 0], [0, 7]]`",
+        "`[[0, 7], [0, 7], [0, 7]]`"
+      ],
+      "answer": "`[[0, 7], [0, 7], [0, 7]]`",
+      "explanation": "Repetition reuses references to one inner list. Use a comprehension to construct a separate list for each row. [Source](https://docs.python.org/3/faq/programming.html).",
+      "topics": ["List repetition", "Aliasing"]
+    },
+    {
+      "id": "python-core-fundamentals-005",
+      "type": "multiple",
+      "question": "Which comparisons are appropriate for the stated purpose?",
+      "options": [
+        "`value is None` to test for `None`",
+        "`left == right` to compare built-in string contents",
+        "`left is right` to compare integer values independently of object caching",
+        "`left is right` to test whether two names reference the same object"
+      ],
+      "answers": [
+        "`value is None` to test for `None`",
+        "`left == right` to compare built-in string contents",
+        "`left is right` to test whether two names reference the same object"
+      ],
+      "explanation": "Identity and equality answer different questions. Interning or integer caching does not make `is` a portable value-comparison operator. [Source](https://docs.python.org/3/reference/expressions.html).",
+      "topics": ["Identity", "Equality"]
+    },
+    {
+      "id": "python-core-fundamentals-006",
+      "type": "single",
+      "question": "After the exception is caught, what is printed?\n\n```python\nt = ([1],)\ntry:\n    t[0] += [2]\nexcept TypeError:\n    pass\nprint(t)\n```",
+      "options": [
+        "`([1],)`",
+        "`([1, 2],)`",
+        "`([2],)`",
+        "Nothing; the `TypeError` cannot be caught"
+      ],
+      "answer": "`([1, 2],)`",
+      "explanation": "The list is extended before Python attempts to assign it back into the tuple slot. That assignment fails, but the mutation remains. [Source](https://docs.python.org/3/faq/programming.html).",
+      "topics": ["Augmented assignment", "Tuple immutability"]
+    },
+    {
+      "id": "python-core-fundamentals-007",
+      "type": "single",
+      "question": "What is printed?\n\n```python\nd = {True: \"a\", 1: \"b\", 1.0: \"c\"}\nprint(len(d), d[True])\n```",
+      "options": ["`3 a`", "`2 b`", "`1 c`", "`3 c`"],
+      "answer": "`1 c`",
+      "explanation": "These numeric keys compare equal and have equal hashes, so they address one dictionary entry. Each assignment replaces its value. [Source](https://docs.python.org/3/library/stdtypes.html).",
+      "topics": ["Dictionary keys", "Hashing", "Numeric equality"]
+    },
+    {
+      "id": "python-core-fundamentals-008",
+      "type": "boolean",
+      "question": "Given `a = [1]` and `b = a`, executing `del a` removes the name `a` but leaves the list reachable through `b`.",
+      "answer": true,
+      "explanation": "`del a` removes `a` binding. The list remains reachable through `b`; deletion of `a` name is not destruction of its object. [Source](https://docs.python.org/3/reference/datamodel.html).",
+      "topics": ["References", "Object lifetime"]
+    },
+    {
+      "id": "python-core-fundamentals-009",
+      "type": "single",
+      "question": "In ordinary GIL-enabled CPython, why is cyclic garbage collection needed in addition to reference counting?",
+      "options": [
+        "It frees all objects immediately after each function returns",
+        "It copies live objects into new local variables",
+        "It prevents Python code from creating reference cycles",
+        "Unreachable objects can keep each other’s reference counts above zero"
+      ],
+      "answer": "Unreachable objects can keep each other’s reference counts above zero",
+      "explanation": "Reference counting alone cannot reclaim an unreachable cycle whose members still reference one another. Cyclic collection complements it. [Source](https://docs.python.org/3/library/gc.html).",
+      "topics": ["CPython", "Reference counting", "Garbage collection"]
+    },
+    {
+      "id": "python-core-fundamentals-010",
+      "type": "single",
+      "question": "A timeout of 0 is valid; only `None` should select the default 30. Which expression meets that requirement?",
+      "options": [
+        "`30 if timeout is None else timeout`",
+        "`timeout or 30`",
+        "`timeout if timeout else 30`",
+        "`30 if not timeout else timeout`"
+      ],
+      "answer": "`30 if timeout is None else timeout`",
+      "explanation": "`or` selects its fallback for any falsy value, including zero. An explicit `None` check preserves other valid values. [Source](https://docs.python.org/3/reference/expressions.html).",
+      "topics": ["Truthiness", "Sentinels"]
+    },
+    {
+      "id": "python-core-fundamentals-011",
+      "type": "single",
+      "question": "What is printed?\n\n```python\nvalues = [3, 1, 2]\nresult = values.sort()\nprint(values, result)\n```",
+      "options": [
+        "`[3, 1, 2] [1, 2, 3]`",
+        "`[1, 2, 3] [1, 2, 3]`",
+        "`[1, 2, 3] None`",
+        "`None [1, 2, 3]`"
+      ],
+      "answer": "`[1, 2, 3] None`",
+      "explanation": "`list.sort` changes the list in place and returns `None`. `sorted(values)` instead returns a new sorted list. [Source](https://docs.python.org/3/library/stdtypes.html).",
+      "topics": ["Built-ins", "In-place methods"]
+    },
+    {
+      "id": "python-core-fundamentals-012",
+      "type": "single",
+      "question": "What happens when `list(zip([1, 2], [\"a\"], strict=True))` is evaluated?",
+      "options": [
+        "It returns [(1, \"a\")]",
+        "It raises `ValueError` during iteration",
+        "It pads the second pair with `None`",
+        "It raises `TypeError` because strict is unsupported in Python 3.11"
+      ],
+      "answer": "It raises `ValueError` during iteration",
+      "explanation": "`strict=True` detects unequal lengths instead of silently truncating. `zip` is lazy, so consumption triggers the mismatch error. [Source](https://docs.python.org/3/library/functions.html).",
+      "topics": ["zip", "Lazy iteration", "Validation"]
+    },
+    {
+      "id": "python-core-fundamentals-013",
+      "type": "single",
+      "question": "What is the value of `(all([]), any([]))`?",
+      "options": ["`(False, False)`", "`(True, True)`", "`(False, True)`", "`(True, False)`"],
+      "answer": "`(True, False)`",
+      "explanation": "No element violates `all` on an empty iterable, while no element satisfies `any`. Both functions also short-circuit on decisive elements. [Source](https://docs.python.org/3/library/functions.html).",
+      "topics": ["all", "any", "Empty iterables"]
+    },
+    {
+      "id": "python-core-fundamentals-014",
+      "type": "single",
+      "question": "What is printed?\n\n```python\nd = dict.fromkeys([\"a\", \"b\"], [])\nd[\"a\"].append(1)\nprint(d[\"b\"])\n```",
+      "options": ["`[1]`", "`[]`", "`None`", "`KeyError`"],
+      "answer": "`[1]`",
+      "explanation": "`fromkeys` uses the same supplied value for every key. A dictionary comprehension can create independent lists. [Source](https://docs.python.org/3/library/stdtypes.html).",
+      "topics": ["dict.fromkeys", "Mutable values"]
+    },
+    {
+      "id": "python-core-fundamentals-015",
+      "type": "single",
+      "question": "What happens when `f()` is called?\n\n```python\nx = 10\ndef f():\n    print(x)\n    x = 20\n```",
+      "options": [
+        "It prints 10 and changes the global `x`",
+        "It prints 20",
+        "It raises `UnboundLocalError`",
+        "It prints 10 and creates a local `x`"
+      ],
+      "answer": "It raises `UnboundLocalError`",
+      "explanation": "Assignment makes `x` local throughout this function. The preceding read therefore accesses an unbound local rather than the global `x`. [Source](https://docs.python.org/3/reference/executionmodel.html).",
+      "topics": ["LEGB", "UnboundLocalError"]
+    },
+    {
+      "id": "python-core-fundamentals-016",
+      "type": "single",
+      "question": "An inner function must rebind an existing `counter` in its enclosing function, without changing a module global. Which declaration is appropriate?",
+      "options": [
+        "`global counter`",
+        "`nonlocal counter`",
+        "`local counter`",
+        "No declaration is needed before `counter += 1`"
+      ],
+      "answer": "`nonlocal counter`",
+      "explanation": "`nonlocal` targets an existing binding in an enclosing function scope. Mutation of an already-referenced object is different from rebinding a name. [Source](https://docs.python.org/3/reference/executionmodel.html).",
+      "topics": ["LEGB", "nonlocal", "Closures"]
+    },
+    {
+      "id": "python-core-fundamentals-017",
+      "type": "single",
+      "question": "What is printed?\n\n```python\nfuncs = [lambda: i for i in range(3)]\nfixed = [lambda i=i: i for i in range(3)]\nprint([f() for f in funcs], [f() for f in fixed])\n```",
+      "options": [
+        "`[0, 1, 2] [0, 1, 2]`",
+        "`[0, 1, 2] [2, 2, 2]`",
+        "`[2, 2, 2] [2, 2, 2]`",
+        "`[2, 2, 2] [0, 1, 2]`"
+      ],
+      "answer": "`[2, 2, 2] [0, 1, 2]`",
+      "explanation": "The closures look up a shared variable when called. Default arguments capture each current integer when the corresponding lambda is created. [Source](https://docs.python.org/3/faq/programming.html).",
+      "topics": ["Late binding", "Lambda", "Defaults"]
+    },
+    {
+      "id": "python-core-fundamentals-018",
+      "type": "single",
+      "question": "What is printed in Python 3?\n\n```python\nx = 99\nvalues = [x for x in range(3)]\nprint(x, values)\n```",
+      "options": ["`99 [0, 1, 2]`", "`2 [0, 1, 2]`", "`99 [99, 99, 99]`", "`NameError`"],
+      "answer": "`99 [0, 1, 2]`",
+      "explanation": "A comprehension’s iteration variable does not overwrite the surrounding binding. A normal `for` statement has different scope behavior. [Source](https://docs.python.org/3/reference/expressions.html).",
+      "topics": ["Comprehensions", "Scope"]
+    },
+    {
+      "id": "python-core-fundamentals-019",
+      "type": "multiple",
+      "question": "Given this function, which calls are valid?\n\n```python\ndef f(a, /, b, *, c):\n    return a + b + c\n```",
+      "options": ["`f(1, 2, c=3)`", "`f(a=1, b=2, c=3)`", "`f(1, b=2, c=3)`", "`f(1, 2, 3)`"],
+      "answers": ["`f(1, 2, c=3)`", "`f(1, b=2, c=3)`"],
+      "explanation": "`a` is positional-only, `b` accepts either form, and `c` is keyword-only. All three remain required. [Source](https://docs.python.org/3/tutorial/controlflow.html).",
+      "topics": ["Function signatures", "Positional-only", "Keyword-only"]
+    },
+    {
+      "id": "python-core-fundamentals-020",
+      "type": "single",
+      "question": "What happens?\n\n```python\ndef f(x, **kwargs):\n    return x, kwargs\n\nf(1, **{\"x\": 2})\n```",
+      "options": [
+        "It returns `(1, {\"x\": 2})`",
+        "It returns `(2, {})`",
+        "It raises `TypeError`",
+        "It returns `(1, {})`"
+      ],
+      "answer": "It raises `TypeError`",
+      "explanation": "The call supplies `x` both positionally and by keyword. `**kwargs` does not absorb a duplicate assignment to an existing named parameter. [Source](https://docs.python.org/3/tutorial/controlflow.html).",
+      "topics": ["Argument binding", "kwargs"]
+    },
+    {
+      "id": "python-core-fundamentals-021",
+      "type": "single",
+      "question": "What is printed?\n\n```python\nit = iter([1, 2])\nprint(list(it), list(it))\n```",
+      "options": ["[1, 2] [1, 2]", "[1, 2] []", "[] [1, 2]", "[1] [2]"],
+      "answer": "[1, 2] []",
+      "explanation": "An iterator carries traversal state. The first `list` call consumes it; calling `iter` on the original `list` would create a fresh iterator. [Source](https://docs.python.org/3/howto/functional.html).",
+      "topics": ["Iterator protocol", "Exhaustion"]
+    },
+    {
+      "id": "python-core-fundamentals-022",
+      "type": "single",
+      "question": "What is printed?\n\n```python\ndef values():\n    print(\"start\")\n    yield 1\n\ng = values()\nprint(\"created\")\nprint(next(g))\n```",
+      "options": [
+        "start, created, 1 on separate lines",
+        "created, 1, start on separate lines",
+        "created, then `StopIteration`",
+        "created, start, 1 on separate lines"
+      ],
+      "answer": "created, start, 1 on separate lines",
+      "explanation": "Calling a generator function creates the generator without running its body. `next` begins execution and pauses at `yield`. [Source](https://docs.python.org/3/howto/functional.html).",
+      "topics": ["Generators", "Lazy execution"]
+    },
+    {
+      "id": "python-core-fundamentals-023",
+      "type": "single",
+      "question": "What is `list(outer())`?\n\n```python\ndef inner():\n    yield 1\n    return 7\n\ndef outer():\n    result = yield from inner()\n    yield result\n```",
+      "options": ["`[1, 7]`", "`[1]`", "`[7]`", "`[1, None]`"],
+      "answer": "`[1, 7]`",
+      "explanation": "`yield from` forwards yielded items and evaluates to the subgenerator’s return value when that generator finishes. [Source](https://docs.python.org/3/reference/expressions.html).",
+      "topics": ["yield from", "Generator return"]
+    },
+    {
+      "id": "python-core-fundamentals-024",
+      "type": "single",
+      "question": "For ordinary decorators `a` and `b`, what transformation does this represent?\n\n```python\n@a\n@b\ndef f():\n    pass\n```",
+      "options": ["`f = b(a(f))`", "`f = a(b(f))`", "`f = a(f); f = b(f)`", "`f = a(f, b)`"],
+      "answer": "`f = a(b(f))`",
+      "explanation": "Decorators are applied from the bottom upward: `b` wraps the original function, then `a` wraps that result. [Source](https://docs.python.org/3/reference/compound_stmts.html).",
+      "topics": ["Decorators", "Composition"]
+    },
+    {
+      "id": "python-core-fundamentals-025",
+      "type": "multiple",
+      "question": "What does `functools.wraps` normally provide for a decorator wrapper?",
+      "options": [
+        "Preservation of metadata such as `__name__` and `__doc__`",
+        "A `__wrapped__` reference for introspection",
+        "Automatic enforcement of the original parameter types",
+        "Automatic conversion of a synchronous wrapper into an async function"
+      ],
+      "answers": [
+        "Preservation of metadata such as `__name__` and `__doc__`",
+        "A `__wrapped__` reference for introspection"
+      ],
+      "explanation": "`wraps` updates wrapper metadata. It does not implement argument validation or change the wrapper’s execution model. [Source](https://docs.python.org/3/library/functools.html).",
+      "topics": ["Decorators", "functools.wraps"]
+    },
+    {
+      "id": "python-core-fundamentals-026",
+      "type": "single",
+      "question": "A context manager’s `__enter__` succeeds. Its block raises `ValueError`, and `__exit__` returns `True`. What happens?",
+      "options": [
+        "`ValueError` always propagates",
+        "The block restarts",
+        "The exception is suppressed and execution continues after `with`",
+        "The return value from `__exit__` replaces the `with`-bound variable"
+      ],
+      "answer": "The exception is suppressed and execution continues after `with`",
+      "explanation": "A truthy `__exit__` result suppresses the block’s exception. The `with`-bound value instead comes from `__enter__`. [Source](https://docs.python.org/3/reference/compound_stmts.html).",
+      "topics": ["Context managers", "Exception suppression"]
+    },
+    {
+      "id": "python-core-fundamentals-027",
+      "type": "single",
+      "question": "A generator decorated with `contextlib.contextmanager` acquires a resource before `yield`. Where should its unconditional cleanup usually go?",
+      "options": [
+        "Only before `yield`",
+        "Only after `yield`, `with` no exception handling",
+        "In the caller’s garbage collector callback",
+        "In a `finally` block enclosing `yield`"
+      ],
+      "answer": "In a `finally` block enclosing `yield`",
+      "explanation": "Exceptions from the `with` body are injected at `yield`. A surrounding `finally` handles both normal completion and exceptional exit. [Source](https://docs.python.org/3/library/contextlib.html).",
+      "topics": ["contextlib", "Resource cleanup"]
+    },
+    {
+      "id": "python-core-fundamentals-028",
+      "type": "single",
+      "question": "What does `f()` do in Python 3.11–3.14 with default warning handling?\n\n```python\ndef f():\n    try:\n        raise ValueError(\"bad\")\n    finally:\n        return 2\n```",
+      "options": [
+        "It returns 2, suppressing the pending `ValueError`",
+        "It raises `ValueError` before `finally` can run",
+        "It returns the `ValueError` object",
+        "It raises `SyntaxError` in Python 3.11"
+      ],
+      "answer": "It returns 2, suppressing the pending `ValueError`",
+      "explanation": "A `return` leaving `finally` overrides pending control flow, including an exception. CPython 3.14 also emits a `SyntaxWarning` for this pattern when compiling the function; with default warning handling, calling it still returns `2`. Avoid this pattern because it hides failures. [Source](https://docs.python.org/3/reference/compound_stmts.html#finally-clause).",
+      "topics": ["finally", "Exception handling"]
+    },
+    {
+      "id": "python-core-fundamentals-029",
+      "type": "single",
+      "question": "What is printed?\n\n```python\nclass Bag:\n    items = []\n\na = Bag()\nb = Bag()\na.items.append(1)\nb.items = [2]\nprint(a.items, b.items, Bag.items)\n```",
+      "options": ["`[1] [2] []`", "`[1] [2] [1]`", "`[1, 2] [1, 2] [1, 2]`", "`[] [2] [1]`"],
+      "answer": "`[1] [2] [1]`",
+      "explanation": "The append mutates the shared class list. Assignment to `b.items` creates an instance attribute that shadows that class attribute. [Source](https://docs.python.org/3/reference/datamodel.html).",
+      "topics": ["Class attributes", "Instance attributes"]
+    },
+    {
+      "id": "python-core-fundamentals-030",
+      "type": "single",
+      "question": "In cooperative multiple inheritance, what does `super().method()` use to find the next implementation?",
+      "options": [
+        "The alphabetically first base class",
+        "The first class declared anywhere in the module",
+        "The method resolution order for the relevant instance class",
+        "Only the direct base named first in the source file"
+      ],
+      "answer": "The method resolution order for the relevant instance class",
+      "explanation": "`super` continues lookup through the MRO after the current class. Cooperative methods need compatible signatures and consistent `super` calls. [Source](https://docs.python.org/3/library/functions.html).",
+      "topics": ["MRO", "super", "Multiple inheritance"]
+    },
+    {
+      "id": "python-core-fundamentals-031",
+      "type": "single",
+      "question": "A plain class defines `__eq__` but does not define or explicitly inherit a usable `__hash__`. What is the usual effect on its instances?",
+      "options": [
+        "They receive a constant hash automatically",
+        "They hash using the result of `__eq__`",
+        "They become immutable",
+        "They are unhashable"
+      ],
+      "answer": "They are unhashable",
+      "explanation": "Python sets `__hash__` to `None` when equality is overridden without a hash implementation. Equal hashable objects must have equal hashes. [Source](https://docs.python.org/3/reference/datamodel.html).",
+      "topics": ["Equality", "Hashability", "Object model"]
+    },
+    {
+      "id": "python-core-fundamentals-032",
+      "type": "multiple",
+      "question": "Which statements about dataclasses are correct?",
+      "options": [
+        "`field(default_factory=list)` creates a fresh list for each instance using that default",
+        "`frozen=True` recursively freezes every object in every field",
+        "A list stored in a `frozen` dataclass can still be mutated",
+        "Ordinary dataclass annotations validate field values automatically at runtime"
+      ],
+      "answers": [
+        "`field(default_factory=list)` creates a fresh list for each instance using that default",
+        "A list stored in a `frozen` dataclass can still be mutated"
+      ],
+      "explanation": "Factories avoid shared defaults. `frozen` restricts ordinary field assignment, not nested mutation; annotations alone do not validate constructor inputs. [Source](https://docs.python.org/3/library/dataclasses.html).",
+      "topics": ["Dataclasses", "Mutability", "Default factories"]
+    },
+    {
+      "id": "python-core-fundamentals-033",
+      "type": "single",
+      "question": "Why can `obj.name` invoke getter logic when `name` is defined with `@property` on the class?",
+      "options": [
+        "The getter runs only when parentheses are added",
+        "`property` implements the descriptor protocol used by attribute access",
+        "Every attribute read calls every class method",
+        "The `property` is replaced with a string when the class is created"
+      ],
+      "answer": "`property` implements the descriptor protocol used by attribute access",
+      "explanation": "Properties are descriptors. Their protocol methods participate in attribute access, allowing managed reads and writes behind attribute syntax. [Source](https://docs.python.org/3/reference/datamodel.html).",
+      "topics": ["Descriptors", "property"]
+    },
+    {
+      "id": "python-core-fundamentals-034",
+      "type": "single",
+      "question": "Given this function, which statement is correct?\n\n```python\ndef f(value: str | None):\n    return value\n```",
+      "options": [
+        "`f()` implicitly passes `None`",
+        "`f(123)` is rejected automatically by Python’s ordinary annotation handling",
+        "`f()` raises `TypeError` because no default was supplied",
+        "The annotation prohibits an empty string"
+      ],
+      "answer": "`f()` raises `TypeError` because no default was supplied",
+      "explanation": "Nullable and optional-to-pass are separate ideas. An annotation admitting `None` does not supply a default or enforce runtime validation. [Source](https://docs.python.org/3/library/typing.html).",
+      "topics": ["Union types", "Optional", "Annotations"]
+    },
+    {
+      "id": "python-core-fundamentals-035",
+      "type": "single",
+      "question": "What is printed?\n\n```python\nfrom typing import cast\nx = cast(int, \"12\")\nprint(type(x).__name__, x)\n```",
+      "options": ["`int 12`", "`str 12`", "`int \"12\"`", "`TypeError`"],
+      "answer": "`str 12`",
+      "explanation": "`cast` returns its input unchanged. It tells a static checker how to treat the expression; it does not convert or validate the value. [Source](https://docs.python.org/3/library/typing.html).",
+      "topics": ["typing.cast", "Static typing"]
+    },
+    {
+      "id": "python-core-fundamentals-036",
+      "type": "single",
+      "question": "A function expects a `typing.Protocol` whose only required member is a `send` method. How can another class satisfy it for static checking?",
+      "options": [
+        "It must inherit from that `Protocol` directly",
+        "It must register with the garbage collector",
+        "It must name its class `Protocol`",
+        "It can provide `send` with a compatible signature without inheriting the `Protocol`"
+      ],
+      "answer": "It can provide `send` with a compatible signature without inheriting the `Protocol`",
+      "explanation": "Protocols support structural subtyping. A matching interface can satisfy a protocol without nominal inheritance. [Source](https://docs.python.org/3/library/typing.html).",
+      "topics": ["Protocol", "Structural typing"]
+    },
+    {
+      "id": "python-core-fundamentals-037",
+      "type": "boolean",
+      "question": "A `TypedDict` declaration describes dictionary keys and value types for static checking, but its runtime instances are ordinary dictionaries.",
+      "answer": true,
+      "explanation": "`TypedDict` describes dictionary structure for static checkers. Its runtime instances are ordinary dictionaries; boundary validation requires additional code or tooling. [Source](https://docs.python.org/3/library/typing.html).",
+      "topics": ["TypedDict", "Runtime validation"]
+    },
+    {
+      "id": "python-core-fundamentals-038",
+      "type": "multiple",
+      "question": "Which statements correctly distinguish GIL-enabled and free-threaded CPython?",
+      "options": [
+        "In a GIL-enabled interpreter, ordinary Python bytecode is generally executed by one thread at a time",
+        "Blocking I/O can release the GIL, allowing useful thread concurrency",
+        "Every CPython 3.13+ installation always runs with the GIL disabled",
+        "A free-threaded build can run Python threads in parallel, subject to runtime and extension compatibility"
+      ],
+      "answers": [
+        "In a GIL-enabled interpreter, ordinary Python bytecode is generally executed by one thread at a time",
+        "Blocking I/O can release the GIL, allowing useful thread concurrency",
+        "A free-threaded build can run Python threads in parallel, subject to runtime and extension compatibility"
+      ],
+      "explanation": "Build and runtime configuration matter. Free-threaded CPython exists; importing an incompatible extension can re-enable the GIL. [Source](https://docs.python.org/3/howto/free-threading-python.html).",
+      "topics": ["GIL", "CPython", "Free threading"]
+    },
+    {
+      "id": "python-core-fundamentals-039",
+      "type": "boolean",
+      "question": "In GIL-enabled CPython, a multi-step check-then-update on shared application state is automatically a thread-safe transaction.",
+      "answer": false,
+      "explanation": "The GIL is not an application lock. Multi-step invariants need synchronization even if some individual operations happen to be atomic. [Source](https://docs.python.org/3/library/threading.html).",
+      "topics": ["Thread safety", "Race conditions", "Locks"]
+    },
+    {
+      "id": "python-core-fundamentals-040",
+      "type": "single",
+      "question": "Large independent CPU-heavy jobs spend almost all their time in pure Python code. Under GIL-enabled CPython, which approach most directly enables multicore execution?",
+      "options": [
+        "A process pool, after accounting for serialization and startup costs",
+        "More asyncio tasks on one event-loop thread",
+        "Replacing each function with an `async def` but adding no awaits",
+        "A thread pool guaranteed to scale linearly with core count"
+      ],
+      "answer": "A process pool, after accounting for serialization and startup costs",
+      "explanation": "Processes can execute Python work on separate cores. Native extensions that release the GIL can change the thread-versus-process trade-off. [Source](https://docs.python.org/3/library/threading.html).",
+      "topics": ["CPU-bound work", "Processes", "GIL"]
+    },
+    {
+      "id": "python-core-fundamentals-041",
+      "type": "single",
+      "question": "What does the assignment do by itself?\n\n```python\nasync def work():\n    return 7\n\ncoro = work()\n```",
+      "options": [
+        "Runs work to completion and binds 7",
+        "Starts a background thread",
+        "Creates a coroutine object without scheduling its body",
+        "Creates and schedules an `asyncio Task`"
+      ],
+      "answer": "Creates a coroutine object without scheduling its body",
+      "explanation": "Calling a coroutine function creates an object. Await it or schedule it to execute its body. [Source](https://docs.python.org/3/library/asyncio-task.html).",
+      "topics": ["Coroutines", "Scheduling"]
+    },
+    {
+      "id": "python-core-fundamentals-042",
+      "type": "single",
+      "question": "Inside an async function, how do these statements behave when `first` and `second` are freshly called coroutine functions?\n\n```python\nawait first()\nawait second()\n```",
+      "options": [
+        "Both are automatically started together",
+        "`second` starts after `first` finishes successfully",
+        "`second` starts `first` because await reverses call order",
+        "They execute on separate CPU cores"
+      ],
+      "answer": "`second` starts after `first` finishes successfully",
+      "explanation": "Direct awaits here are sequential. Creating both tasks before awaiting their results allows their waiting periods to overlap. [Source](https://docs.python.org/3/library/asyncio-task.html).",
+      "topics": ["asyncio", "Concurrency"]
+    },
+    {
+      "id": "python-core-fundamentals-043",
+      "type": "single",
+      "question": "An `async` handler calls a synchronous blocking network client on its event-loop thread. What is the most direct problem?",
+      "options": [
+        "`async def` automatically rejects synchronous function calls",
+        "The client is automatically retried",
+        "The function’s return type becomes a `Task`",
+        "Other tasks on that event loop cannot progress while the call blocks"
+      ],
+      "answer": "Other tasks on that event loop cannot progress while the call blocks",
+      "explanation": "Use an `async` client or suitable thread offloading for blocking I/O. Declaring the caller `async` does not transform synchronous callees. [Source](https://docs.python.org/3/library/asyncio-dev.html).",
+      "topics": ["Event loop", "Blocking I/O"]
+    },
+    {
+      "id": "python-core-fundamentals-044",
+      "type": "boolean",
+      "question": "Every `await` expression necessarily gives another asyncio task a turn, even if the awaited operation completes immediately.",
+      "answer": false,
+      "explanation": "An awaitable may complete without suspending. Cooperative scheduling requires actual suspension; `asyncio.sleep(0)` explicitly offers a scheduling opportunity. [Source](https://docs.python.org/3/library/asyncio-task.html).",
+      "topics": ["await", "Cooperative scheduling"]
+    },
+    {
+      "id": "python-core-fundamentals-045",
+      "type": "single",
+      "question": "One child of `await asyncio.gather(a(), b())` raises `ValueError`. The caller catches it and keeps the event loop running. With default `return_exceptions=False`, what does `gather` itself do?",
+      "options": [
+        "Propagates the exception promptly without automatically cancelling the other child",
+        "Waits for every child before raising the first exception",
+        "Cancels the other child before propagating",
+        "Returns the exception as a result element"
+      ],
+      "answer": "Propagates the exception promptly without automatically cancelling the other child",
+      "explanation": "`gather` does not cancel siblings on an ordinary child failure. Runner shutdown or separate cancellation can still stop them later. [Source](https://docs.python.org/3/library/asyncio-task.html).",
+      "topics": ["asyncio.gather", "Exception propagation"]
+    },
+    {
+      "id": "python-core-fundamentals-046",
+      "type": "single",
+      "question": "Inside an `asyncio.TaskGroup`, one child raises `ValueError` while others are pending. Assuming cooperative cancellation and no other failures, what happens when the group exits?",
+      "options": [
+        "The error is silently stored in a result list",
+        "Other children are left running after exit",
+        "Remaining children are cancelled and awaited, then an `ExceptionGroup` is raised",
+        "Only the failing child is awaited"
+      ],
+      "answer": "Remaining children are cancelled and awaited, then an `ExceptionGroup` is raised",
+      "explanation": "`TaskGroup` gives related tasks a shared lifetime. Ordinary child failures trigger sibling cancellation and grouped exception reporting. [Source](https://docs.python.org/3/library/asyncio-task.html).",
+      "topics": ["TaskGroup", "Structured concurrency"]
+    },
+    {
+      "id": "python-core-fundamentals-047",
+      "type": "multiple",
+      "question": "Which practices correctly handle asyncio task cancellation?",
+      "options": [
+        "Use `try/finally` for cleanup around cancellable work",
+        "Always swallow `CancelledError` and return success",
+        "If `CancelledError` is caught for cleanup, normally re-raise it",
+        "Assume `except Exception` catches `asyncio.CancelledError`"
+      ],
+      "answers": [
+        "Use `try/finally` for cleanup around cancellable work",
+        "If `CancelledError` is caught for cleanup, normally re-raise it"
+      ],
+      "explanation": "`asyncio.CancelledError` inherits from `BaseException`. Cancellation is cooperative, and suppressing it can disrupt structured concurrency. [Source](https://docs.python.org/3/library/asyncio-exceptions.html).",
+      "topics": ["Cancellation", "Exception hierarchy"]
+    },
+    {
+      "id": "python-core-fundamentals-048",
+      "type": "single",
+      "question": "Two tasks on one event loop both execute this sequence against the same shared `counter`. How should they protect the read-modify-write invariant?\n\n```python\nvalue = counter\nawait some_io()\ncounter = value + 1\n```",
+      "options": [
+        "No protection is needed because there is one thread",
+        "Use a shared `asyncio.Lock` around the critical sequence, or redesign to avoid the interleaving",
+        "Use separate locks created inside each task",
+        "Declare `counter` `global` to make updates atomic"
+      ],
+      "answer": "Use a shared `asyncio.Lock` around the critical sequence, or redesign to avoid the interleaving",
+      "explanation": "Tasks can interleave at suspension points and overwrite each other’s updates. A shared asyncio lock coordinates tasks, not separate processes or threads. [Source](https://docs.python.org/3/library/asyncio-sync.html).",
+      "topics": ["Async races", "asyncio.Lock"]
+    }
+  ]
+}

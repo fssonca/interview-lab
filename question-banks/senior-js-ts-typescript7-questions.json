@@ -1,0 +1,1249 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "senior-javascript-typescript-typescript-7",
+  "name": "Senior JavaScript, TypeScript and TypeScript 7 Technical Interview",
+  "description": "Senior-level answer-keyed interview questions on JavaScript execution, promises, concurrency, closures, objects, collections, performance, TypeScript type safety, and TypeScript 7.0 native compiler architecture/migration (as announced July 8, 2026). Single-choice, multi-select, and true/false items. One or more answer fields identify the correct selections; explanations describe rationale.",
+  "questions": [
+    {
+      "id": "js-event-loop-order",
+      "type": "single",
+      "question": "In a browser, what is logged by: console.log(\"A\"); setTimeout(() => console.log(\"B\"), 0); Promise.resolve().then(() => console.log(\"C\")); queueMicrotask(() => console.log(\"D\")); console.log(\"E\");?",
+      "options": ["A, E, B, C, D", "A, E, C, D, B", "A, C, D, E, B", "A, E, D, C, B"],
+      "answer": "A, E, C, D, B",
+      "explanation": "Synchronous code logs A and E. The promise reaction and queueMicrotask are queued in that order and run before the timer task.",
+      "topics": ["javascript", "event-loop", "microtasks"]
+    },
+    {
+      "id": "js-await-scheduling",
+      "type": "single",
+      "question": "What is logged by: async function f() { console.log(1); await 0; console.log(3); } f(); console.log(2);?",
+      "options": ["1, 3, 2", "2, 1, 3", "1, 2, 3", "2, 3, 1"],
+      "answer": "1, 2, 3",
+      "explanation": "An async function executes synchronously until its first await. Resumption runs as a promise job after the current stack completes.",
+      "topics": ["javascript", "async-await", "event-loop"]
+    },
+    {
+      "id": "js-promise-executor",
+      "type": "single",
+      "question": "What is the output of: new Promise(resolve => { console.log(\"executor\"); resolve(); }).then(() => console.log(\"then\")); console.log(\"sync\");?",
+      "options": [
+        "executor, sync, then",
+        "sync, executor, then",
+        "executor, then, sync",
+        "then, executor, sync"
+      ],
+      "answer": "executor, sync, then",
+      "explanation": "The Promise constructor invokes its executor synchronously. The then callback is scheduled as a microtask.",
+      "topics": ["javascript", "promises"]
+    },
+    {
+      "id": "js-promise-all-behavior",
+      "type": "multiple",
+      "question": "Which statements about Promise.all([p1, p2, p3]) are correct?",
+      "options": [
+        "It preserves input order in the fulfillment array regardless of resolution order.",
+        "It cancels other promises when one rejects.",
+        "It rejects when any input rejects.",
+        "It only accepts actual Promise instances, not plain values."
+      ],
+      "answers": [
+        "It preserves input order in the fulfillment array regardless of resolution order.",
+        "It rejects when any input rejects."
+      ],
+      "explanation": "Promise.all preserves input order and rejects on the first observed rejection; it does not cancel in-flight work and accepts ordinary values/thenables.",
+      "topics": ["javascript", "promises", "concurrency"]
+    },
+    {
+      "id": "js-allsettled-when-to-use",
+      "type": "single",
+      "question": "A batch endpoint must report the outcome of every independently attempted API call even if some fail. Which primitive best matches this contract?",
+      "options": ["Promise.race", "Promise.all", "Promise.allSettled", "Promise.any"],
+      "answer": "Promise.allSettled",
+      "explanation": "allSettled waits until all inputs settle and returns fulfilled/rejected status records in input order.",
+      "topics": ["javascript", "promises", "error-handling"]
+    },
+    {
+      "id": "js-allsettled-results",
+      "type": "multiple",
+      "question": "Which result records can appear in the fulfilled value of Promise.allSettled([...])?",
+      "options": [
+        "{ status: \"fulfilled\", value: 42 }",
+        "{ status: \"rejected\", reason: new Error(\"x\") }",
+        "{ status: \"pending\" }",
+        "{ status: \"rejected\", value: 42 }"
+      ],
+      "answers": [
+        "{ status: \"fulfilled\", value: 42 }",
+        "{ status: \"rejected\", reason: new Error(\"x\") }"
+      ],
+      "explanation": "Each outcome has status fulfilled with value or rejected with reason; pending is not returned.",
+      "topics": ["javascript", "promises"]
+    },
+    {
+      "id": "js-foreach-async",
+      "type": "single",
+      "question": "What is the main problem with await items.forEach(async item => save(item))?",
+      "options": [
+        "It runs each callback sequentially and can be slow.",
+        "forEach does not await or aggregate promises returned by callbacks.",
+        "forEach automatically cancels remaining callbacks on rejection.",
+        "The async callback will never execute."
+      ],
+      "answer": "forEach does not await or aggregate promises returned by callbacks.",
+      "explanation": "forEach ignores callback results; await on its undefined return does not wait. Use Promise.all(items.map(...)) or for...of with await, depending on concurrency requirements.",
+      "topics": ["javascript", "async-await", "concurrency"]
+    },
+    {
+      "id": "js-sequential-vs-concurrent",
+      "type": "single",
+      "question": "You need to process 500 remote requests with a maximum of 10 requests in flight. What is the best high-level design?",
+      "options": [
+        "Promise.all over all 500 requests",
+        "A sequential for...of loop",
+        "A concurrency limiter or worker pool with at most 10 active requests",
+        "Promise.race over all 500 requests"
+      ],
+      "answer": "A concurrency limiter or worker pool with at most 10 active requests",
+      "explanation": "A bounded worker pool honors the concurrency constraint, avoiding an overload while allowing parallelism.",
+      "topics": ["javascript", "concurrency", "performance"]
+    },
+    {
+      "id": "js-finally-semantics",
+      "type": "single",
+      "question": "Assume f() rejects with E. What happens for f().finally(() => console.log(\"cleanup\")) if the finally callback completes normally?",
+      "options": [
+        "The chain fulfills with undefined.",
+        "The rejection E propagates after cleanup.",
+        "The rejection is swallowed.",
+        "The callback runs only for fulfillment."
+      ],
+      "answer": "The rejection E propagates after cleanup.",
+      "explanation": "finally runs for both fulfillment and rejection and normally preserves the prior outcome; if finally throws or rejects, that newer failure replaces it.",
+      "topics": ["javascript", "promises", "error-handling"]
+    },
+    {
+      "id": "js-async-error",
+      "type": "single",
+      "question": "If an async function throws before its first await, what does calling it return?",
+      "options": [
+        "A synchronous throw from the call expression",
+        "A rejected Promise",
+        "Undefined",
+        "A fulfilled Promise containing the Error"
+      ],
+      "answer": "A rejected Promise",
+      "explanation": "Errors thrown in an async function become a rejection of its returned Promise, even before its first await.",
+      "topics": ["javascript", "async-await", "error-handling"]
+    },
+    {
+      "id": "js-return-await-try-catch",
+      "type": "single",
+      "question": "Inside an async function with try/catch, why might return await fetchData() be necessary instead of return fetchData()?",
+      "options": [
+        "It causes fetchData to run on another thread.",
+        "It allows the local catch block to handle a rejection of fetchData.",
+        "It prevents any rejection from reaching the caller.",
+        "It converts a Promise into a synchronous value."
+      ],
+      "answer": "It allows the local catch block to handle a rejection of fetchData.",
+      "explanation": "await observes the rejection inside the try block; returning the promise directly lets the rejection reach the caller without entering the local catch.",
+      "topics": ["javascript", "async-await", "error-handling"]
+    },
+    {
+      "id": "js-promise-any-race",
+      "type": "single",
+      "question": "Which Promise combinator fulfills with the first fulfillment, ignoring earlier rejections unless every input rejects?",
+      "options": ["Promise.race", "Promise.any", "Promise.all", "Promise.allSettled"],
+      "answer": "Promise.any",
+      "explanation": "Promise.any selects the first fulfillment; if all inputs reject, it rejects with an AggregateError.",
+      "topics": ["javascript", "promises"]
+    },
+    {
+      "id": "js-abort-controller",
+      "type": "multiple",
+      "question": "Which statements about AbortController are correct?",
+      "options": [
+        "Passing its signal to a supporting fetch can abort that request.",
+        "Calling abort automatically terminates any arbitrary JavaScript CPU loop.",
+        "An API must cooperate with the signal for cancellation to have an effect.",
+        "Aborting a Promise is built into the Promise constructor itself."
+      ],
+      "answers": [
+        "Passing its signal to a supporting fetch can abort that request.",
+        "An API must cooperate with the signal for cancellation to have an effect."
+      ],
+      "explanation": "AbortController provides a cooperative signal; APIs such as fetch can honor it. Promises themselves have no intrinsic cancellation mechanism.",
+      "topics": ["javascript", "cancellation", "async-await"]
+    },
+    {
+      "id": "js-microtask-starvation",
+      "type": "single",
+      "question": "An application recursively queues a new microtask from each microtask without stopping. What is the likely effect on the browser?",
+      "options": [
+        "Timers and rendering may be starved because the microtask queue keeps refilling.",
+        "The runtime automatically moves excess microtasks to the timer queue.",
+        "The loop runs on a separate CPU core by default.",
+        "Every microtask is delayed by at least one second."
+      ],
+      "answer": "Timers and rendering may be starved because the microtask queue keeps refilling.",
+      "explanation": "Microtasks are drained at checkpoints; an unbounded chain can prevent the event loop from reaching further tasks or rendering.",
+      "topics": ["javascript", "event-loop", "performance"]
+    },
+    {
+      "id": "js-var-closure-loop",
+      "type": "single",
+      "question": "What is logged after this runs: for (var i = 0; i < 3; i++) Promise.resolve().then(() => console.log(i));?",
+      "options": ["0, 1, 2", "3, 3, 3", "Undefined three times", "2, 2, 2"],
+      "answer": "3, 3, 3",
+      "explanation": "var creates a single function-scoped binding, and the callbacks read it after the loop has completed.",
+      "topics": ["javascript", "closures", "scope"]
+    },
+    {
+      "id": "js-let-closure-loop",
+      "type": "single",
+      "question": "What is logged after: for (let i = 0; i < 3; i++) Promise.resolve().then(() => console.log(i));?",
+      "options": ["3, 3, 3", "0, 1, 2", "Undefined three times", "2, 1, 0"],
+      "answer": "0, 1, 2",
+      "explanation": "let creates a distinct binding for each iteration of the for loop.",
+      "topics": ["javascript", "closures", "scope"]
+    },
+    {
+      "id": "js-tdz",
+      "type": "single",
+      "question": "Within a block, what occurs when console.log(value) appears before let value = 1?",
+      "options": [
+        "It logs undefined.",
+        "It logs null.",
+        "It throws ReferenceError due to the temporal dead zone.",
+        "It logs 1 because declarations are hoisted."
+      ],
+      "answer": "It throws ReferenceError due to the temporal dead zone.",
+      "explanation": "The binding exists but cannot be accessed before its declaration is evaluated.",
+      "topics": ["javascript", "scope"]
+    },
+    {
+      "id": "js-arrow-this",
+      "type": "single",
+      "question": "Which statement correctly describes this inside an arrow function?",
+      "options": [
+        "It always points to the object left of the call-site dot.",
+        "It is captured lexically from the surrounding scope.",
+        "It is bound dynamically by call and apply.",
+        "It always equals globalThis."
+      ],
+      "answer": "It is captured lexically from the surrounding scope.",
+      "explanation": "Arrow functions do not create their own this binding; normal functions generally determine this at call time.",
+      "topics": ["javascript", "scope", "closures"]
+    },
+    {
+      "id": "js-object-aliasing",
+      "type": "single",
+      "question": "What is printed: const a = { x: 1 }; const b = a; b.x = 2; console.log(a.x);?",
+      "options": ["1", "2", "undefined", "TypeError"],
+      "answer": "2",
+      "explanation": "Both variables refer to the same object; changing it through either reference is observable through the other.",
+      "topics": ["javascript", "reference-semantics"]
+    },
+    {
+      "id": "js-shallow-spread",
+      "type": "single",
+      "question": "What is logged: const a = { config: { enabled: false } }; const b = { ...a }; b.config.enabled = true; console.log(a.config.enabled);?",
+      "options": ["false", "true", "undefined", "TypeError"],
+      "answer": "true",
+      "explanation": "Object spread is shallow; nested object references remain shared.",
+      "topics": ["javascript", "immutability", "reference-semantics"]
+    },
+    {
+      "id": "js-freeze-shallow",
+      "type": "single",
+      "question": "Which statement about Object.freeze({ nested: { x: 1 } }) is correct?",
+      "options": [
+        "The nested object is recursively frozen.",
+        "The top-level object is frozen, but the nested object can still be mutated.",
+        "The frozen object becomes a deep copy.",
+        "Freezing guarantees complete immutability of all reachable objects."
+      ],
+      "answer": "The top-level object is frozen, but the nested object can still be mutated.",
+      "explanation": "Object.freeze is shallow; nested objects require separate freezing or an immutable-data discipline.",
+      "topics": ["javascript", "immutability"]
+    },
+    {
+      "id": "js-structuredclone-limits",
+      "type": "multiple",
+      "question": "Which statements about structuredClone in modern JavaScript are correct?",
+      "options": [
+        "It can clone many circular object graphs.",
+        "It can clone any function, preserving its closure.",
+        "It typically creates independent nested copies of supported values.",
+        "It preserves custom class prototypes and methods exactly for every object type."
+      ],
+      "answers": [
+        "It can clone many circular object graphs.",
+        "It typically creates independent nested copies of supported values."
+      ],
+      "explanation": "structuredClone uses the structured clone algorithm, handling cycles and many built-in types but not functions and not arbitrary custom prototype behavior.",
+      "topics": ["javascript", "immutability", "object-manipulation"]
+    },
+    {
+      "id": "js-equality-nan",
+      "type": "single",
+      "question": "Which comparison evaluates to true?",
+      "options": [
+        "NaN === NaN",
+        "Object.is(NaN, NaN)",
+        "0 === -0 is false",
+        "null == undefined is false"
+      ],
+      "answer": "Object.is(NaN, NaN)",
+      "explanation": "Object.is considers NaN equal to itself; strict equality does not. 0 === -0 and null == undefined both evaluate to true.",
+      "topics": ["javascript", "equality"]
+    },
+    {
+      "id": "js-nullish-coalescing",
+      "type": "single",
+      "question": "Given const timeout = 0, which expression preserves zero rather than replacing it with a default of 30?",
+      "options": [
+        "timeout || 30",
+        "timeout ?? 30",
+        "Boolean(timeout) ? timeout : 30",
+        "timeout || null || 30"
+      ],
+      "answer": "timeout ?? 30",
+      "explanation": "The nullish coalescing operator defaults only for null or undefined, unlike || which also defaults for 0, false, and empty strings.",
+      "topics": ["javascript", "nullability"]
+    },
+    {
+      "id": "js-null-vs-undefined",
+      "type": "single",
+      "question": "What is true about null and undefined?",
+      "options": [
+        "null === undefined",
+        "null == undefined",
+        "typeof null === \"null\"",
+        "JSON.stringify({x: undefined}) returns {\"x\":null}"
+      ],
+      "answer": "null == undefined",
+      "explanation": "Loose equality treats null and undefined as equal; strict equality does not. typeof null is \"object\", and undefined-valued object properties are omitted by JSON.stringify.",
+      "topics": ["javascript", "equality", "nullability"]
+    },
+    {
+      "id": "js-sort-mutability",
+      "type": "single",
+      "question": "Which choice sorts an array numerically ascending without mutating the input, assuming modern JavaScript support?",
+      "options": [
+        "arr.sort()",
+        "arr.sort((a, b) => a - b)",
+        "arr.toSorted((a, b) => a - b)",
+        "arr.reverse().sort()"
+      ],
+      "answer": "arr.toSorted((a, b) => a - b)",
+      "explanation": "toSorted is the copying counterpart of sort; passing a comparator avoids default lexicographic ordering.",
+      "topics": ["javascript", "array-manipulation", "immutability"]
+    },
+    {
+      "id": "js-sparse-array-map",
+      "type": "single",
+      "question": "What is the result of Array(3).map((_, i) => i)?",
+      "options": [
+        "[0, 1, 2]",
+        "[undefined, undefined, undefined]",
+        "An array with three empty slots",
+        "[]"
+      ],
+      "answer": "An array with three empty slots",
+      "explanation": "Array(3) creates holes. Array.prototype.map skips holes and preserves sparseness.",
+      "topics": ["javascript", "array-manipulation"]
+    },
+    {
+      "id": "js-set-equality",
+      "type": "single",
+      "question": "What is new Set([{id:1}, {id:1}]).size?",
+      "options": ["0", "1", "2", "It throws because objects are invalid Set members."],
+      "answer": "2",
+      "explanation": "Each object literal creates a different reference; Set uses SameValueZero equality, which compares distinct objects by identity.",
+      "topics": ["javascript", "set", "reference-semantics"]
+    },
+    {
+      "id": "js-map-keys",
+      "type": "single",
+      "question": "What distinguishes Map from using a plain object as a dictionary?",
+      "options": [
+        "Map permits object keys without coercing them to strings.",
+        "Map ensures keys are always sorted alphabetically.",
+        "Map rejects keys whose value is null.",
+        "Map can only store string keys."
+      ],
+      "answer": "Map permits object keys without coercing them to strings.",
+      "explanation": "Map supports arbitrary key values with identity-based semantics for object keys and preserves insertion order for iteration.",
+      "topics": ["javascript", "map"]
+    },
+    {
+      "id": "js-map-set-performance",
+      "type": "multiple",
+      "question": "Which performance statements are generally sound?",
+      "options": [
+        "Set membership checks are usually preferable to repeated Array.includes scans for a large, reused membership collection.",
+        "Map.get is guaranteed O(1) in the ECMAScript specification for every implementation and worst case.",
+        "Creating a Set has a cost that should be considered for one-off checks.",
+        "Iterating a Map cannot allocate memory."
+      ],
+      "answers": [
+        "Set membership checks are usually preferable to repeated Array.includes scans for a large, reused membership collection.",
+        "Creating a Set has a cost that should be considered for one-off checks."
+      ],
+      "explanation": "Set usually provides efficient membership checks, but building it has overhead. The specification requires sublinear average access, not worst-case constant time.",
+      "topics": ["javascript", "map", "set", "performance"]
+    },
+    {
+      "id": "js-quadratic-spread-reduce",
+      "type": "single",
+      "question": "Why can this immutable-looking reducer be slow for large arrays: items.reduce((acc, x) => [...acc, x], [])?",
+      "options": [
+        "It mutates the input array.",
+        "Each step copies the accumulated array, causing quadratic total copying.",
+        "reduce always invokes callbacks asynchronously.",
+        "Spread creates a lazy iterator rather than an array."
+      ],
+      "answer": "Each step copies the accumulated array, causing quadratic total copying.",
+      "explanation": "Copying an accumulator of growing length on each iteration performs O(n^2) element copying overall.",
+      "topics": ["javascript", "array-manipulation", "performance"]
+    },
+    {
+      "id": "js-json-stringify-problems",
+      "type": "single",
+      "question": "Which is a reason JSON.parse(JSON.stringify(value)) is NOT a general-purpose deep clone?",
+      "options": [
+        "It always preserves Map, Date and undefined values.",
+        "It handles circular references automatically.",
+        "It loses or changes unsupported data types and fails on circular references.",
+        "It deep freezes the result."
+      ],
+      "answer": "It loses or changes unsupported data types and fails on circular references.",
+      "explanation": "JSON serialization drops or transforms several types and does not natively handle cyclic structures.",
+      "topics": ["javascript", "immutability", "object-manipulation"]
+    },
+    {
+      "id": "js-error-cause",
+      "type": "single",
+      "question": "When wrapping an error from a lower-level operation, what is a robust modern pattern?",
+      "options": [
+        "throw \"database failed\"",
+        "throw new Error(\"Database operation failed\", { cause: originalError })",
+        "return undefined without logging or metadata",
+        "catch (e) { throw null; }"
+      ],
+      "answer": "throw new Error(\"Database operation failed\", { cause: originalError })",
+      "explanation": "Error.cause preserves the underlying failure chain while adding domain-specific context; error instances also carry stack information.",
+      "topics": ["javascript", "error-handling"]
+    },
+    {
+      "id": "js-async-failure-strategy",
+      "type": "multiple",
+      "question": "For a production batch job calling third-party APIs, which practices improve resilience?",
+      "options": [
+        "Use bounded concurrency rather than unbounded Promise.all for large batches.",
+        "Implement retries with backoff and jitter for suitably retryable failures.",
+        "Retry every failed mutation forever with no idempotency strategy.",
+        "Apply timeouts and cancellation where supported."
+      ],
+      "answers": [
+        "Use bounded concurrency rather than unbounded Promise.all for large batches.",
+        "Implement retries with backoff and jitter for suitably retryable failures.",
+        "Apply timeouts and cancellation where supported."
+      ],
+      "explanation": "Bounding, retry policy, and timeouts help control overload; unbounded retrying of non-idempotent mutations risks duplicates and runaway work.",
+      "topics": ["javascript", "concurrency", "error-handling", "performance"]
+    },
+    {
+      "id": "js-async-await-blocks-thread",
+      "type": "boolean",
+      "question": "await on a pending network Promise blocks the JavaScript event-loop thread until the request finishes.",
+      "answer": false,
+      "explanation": "await suspends the current async function, not the entire JavaScript thread; other tasks can run while the network operation is pending.",
+      "topics": ["javascript", "async-await", "event-loop"]
+    },
+    {
+      "id": "js-closure-gc",
+      "type": "boolean",
+      "question": "A retained closure can keep referenced values reachable and thereby contribute to memory retention.",
+      "answer": true,
+      "explanation": "Values referenced by a reachable closure may remain reachable to the garbage collector; large captured graphs can become accidental retention.",
+      "topics": ["javascript", "closures", "performance"]
+    },
+    {
+      "id": "js-debounced-search-race",
+      "type": "single",
+      "question": "A search UI issues a request for \"ca\" followed by \"cat\". The first request resolves last and overwrites the newer results. Which fix addresses correctness?",
+      "options": [
+        "Use Promise.all on both requests and always display the first result.",
+        "Track request identity or cancel superseded requests and ignore stale responses.",
+        "Wrap both requests in setTimeout(0).",
+        "Convert results to a Set."
+      ],
+      "answer": "Track request identity or cancel superseded requests and ignore stale responses.",
+      "explanation": "Debouncing alone does not solve out-of-order completions. Latest-request tokens and AbortController (where supported) prevent stale updates.",
+      "topics": ["javascript", "async-await", "race-conditions"]
+    },
+    {
+      "id": "ts-type-vs-interface",
+      "type": "single",
+      "question": "Which capability is directly supported by type aliases but not by interface declarations?",
+      "options": [
+        "Declaring an object shape",
+        "Declaration merging of identically named declarations",
+        "Naming a union such as string | number",
+        "Extending an object contract"
+      ],
+      "answer": "Naming a union such as string | number",
+      "explanation": "Type aliases can name unions, primitives, tuples and conditional types. Interfaces primarily describe extensible object shapes and support declaration merging.",
+      "topics": ["typescript", "type-vs-interface"]
+    },
+    {
+      "id": "ts-interface-merging",
+      "type": "single",
+      "question": "What happens when two interfaces with the same name and compatible members are declared in the same scope?",
+      "options": [
+        "They are merged into one interface.",
+        "The second overwrites the first.",
+        "Both are erased as invalid.",
+        "They form a union automatically."
+      ],
+      "answer": "They are merged into one interface.",
+      "explanation": "Interfaces support declaration merging, unlike independently redeclaring type aliases of the same name.",
+      "topics": ["typescript", "type-vs-interface"]
+    },
+    {
+      "id": "ts-union-intersection",
+      "type": "single",
+      "question": "Given type A = { a: number }; type B = { b: string }, what best describes A & B?",
+      "options": [
+        "A value with either property a or property b",
+        "A value satisfying both object contracts",
+        "A tuple of A and B",
+        "A runtime merge of two objects"
+      ],
+      "answer": "A value satisfying both object contracts",
+      "explanation": "Intersections require values to satisfy both constituent types; TypeScript creates no runtime object merge.",
+      "topics": ["typescript", "unions", "intersections"]
+    },
+    {
+      "id": "ts-discriminated-union",
+      "type": "single",
+      "question": "Which technique enables exhaustive handling of a union like {kind:\"success\", data:T} | {kind:\"error\", message:string}?",
+      "options": [
+        "Check the shared literal kind field and assign any unhandled branch to never.",
+        "Use as any inside every branch.",
+        "Check only whether the object is truthy.",
+        "Remove the discriminant and use an untyped object."
+      ],
+      "answer": "Check the shared literal kind field and assign any unhandled branch to never.",
+      "explanation": "A shared literal discriminant narrows safely. A never check in the default branch surfaces newly introduced unhandled variants.",
+      "topics": ["typescript", "discriminated-unions", "type-narrowing"]
+    },
+    {
+      "id": "ts-unknown-vs-any",
+      "type": "single",
+      "question": "Why is unknown generally safer than any for untrusted data?",
+      "options": [
+        "unknown validates data during compilation.",
+        "unknown requires narrowing or validation before accessing its members.",
+        "unknown values cannot contain objects.",
+        "unknown is identical to never."
+      ],
+      "answer": "unknown requires narrowing or validation before accessing its members.",
+      "explanation": "unknown accepts any incoming value but disallows unsafe operations without checking; any opts out of type safety.",
+      "topics": ["typescript", "unknown", "type-narrowing"]
+    },
+    {
+      "id": "ts-static-not-runtime",
+      "type": "boolean",
+      "question": "A type annotation like const user: User = JSON.parse(body) guarantees that body matches User at runtime.",
+      "answer": false,
+      "explanation": "Annotations are erased; JSON.parse returns runtime data that must be validated independently, for example with a schema or explicit guards.",
+      "topics": ["typescript", "runtime-validation"]
+    },
+    {
+      "id": "ts-runtime-boundary",
+      "type": "single",
+      "question": "A handler receives JSON from an external client. What is the best approach before using it as a User?",
+      "options": [
+        "Use as User because an assertion validates the payload.",
+        "Validate fields and constraints at runtime, then work with the narrowed type.",
+        "Change JSON.parse to JSON.parse<User>().",
+        "Set strict to false to accept the payload."
+      ],
+      "answer": "Validate fields and constraints at runtime, then work with the narrowed type.",
+      "explanation": "Runtime schemas or hand-written validation establish guarantees about data that crosses a trust boundary; type assertions do not.",
+      "topics": ["typescript", "runtime-validation", "type-narrowing"]
+    },
+    {
+      "id": "ts-keyof",
+      "type": "single",
+      "question": "Given interface User { id: string; age: number }, what is keyof User?",
+      "options": ["string", "\"id\" | \"age\"", "string | number", "User[]"],
+      "answer": "\"id\" | \"age\"",
+      "explanation": "keyof produces a union of known property keys for this interface.",
+      "topics": ["typescript", "keyof"]
+    },
+    {
+      "id": "ts-typeof-operator",
+      "type": "single",
+      "question": "What is the meaning of type Config = typeof config in a TypeScript type declaration?",
+      "options": [
+        "It evaluates a runtime expression when the application starts.",
+        "It obtains the static type of the value named config.",
+        "It transforms config into JSON.",
+        "It produces only the string \"object\"."
+      ],
+      "answer": "It obtains the static type of the value named config.",
+      "explanation": "TypeScript typeof in a type position queries a value’s static type. JavaScript typeof used in an expression returns a runtime string.",
+      "topics": ["typescript", "typeof"]
+    },
+    {
+      "id": "ts-generics-keyof",
+      "type": "single",
+      "question": "For function get<T, K extends keyof T>(obj: T, key: K): T[K], what compile-time guarantee is provided?",
+      "options": [
+        "The key is constrained to known keys of T and the return type corresponds to the selected property.",
+        "Every property value must be a string.",
+        "The property is guaranteed to exist on every runtime object regardless of input validation.",
+        "The function makes a copy of obj."
+      ],
+      "answer": "The key is constrained to known keys of T and the return type corresponds to the selected property.",
+      "explanation": "K is restricted to keys of T, and indexed access T[K] preserves the selected property type.",
+      "topics": ["typescript", "generics", "keyof", "indexed-access"]
+    },
+    {
+      "id": "ts-generic-vs-union",
+      "type": "single",
+      "question": "Why can a generic identity function <T>(value: T): T retain more information than (value: string | number): string | number?",
+      "options": [
+        "Generics perform runtime type inspection.",
+        "The generic preserves the relationship between its particular input and output types.",
+        "Unions prohibit string values.",
+        "Generics force all values to be mutable."
+      ],
+      "answer": "The generic preserves the relationship between its particular input and output types.",
+      "explanation": "A generic type parameter captures the actual argument type in each invocation rather than returning a broad fixed union.",
+      "topics": ["typescript", "generics", "unions"]
+    },
+    {
+      "id": "ts-utility-types",
+      "type": "multiple",
+      "question": "Which utility-type claims are correct?",
+      "options": [
+        "Partial<T> makes properties optional at the type level.",
+        "Pick<T, K> selects a subset of properties.",
+        "Readonly<T> recursively freezes nested objects at runtime.",
+        "ReturnType<F> obtains the static return type of a function type."
+      ],
+      "answers": [
+        "Partial<T> makes properties optional at the type level.",
+        "Pick<T, K> selects a subset of properties.",
+        "ReturnType<F> obtains the static return type of a function type."
+      ],
+      "explanation": "Partial, Pick and ReturnType are type-level tools. Readonly is compile-time and shallow; it does not call Object.freeze.",
+      "topics": ["typescript", "utility-types", "immutability"]
+    },
+    {
+      "id": "ts-omit-vs-exclude",
+      "type": "single",
+      "question": "Which utility is intended to remove selected keys from an object type?",
+      "options": ["Exclude<T, U>", "Omit<T, K>", "NonNullable<T>", "Awaited<T>"],
+      "answer": "Omit<T, K>",
+      "explanation": "Omit removes specified keys from a property-bearing type; Exclude filters members of a union.",
+      "topics": ["typescript", "utility-types"]
+    },
+    {
+      "id": "ts-awaited",
+      "type": "single",
+      "question": "What does Awaited<Promise<Promise<number>>> evaluate to?",
+      "options": ["Promise<number>", "Promise<Promise<number>>", "number", "never"],
+      "answer": "number",
+      "explanation": "Awaited recursively unwraps Promise-like resolutions to the eventual awaited type.",
+      "topics": ["typescript", "utility-types", "promises"]
+    },
+    {
+      "id": "ts-optional-vs-undefined",
+      "type": "single",
+      "question": "With exactOptionalPropertyTypes enabled, how does { x?: string } differ from { x: string | undefined }?",
+      "options": [
+        "They are always equivalent.",
+        "The first permits x to be absent, whereas the second requires the property to exist.",
+        "The first requires a string value.",
+        "The second makes x optional."
+      ],
+      "answer": "The first permits x to be absent, whereas the second requires the property to exist.",
+      "explanation": "Presence and value are distinct concepts. With exactOptionalPropertyTypes, x?: string does not automatically permit explicitly assigning undefined to x.",
+      "topics": ["typescript", "optional-properties", "nullability"]
+    },
+    {
+      "id": "ts-strict-null-checks",
+      "type": "single",
+      "question": "With strictNullChecks enabled, what is the type of a variable declared as string | null after an if (value !== null) guard inside that branch?",
+      "options": ["string", "null", "never", "any"],
+      "answer": "string",
+      "explanation": "Control-flow analysis narrows out null in the guarded branch.",
+      "topics": ["typescript", "nullability", "type-narrowing"]
+    },
+    {
+      "id": "ts-no-unchecked-indexed-access",
+      "type": "single",
+      "question": "With noUncheckedIndexedAccess enabled, what is the type of names[0] for names: string[]?",
+      "options": ["string", "string | undefined", "never", "unknown"],
+      "answer": "string | undefined",
+      "explanation": "A general array index might be out of bounds, so indexed reads include undefined.",
+      "topics": ["typescript", "nullability", "tsconfig"]
+    },
+    {
+      "id": "ts-nonnull-assertion",
+      "type": "single",
+      "question": "What does user!.email do when user may be null?",
+      "options": [
+        "It throws a compile-generated runtime check for null.",
+        "It instructs the checker to treat user as non-null, without inserting a runtime guard.",
+        "It returns undefined on null automatically.",
+        "It deep clones user."
+      ],
+      "answer": "It instructs the checker to treat user as non-null, without inserting a runtime guard.",
+      "explanation": "The postfix non-null assertion is erased from emitted JavaScript; it can hide real runtime failures.",
+      "topics": ["typescript", "nullability", "type-assertions"]
+    },
+    {
+      "id": "ts-satisfies",
+      "type": "single",
+      "question": "What is a key benefit of using const cfg = { mode: \"prod\" } satisfies { mode: \"prod\" | \"dev\" }?",
+      "options": [
+        "It performs runtime validation for configuration files.",
+        "It checks compatibility while preserving more precise inferred type information than a broad annotation.",
+        "It converts the object to a discriminated union at runtime.",
+        "It suppresses all excess-property diagnostics."
+      ],
+      "answer": "It checks compatibility while preserving more precise inferred type information than a broad annotation.",
+      "explanation": "satisfies checks an expression against a contract without simply replacing its inferred type with the wider declared contract; it has no runtime effect.",
+      "topics": ["typescript", "satisfies", "type-inference"]
+    },
+    {
+      "id": "ts-as-const",
+      "type": "single",
+      "question": "What is the principal effect of as const on a literal expression?",
+      "options": [
+        "It freezes all nested objects at runtime.",
+        "It narrows literal values and produces readonly properties/tuples in its inferred type.",
+        "It forces every field to be optional.",
+        "It allows any mutation without errors."
+      ],
+      "answer": "It narrows literal values and produces readonly properties/tuples in its inferred type.",
+      "explanation": "A const assertion prevents literal widening and marks the literal structure readonly at the type level; it does not freeze runtime values.",
+      "topics": ["typescript", "as-const", "immutability"]
+    },
+    {
+      "id": "ts-structural-typing",
+      "type": "single",
+      "question": "What does structural typing imply for assigning one object to an interface type?",
+      "options": [
+        "The object must have been created by a class implementing that interface.",
+        "Compatibility is based primarily on member shape, not nominal identity.",
+        "Interfaces exist as constructors at runtime.",
+        "Two interfaces with identical names always merge across modules."
+      ],
+      "answer": "Compatibility is based primarily on member shape, not nominal identity.",
+      "explanation": "TypeScript is predominantly structurally typed: compatible members, not nominal declarations, determine assignability.",
+      "topics": ["typescript", "structural-typing"]
+    },
+    {
+      "id": "ts-excess-properties",
+      "type": "single",
+      "question": "Why might passing an object literal with an unexpected extra property be rejected even though assigning a variable with the same shape can work?",
+      "options": [
+        "TypeScript performs excess-property checking for fresh object literals.",
+        "Object literals are always frozen.",
+        "Variables never receive type checking.",
+        "The compiler executes both values and compares them."
+      ],
+      "answer": "TypeScript performs excess-property checking for fresh object literals.",
+      "explanation": "Excess-property checks catch likely mistakes in fresh object literals; regular structural assignability can permit extra properties.",
+      "topics": ["typescript", "structural-typing", "excess-properties"]
+    },
+    {
+      "id": "ts-exhaustive-never",
+      "type": "single",
+      "question": "In an exhaustive switch over a discriminated union, what should be true of the type of the unhandled value in the default branch?",
+      "options": ["any", "object", "never", "unknown"],
+      "answer": "never",
+      "explanation": "If all variants have been handled, there is no possible remaining member, so its narrowed type is never.",
+      "topics": ["typescript", "never", "discriminated-unions"]
+    },
+    {
+      "id": "ts-conditional-type",
+      "type": "single",
+      "question": "What does type Element<T> = T extends (infer U)[] ? U : T; produce for Element<string[]>?",
+      "options": ["string[]", "string", "unknown", "never"],
+      "answer": "string",
+      "explanation": "Conditional types with infer can extract the item type from an array type.",
+      "topics": ["typescript", "conditional-types", "infer"]
+    },
+    {
+      "id": "ts-mapped-type",
+      "type": "single",
+      "question": "Which feature underlies the implementation of utility types like Readonly<T> and Partial<T>?",
+      "options": [
+        "Mapped types iterating over keyof T",
+        "Runtime decorators",
+        "JavaScript Proxy objects",
+        "Class inheritance only"
+      ],
+      "answer": "Mapped types iterating over keyof T",
+      "explanation": "Mapped types transform property declarations at compile time and power many built-in utilities.",
+      "topics": ["typescript", "mapped-types", "utility-types"]
+    },
+    {
+      "id": "ts-generic-variance",
+      "type": "multiple",
+      "question": "A callback expecting Animal is assigned where a callback expecting Dog is required, with strictFunctionTypes and ordinary function property types. Which are true?",
+      "options": [
+        "A handler accepting Animal can safely handle any Dog.",
+        "A handler accepting Dog can safely handle every Animal.",
+        "Callback parameter types are checked contravariantly in this setting.",
+        "Turning strictFunctionTypes off always increases runtime type safety."
+      ],
+      "answers": [
+        "A handler accepting Animal can safely handle any Dog.",
+        "Callback parameter types are checked contravariantly in this setting."
+      ],
+      "explanation": "A function able to accept the wider Animal input safely accepts Dog, whereas the reverse is unsound. strictFunctionTypes applies contravariant checking to ordinary function parameter types (with method exceptions).",
+      "topics": ["typescript", "generics", "variance"]
+    },
+    {
+      "id": "ts-branding",
+      "type": "single",
+      "question": "Two plain aliases type UserId = string and type OrderId = string are interchangeable. Which approach can distinguish them at compile time without changing runtime representations?",
+      "options": [
+        "Use string literal comments.",
+        "Add distinct unique-symbol-branded intersections to the aliases.",
+        "Use JSON.stringify for all IDs.",
+        "Disable strictNullChecks."
+      ],
+      "answer": "Add distinct unique-symbol-branded intersections to the aliases.",
+      "explanation": "Branded intersection types introduce a nominal-like distinction for otherwise structurally identical primitive aliases.",
+      "topics": ["typescript", "structural-typing", "branded-types"]
+    },
+    {
+      "id": "ts-extract-narrowing",
+      "type": "single",
+      "question": "Which is the safest way to narrow catch (error) when error is unknown?",
+      "options": [
+        "Read error.message unconditionally.",
+        "Use if (error instanceof Error) before accessing error.message.",
+        "Write error as any and assume it has a message.",
+        "Turn off useUnknownInCatchVariables."
+      ],
+      "answer": "Use if (error instanceof Error) before accessing error.message.",
+      "explanation": "Caught exceptions can be arbitrary thrown values. Runtime checks provide a justified narrowing before accessing properties.",
+      "topics": ["typescript", "unknown", "error-handling", "type-narrowing"]
+    },
+    {
+      "id": "ts-template-literal-type",
+      "type": "single",
+      "question": "Given type Event = \"create\" | \"delete\"; type Handler = `on${Capitalize<Event>}`, what is Handler?",
+      "options": ["\"onCreate\" | \"onDelete\"", "\"create\" | \"delete\"", "string[]", "never"],
+      "answer": "\"onCreate\" | \"onDelete\"",
+      "explanation": "Template literal types construct literal-string unions; the intrinsic Capitalize transforms the first character.",
+      "topics": ["typescript", "template-literal-types"]
+    },
+    {
+      "id": "ts-noinfer",
+      "type": "single",
+      "question": "Why use NoInfer<T> (added in TypeScript 5.4) on one generic function parameter?",
+      "options": [
+        "To erase its type at runtime",
+        "To prevent that position from contributing inference candidates for T while still checking assignability",
+        "To convert T to unknown permanently",
+        "To force T to be a class"
+      ],
+      "answer": "To prevent that position from contributing inference candidates for T while still checking assignability",
+      "explanation": "NoInfer blocks inference from a designated position, useful when another parameter should determine T and this parameter should only be checked against it.",
+      "topics": ["typescript", "generics", "recent-language-features"]
+    },
+    {
+      "id": "ts-const-type-parameter",
+      "type": "single",
+      "question": "What is the intended benefit of a const type parameter (TypeScript 5.0), such as function define<const T>(x: T): T?",
+      "options": [
+        "It emits Object.freeze for x.",
+        "It asks inference to retain more precise literal and readonly-like information for eligible expressions.",
+        "It makes the function itself immutable at runtime.",
+        "It prevents passing objects as arguments."
+      ],
+      "answer": "It asks inference to retain more precise literal and readonly-like information for eligible expressions.",
+      "explanation": "const type parameters encourage const-like inference at call sites without requiring every caller to write as const.",
+      "topics": ["typescript", "generics", "recent-language-features"]
+    },
+    {
+      "id": "ts-readonly-runtime",
+      "type": "boolean",
+      "question": "The readonly modifier on an interface property makes that property non-writable in emitted JavaScript.",
+      "answer": false,
+      "explanation": "readonly is a static constraint; JavaScript property descriptors are unchanged by TypeScript annotations.",
+      "topics": ["typescript", "immutability", "runtime-validation"]
+    },
+    {
+      "id": "ts7-main-change",
+      "type": "single",
+      "question": "What is the most consequential architectural change in TypeScript 7.0 (July 2026)?",
+      "options": [
+        "A native Go port of the compiler and tooling with multithreaded execution",
+        "All TypeScript types become runtime objects",
+        "The language stops supporting JavaScript files",
+        "TypeScript switches to WebAssembly as its only deployment format"
+      ],
+      "answer": "A native Go port of the compiler and tooling with multithreaded execution",
+      "explanation": "TypeScript 7 moves its compiler/tooling to Go and uses native speed plus shared-memory parallelism. Type checking remains fundamentally compatible with 6.0.",
+      "topics": ["typescript-7", "architecture", "performance"]
+    },
+    {
+      "id": "ts7-compiler-install",
+      "type": "single",
+      "question": "For the stable TypeScript 7.0 release, which dependency and command invoke the standard compiler?",
+      "options": [
+        "Install typescript; run npx tsc",
+        "Install typescript-go-only; run go run compiler.go",
+        "Install @typescript/native-preview exclusively; run npx tsc6",
+        "Install @types/typescript; run npx babel"
+      ],
+      "answer": "Install typescript; run npx tsc",
+      "explanation": "The stable 7.0 release is distributed through the standard typescript package with the tsc executable. Native-preview was used primarily during prerelease development.",
+      "topics": ["typescript-7", "tooling"]
+    },
+    {
+      "id": "ts7-checkers",
+      "type": "single",
+      "question": "What does the TypeScript 7.0 --checkers flag control?",
+      "options": [
+        "The number of runtime Node.js worker threads in your app",
+        "The number of parallel compiler type-checking workers",
+        "The number of test suites to execute",
+        "The number of TypeScript generic parameters allowed"
+      ],
+      "answer": "The number of parallel compiler type-checking workers",
+      "explanation": "The experimental --checkers flag adjusts compiler type-checking parallelism; increasing it may reduce build time but raise memory usage.",
+      "topics": ["typescript-7", "parallelism", "performance"]
+    },
+    {
+      "id": "ts7-builders",
+      "type": "single",
+      "question": "In a TypeScript 7.0 monorepo using project references and --build, what does --builders configure?",
+      "options": [
+        "Parallel project-reference builder concurrency",
+        "The number of webpack plugins",
+        "The JavaScript event-loop microtask depth",
+        "The total number of packages in package.json"
+      ],
+      "answer": "Parallel project-reference builder concurrency",
+      "explanation": "The experimental --builders flag controls parallel project builds. Its interaction with --checkers can amplify resource demand.",
+      "topics": ["typescript-7", "parallelism", "monorepos"]
+    },
+    {
+      "id": "ts7-parallel-budget",
+      "type": "single",
+      "question": "A CI runner uses TypeScript 7 with --builders 4 --checkers 4. What operational concern is most relevant?",
+      "options": [
+        "TypeScript necessarily uses exactly one CPU core.",
+        "The combination may schedule up to roughly 16 checker workers across projects and put pressure on CPU/memory.",
+        "The compiler changes JavaScript concurrency semantics.",
+        "Every compile produces nondeterministic JavaScript behavior."
+      ],
+      "answer": "The combination may schedule up to roughly 16 checker workers across projects and put pressure on CPU/memory.",
+      "explanation": "Builder and checker concurrency combine; measure throughput and peak memory, especially on constrained CI workers.",
+      "topics": ["typescript-7", "parallelism", "performance", "ci"]
+    },
+    {
+      "id": "ts7-single-threaded",
+      "type": "single",
+      "question": "When is --singleThreaded particularly useful in TypeScript 7.0?",
+      "options": [
+        "When running production web requests",
+        "When debugging compiler behavior or reducing concurrency in resource-constrained build environments",
+        "When disabling all type checking",
+        "When forcing async functions to execute synchronously"
+      ],
+      "answer": "When debugging compiler behavior or reducing concurrency in resource-constrained build environments",
+      "explanation": "The flag disables compiler parallelization for parsing, checking and emitting. It does not change application code or disable type checking.",
+      "topics": ["typescript-7", "tooling", "parallelism"]
+    },
+    {
+      "id": "ts7-default-types",
+      "type": "single",
+      "question": "After migrating a Node.js project to TypeScript 7.0, process and describe become unknown identifiers. Which compiler default is a likely cause?",
+      "options": [
+        "types now defaults to [], so required ambient @types packages should be explicitly listed.",
+        "lib always excludes JavaScript built-ins.",
+        "All declaration files have been removed from npm.",
+        "strict is false by default."
+      ],
+      "answer": "types now defaults to [], so required ambient @types packages should be explicitly listed.",
+      "explanation": "TypeScript 7 inherits the TypeScript 6 default types: []. Explicitly list @types/node and test framework globals in compilerOptions.types where needed.",
+      "topics": ["typescript-7", "tsconfig", "migration"]
+    },
+    {
+      "id": "ts7-rootdir",
+      "type": "single",
+      "question": "A repository has tsconfig.json at its root and files in src/. After upgrading to TypeScript 7, dist paths unexpectedly include src/. What setting most directly restores the original output root?",
+      "options": [
+        "\"rootDir\": \"./src\"",
+        "\"strict\": false",
+        "\"noEmit\": true",
+        "\"module\": \"amd\""
+      ],
+      "answer": "\"rootDir\": \"./src\"",
+      "explanation": "rootDir now defaults to the config directory; explicitly set rootDir to the source root when output layout relies on that structure.",
+      "topics": ["typescript-7", "tsconfig", "migration"]
+    },
+    {
+      "id": "ts7-defaults",
+      "type": "multiple",
+      "question": "Which compiler defaults apply in TypeScript 7.0 when not overridden?",
+      "options": ["strict: true", "module: esnext", "types: []", "moduleResolution: classic"],
+      "answers": ["strict: true", "module: esnext", "types: []"],
+      "explanation": "TypeScript 7 inherits TypeScript 6 modernization defaults. The classic module resolution mode is unsupported.",
+      "topics": ["typescript-7", "tsconfig", "migration"]
+    },
+    {
+      "id": "ts7-resolution",
+      "type": "single",
+      "question": "A service uses moduleResolution: node (node10). What should a TypeScript 7 migration typically select for code executed directly in modern Node.js?",
+      "options": ["classic", "nodenext", "node10", "amd"],
+      "answer": "nodenext",
+      "explanation": "node/node10 resolution is no longer supported. nodenext matches modern Node semantics; bundler is generally appropriate for bundler-managed projects.",
+      "topics": ["typescript-7", "module-resolution", "migration"]
+    },
+    {
+      "id": "ts7-baseurl-removal",
+      "type": "single",
+      "question": "What should a team do with a TypeScript 6 project that relies on compilerOptions.baseUrl when moving to TypeScript 7?",
+      "options": [
+        "Keep baseUrl and suppress the error indefinitely.",
+        "Remove baseUrl and adjust paths mappings to be relative to the project root as appropriate.",
+        "Turn off moduleResolution entirely.",
+        "Convert every TypeScript import to require without checking runtime behavior."
+      ],
+      "answer": "Remove baseUrl and adjust paths mappings to be relative to the project root as appropriate.",
+      "explanation": "baseUrl is no longer supported in 7.0. Paths entries should be updated as needed; runtime/bundler resolution must be aligned separately.",
+      "topics": ["typescript-7", "tsconfig", "migration"]
+    },
+    {
+      "id": "ts7-stable-ordering",
+      "type": "single",
+      "question": "What is the purpose of stable type ordering in TypeScript 7?",
+      "options": [
+        "To guarantee alphabetical ordering of every union type",
+        "To support deterministic ordering despite parallel compilation, reducing order-dependent diagnostics and declaration differences",
+        "To sort object properties at JavaScript runtime",
+        "To replace union types with tuples"
+      ],
+      "answer": "To support deterministic ordering despite parallel compilation, reducing order-dependent diagnostics and declaration differences",
+      "explanation": "TypeScript 7 uses deterministic type/symbol ordering across workers. stableTypeOrdering is effectively always enabled in 7.0.",
+      "topics": ["typescript-7", "type-ordering", "parallelism"]
+    },
+    {
+      "id": "ts7-stable-ordering-migration",
+      "type": "single",
+      "question": "Which TypeScript 6 compiler option helps expose ordering-sensitive differences before upgrading to TypeScript 7?",
+      "options": [
+        "stableTypeOrdering",
+        "alwaysStrict: false",
+        "outFile",
+        "moduleResolution: classic"
+      ],
+      "answer": "stableTypeOrdering",
+      "explanation": "Enabling --stableTypeOrdering in 6.0 approximates 7.0 ordering; it can be slower and is a migration diagnostic rather than a permanent performance recommendation.",
+      "topics": ["typescript-7", "type-ordering", "migration"]
+    },
+    {
+      "id": "ts7-api-compat",
+      "type": "single",
+      "question": "Why might TypeScript-aware tools built on the TypeScript compiler API need special handling with TypeScript 7.0?",
+      "options": [
+        "TypeScript 7.0 does not ship a public programmatic compiler API; a compatibility TypeScript 6 package can be used where needed.",
+        "TypeScript 7 disallows all npm packages.",
+        "TypeScript 7 makes type annotations execute in production.",
+        "TypeScript 7 rejects JSX syntax in all files."
+      ],
+      "answer": "TypeScript 7.0 does not ship a public programmatic compiler API; a compatibility TypeScript 6 package can be used where needed.",
+      "explanation": "TypeScript 7.0 focuses on compiler and language-server functionality. The team provided @typescript/typescript6 for tools that still require the old programmatic API.",
+      "topics": ["typescript-7", "tooling", "compatibility"]
+    },
+    {
+      "id": "ts7-editor-protocol",
+      "type": "single",
+      "question": "What protocol underpins TypeScript 7.0 editor integration?",
+      "options": [
+        "SOAP",
+        "Language Server Protocol (LSP)",
+        "GraphQL subscriptions",
+        "JSON-RPC over Kafka only"
+      ],
+      "answer": "Language Server Protocol (LSP)",
+      "explanation": "The new language service supports LSP, allowing editors to use a faster, multithreaded server.",
+      "topics": ["typescript-7", "editor", "tooling"]
+    },
+    {
+      "id": "ts7-unicode-template",
+      "type": "single",
+      "question": "TypeScript 7 changes template literal type inference. What is HeadTail<\"😀abc\"> for type HeadTail<S> = S extends `${infer Head}${infer Tail}` ? [Head, Tail] : never?",
+      "options": [
+        "[\"😀\", \"abc\"]",
+        "[\"😀a\", \"bc\"]",
+        "[\"\", \"😀abc\"]",
+        "[\"abc\", \"😀\"]"
+      ],
+      "answer": "[\"😀\", \"abc\"]",
+      "explanation": "TypeScript 7 splits Unicode code points instead of separating UTF-16 surrogate halves when inferring template literal segments.",
+      "topics": ["typescript-7", "template-literal-types", "unicode"]
+    },
+    {
+      "id": "ts7-import-attributes",
+      "type": "single",
+      "question": "Which JSON import attribute syntax should be used with TypeScript 7?",
+      "options": [
+        "import data from \"./a.json\" asserts { type: \"json\" };",
+        "import data from \"./a.json\" with { type: \"json\" };",
+        "import data from \"./a.json\" implements { type: \"json\" };",
+        "import data from \"./a.json\" using { type: \"json\" };"
+      ],
+      "answer": "import data from \"./a.json\" with { type: \"json\" };",
+      "explanation": "The old asserts form was deprecated during the transition; modern import attributes use with. Runtime and configuration support must still be considered.",
+      "topics": ["typescript-7", "module-syntax", "migration"]
+    },
+    {
+      "id": "ts7-jsdoc-differences",
+      "type": "multiple",
+      "question": "A JavaScript/JSDoc codebase is being checked with TypeScript 7. Which changes should reviewers anticipate?",
+      "options": [
+        "Types may need explicit typeof value expressions when referencing runtime values from type positions.",
+        "Closure-style JSDoc function(string): void remains the preferred supported syntax.",
+        "Legacy special recognition of @enum is removed.",
+        "Every JSDoc type is now enforced at runtime by TypeScript."
+      ],
+      "answers": [
+        "Types may need explicit typeof value expressions when referencing runtime values from type positions.",
+        "Legacy special recognition of @enum is removed."
+      ],
+      "explanation": "TypeScript 7 simplifies JSDoc analysis: values in type positions should use typeof, and @enum no longer has special recognition. This remains static analysis only.",
+      "topics": ["typescript-7", "jsdoc", "migration"]
+    },
+    {
+      "id": "ts7-runtime-typechecking",
+      "type": "boolean",
+      "question": "TypeScript 7 makes interface and type declarations available as runtime validators for incoming JSON.",
+      "answer": false,
+      "explanation": "The Go rewrite changes compiler implementation and speed, not type erasure or runtime input validation.",
+      "topics": ["typescript-7", "runtime-validation"]
+    },
+    {
+      "id": "ts7-watch-implementation",
+      "type": "single",
+      "question": "Which statement accurately describes TypeScript 7 --watch mode?",
+      "options": [
+        "It is a rebuilt file-watching implementation informed by the Parcel watcher, rather than relying purely on expensive polling.",
+        "It automatically deploys builds to a Kubernetes cluster.",
+        "It disables compiler diagnostics.",
+        "It executes JavaScript microtasks in a different order."
+      ],
+      "answer": "It is a rebuilt file-watching implementation informed by the Parcel watcher, rather than relying purely on expensive polling.",
+      "explanation": "TypeScript 7 rebuilt watch mode using a Go port derived from the Parcel watcher for efficient cross-platform change detection.",
+      "topics": ["typescript-7", "watch-mode", "performance"]
+    },
+    {
+      "id": "ts7-ignoreconfig",
+      "type": "single",
+      "question": "In TypeScript 7, if the current directory contains tsconfig.json, what is required to compile explicitly listed source filenames from the CLI instead of using that config?",
+      "options": [
+        "Pass --ignoreConfig with those file paths.",
+        "Pass --moduleResolution classic.",
+        "Delete package.json.",
+        "Disable strict mode."
+      ],
+      "answer": "Pass --ignoreConfig with those file paths.",
+      "explanation": "TypeScript 7 requires --ignoreConfig for command-line source file arguments when tsconfig.json exists in the working directory.",
+      "topics": ["typescript-7", "cli", "migration"]
+    },
+    {
+      "id": "ts7-migration-plan",
+      "type": "multiple",
+      "question": "Which steps are sensible in a production migration from TypeScript 6 to 7?",
+      "options": [
+        "Clear 6.0 deprecations rather than relying on ignoreDeprecations.",
+        "Benchmark type-check times, memory, and CI concurrency on representative projects.",
+        "Check dependencies on TypeScript compiler APIs and editor plugins.",
+        "Assume faster compilation removes any need for integration testing."
+      ],
+      "answers": [
+        "Clear 6.0 deprecations rather than relying on ignoreDeprecations.",
+        "Benchmark type-check times, memory, and CI concurrency on representative projects.",
+        "Check dependencies on TypeScript compiler APIs and editor plugins."
+      ],
+      "explanation": "TS7 is a substantial tooling migration; resolve deprecated options, benchmark build resources, and audit tools that embed TS before adopting it broadly.",
+      "topics": ["typescript-7", "migration", "tooling"]
+    },
+    {
+      "id": "js-promise-unhandled-rejection",
+      "type": "single",
+      "question": "A fire-and-forget call to sendEmail() returns a Promise that may reject. What should production code do?",
+      "options": [
+        "Ignore it because promises never cause failures after return.",
+        "Attach an explicit rejection handler or arrange observed task supervision and error reporting.",
+        "Wrap only the call expression in a synchronous try/catch without awaiting.",
+        "Call Promise.resolve() and assume the error disappears."
+      ],
+      "answer": "Attach an explicit rejection handler or arrange observed task supervision and error reporting.",
+      "explanation": "Unobserved rejections can be lost or trigger runtime-specific unhandled rejection behavior. Own the task lifecycle and capture/report failures.",
+      "topics": ["javascript", "promises", "error-handling"]
+    },
+    {
+      "id": "js-optional-chaining",
+      "type": "multiple",
+      "question": "Which statements about optional chaining are correct?",
+      "options": [
+        "obj?.address?.city avoids accessing city when an earlier link is null or undefined.",
+        "obj?.fn() suppresses errors when obj.fn is a non-function string.",
+        "obj?.missing may evaluate to undefined.",
+        "Optional chaining automatically catches network or Promise errors."
+      ],
+      "answers": [
+        "obj?.address?.city avoids accessing city when an earlier link is null or undefined.",
+        "obj?.missing may evaluate to undefined."
+      ],
+      "explanation": "Optional chaining short-circuits on nullish receivers, not arbitrary errors. Invoking an existing non-callable member still throws.",
+      "topics": ["javascript", "nullability", "object-manipulation"]
+    },
+    {
+      "id": "ts-satisfies-excess-property",
+      "type": "single",
+      "question": "What happens for const cfg = { port: 3000, typo: true } satisfies { port: number };?",
+      "options": [
+        "It is accepted because satisfies skips all extra properties.",
+        "A fresh object literal triggers an excess-property error for typo.",
+        "TypeScript removes typo at runtime.",
+        "It always returns never."
+      ],
+      "answer": "A fresh object literal triggers an excess-property error for typo.",
+      "explanation": "satisfies checks the fresh literal against the target object shape, including excess-property checking.",
+      "topics": ["typescript", "satisfies", "excess-properties"]
+    },
+    {
+      "id": "ts-record-key-safety",
+      "type": "single",
+      "question": "An application models dynamic API response values as Record<string, number>. What is an important safety concern?",
+      "options": [
+        "It validates that every runtime entry is numeric.",
+        "It permits indexing arbitrary keys at the type level, but a missing key can still return undefined at runtime.",
+        "It prevents key enumeration.",
+        "It guarantees keys arrive sorted."
+      ],
+      "answer": "It permits indexing arbitrary keys at the type level, but a missing key can still return undefined at runtime.",
+      "explanation": "Record is only a static model. Consider runtime validation and noUncheckedIndexedAccess when indexing potentially absent keys.",
+      "topics": ["typescript", "utility-types", "runtime-validation"]
+    }
+  ]
+}
